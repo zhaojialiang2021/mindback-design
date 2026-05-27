@@ -1,0 +1,75 @@
+{
+  "$schema": "https://mindback.design/schemas/component.schema.json",
+  "slug": "card",
+  "name": "Card",
+  "category": "container",
+  "description": "组合容器。承载相关信息的最小单元，是 patterns 的起点。MindBack 风格：hairline 边框、20px / 12px 圆角、不滥用阴影。",
+  "props": {
+    "variant": {
+      "values": ["default", "tinted", "elevated"],
+      "default": "default",
+      "description": "default 透明 + hairline；tinted 浅灰底 (bg-1) 不带边；elevated 仅用于弹层卡，带 shadow-modal"
+    },
+    "padding": {
+      "values": ["compact", "standard", "comfortable"],
+      "default": "standard",
+      "description": "compact space-3 / standard space-4 / comfortable space-5"
+    },
+    "interactive": {
+      "values": [false, true],
+      "default": false,
+      "description": "是否可点击。true 时 hover 加 fill-quaternary 背景，cursor=pointer"
+    }
+  },
+  "states": ["idle", "hover", "pressed", "disabled"],
+  "constraints": [
+    {
+      "rule": "no_nested_card",
+      "value": true,
+      "description": "Card 内不嵌套 Card —— 用分隔区或 List 替代"
+    },
+    {
+      "rule": "elevated_only_for_modal",
+      "value": true,
+      "description": "elevated（带阴影）只用于 Modal / Sheet 的容器，普通页面禁用"
+    },
+    {
+      "rule": "interactive_requires_role",
+      "value": "button",
+      "description": "interactive=true 时必须设 role=button 并支持键盘"
+    }
+  ],
+  "tokens": {
+    "default.bg": "transparent",
+    "default.border": "line-non-opaque",
+    "tinted.bg": "bg-1",
+    "tinted.border": "transparent",
+    "elevated.bg": "bg-0",
+    "elevated.border": "transparent",
+    "elevated.shadow": "shadow-modal",
+    "radius": "radius-large",
+    "radius.large": "radius-x-large",
+    "padding.compact": "space-3",
+    "padding.standard": "space-4",
+    "padding.comfortable": "space-5",
+    "interactive.hover.bg": "fill-quaternary"
+  },
+  "anatomy": [
+    { "part": "container", "tokens": ["bg", "border", "shadow?", "radius", "padding"] },
+    { "part": "header (optional)", "description": "标题区，用 typography.headline-h3" },
+    { "part": "body", "description": "正文区" },
+    { "part": "footer (optional)", "description": "动作区，常含 Button" }
+  ],
+  "doDont": {
+    "do": [
+      "信息密集的列表用 default + 12px 圆角",
+      "AI 回应卡 / 能力卡用 tinted 或 default + 20px 圆角",
+      "interactive 卡片整块响应点击，不要让用户找小按钮"
+    ],
+    "dont": [
+      "不要在 Card 里再嵌 Card",
+      "不要给非弹层卡片加阴影",
+      "不要让 Card 边框和 Card 内 Divider 视觉上混淆"
+    ]
+  }
+}

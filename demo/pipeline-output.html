@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>底2Tab Demo — 洞察工坊</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang SC", -apple-system, sans-serif;
+    background: #F5F5F5;
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    color: #212121;
+  }
+  .phone {
+    width: 393px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+
+  /* StatusBar */
+  .statusbar {
+    height: 50px;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "SF Pro", -apple-system, sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .time { color: #212121; }
+  .icons { display: flex; gap: 6px; color: #212121; font-size: 12px; }
+
+  /* Nav */
+  .nav {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  /* Section labels */
+  .section-label {
+    padding: 24px 16px 8px;
+    font-size: 14px;
+    color: rgba(60,60,67,0.45);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: "";
+    flex: 1;
+    height: 0.5px;
+    background: rgba(0,0,0,0.08);
+  }
+
+  /* Insight card */
+  .insight-card {
+    margin: 8px 16px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px;
+    padding: 20px;
+  }
+  .insight-card .tag {
+    display: inline-block;
+    background: #F5F5F5;
+    color: rgba(60,60,67,0.6);
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    margin-bottom: 12px;
+  }
+  .insight-card h3 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+  .insight-card .thesis {
+    font-size: 17px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .insight-card .sources {
+    border-left: 2px solid #78AAFA;
+    padding-left: 12px;
+  }
+  .insight-card .source-item {
+    font-size: 13px;
+    color: rgba(60,60,67,0.6);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  .insight-card .source-item:last-child { margin-bottom: 0; }
+  .insight-card .source-date {
+    color: rgba(60,60,67,0.3);
+    font-size: 11px;
+  }
+  .insight-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 0.5px solid rgba(0,0,0,0.08);
+  }
+  .insight-actions button {
+    flex: 1;
+    height: 36px;
+    border-radius: 9999px;
+    border: none;
+    font-family: "PingFang SC", -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .btn-primary { background: #212121; color: #FFFFFF; }
+  .btn-ghost { background: transparent; color: rgba(60,60,67,0.6); }
+  .btn-secondary { background: #F5F5F5; color: #212121; }
+
+  /* Topic cluster */
+  .cluster-card {
+    margin: 8px 16px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cluster-info h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .cluster-meta {
+    font-size: 13px;
+    color: rgba(60,60,67,0.45);
+  }
+  .cluster-arrow {
+    color: rgba(60,60,67,0.3);
+    font-size: 18px;
+  }
+
+  /* River item */
+  .river-item {
+    margin: 4px 16px;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: rgba(60,60,67,0.8);
+  }
+  .river-item .date-tag {
+    font-size: 11px;
+    color: rgba(60,60,67,0.3);
+    margin-bottom: 4px;
+  }
+
+  /* Calendar strip */
+  .calendar-strip {
+    display: flex;
+    gap: 8px;
+    padding: 16px;
+    overflow-x: auto;
+  }
+  .cal-day {
+    min-width: 42px;
+    height: 56px;
+    background: #F5F5F5;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: rgba(60,60,67,0.45);
+  }
+  .cal-day.has-insight {
+    background: #212121;
+    color: #FFFFFF;
+  }
+  .cal-day .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #78AAFA;
+    margin-top: 3px;
+  }
+  .cal-day.has-insight .dot { background: #78AAFA; }
+
+  /* Pipeline debug panel */
+  .debug-panel {
+    margin: 24px 16px;
+    padding: 16px;
+    background: #F5F5F5;
+    border-radius: 12px;
+    font-size: 12px;
+    color: rgba(60,60,67,0.5);
+  }
+  .debug-panel summary {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(60,60,67,0.6);
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+  .debug-step {
+    margin-bottom: 12px;
+  }
+  .debug-step h5 {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(60,60,67,0.7);
+    margin-bottom: 4px;
+  }
+  .debug-step p {
+    line-height: 1.5;
+  }
+
+  /* TabBar */
+  .tabbar {
+    height: 84px;
+    display: flex;
+    border-top: 0.5px solid rgba(0,0,0,0.08);
+    padding-top: 8px;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: rgba(60,60,67,0.6);
+    cursor: pointer;
+    padding-top: 4px;
+  }
+  .tab-item.active {
+    color: #212121;
+  }
+  .tab-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .tab-item.active .tab-icon {
+    background: #212121;
+    color: #FFFFFF;
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="statusbar">
+    <span class="time">9:41</span>
+    <span class="icons">􀋦 􀊨 􀋭</span>
+  </div>
+
+  <div class="nav">洞察</div>
+
+  <!-- ============ 洞察卡片 ============ -->
+  <div class="section-label">今日洞察</div>
+
+  <div class="insight-card">
+    <span class="tag">跨集群联想</span>
+    <h3>你在和同一个问题反复交手</h3>
+    <p class="thesis">你最近在四个不同场景里讨论同一件事：「克制到什幺程度才算尊重用户，什幺时候克制会变成放弃责任」——通知设计、产品定位、视觉规范、团队沟通里都有这个主题在回响。</p>
+    <div class="sources">
+      <div class="source-item">「设计评审的时候同事说我的通知设计太克制了…我说不知道比被打扰好」<br><span class="source-date">5月6日</span></div>
+      <div class="source-item">「你的极简是在剥夺用户的掌控感还是在给予掌控感？极简有两个完全相反的方向」<br><span class="source-date">5月4日</span></div>
+      <div class="source-item">「放弃不是因为不重要，是因为每个都在削弱'轻记录'这个核心」<br><span class="source-date">5月6日</span></div>
+    </div>
+    <div class="insight-actions">
+      <button class="btn-primary">追问</button>
+      <button class="btn-ghost">忽略</button>
+      <button class="btn-secondary">分享</button>
+    </div>
+  </div>
+
+  <div class="insight-card">
+    <span class="tag">跨集群联想</span>
+    <h3>记忆是武器，也是牢笼</h3>
+    <p class="thesis">你一边在打造更好的记忆系统，一边在反复质疑「记得太多是不是反而不自由」——Funes 寓言、放弃列表、深夜焦虑和自我审视里共同在问一个问题：多少记忆是刚好够用的。</p>
+    <div class="sources">
+      <div class="source-item">「Funes 记住了所有东西反而是残疾人」<br><span class="source-date">5月9日</span></div>
+      <div class="source-item">「如果我每天给他推 10 条洞察，他不会更智慧，只会更累」<br><span class="source-date">5月7日</span></div>
+      <div class="source-item">「好的检索不需要完美的分类」<br><span class="source-date">5月10日</span></div>
+    </div>
+    <div class="insight-actions">
+      <button class="btn-primary">追问</button>
+      <button class="btn-ghost">忽略</button>
+      <button class="btn-secondary">分享</button>
+    </div>
+  </div>
+
+  <div class="insight-card">
+    <span class="tag">跨集群联想</span>
+    <h3>你做的不只是产品</h3>
+    <p class="thesis">你在做的 MindBack 自己就是你所分析的案例——你关于信息主权和 AI 记忆层的所有阅读，正在被你用产品形式表达。你不是在「参考行业案例」，你是在把外面的思想变成里面的骨骼。</p>
+    <div class="sources">
+      <div class="source-item">「哈勃半径和 RSS 的区别…RSS 是管道，哈勃半径是管道里流过的水的历史」<br><span class="source-date">5月11日</span></div>
+      <div class="source-item">「Bush 在 1945 年就说了联想路径才是知识管理的核心。80 年过去了我们还在做文件夹」<br><span class="source-date">5月2日</span></div>
+      <div class="source-item">「关键不是一个功能列表，是把底1（河流）到底2（摆渡）的关系想明白」<br><span class="source-date">5月11日</span></div>
+    </div>
+    <div class="insight-actions">
+      <button class="btn-primary">追问</button>
+      <button class="btn-ghost">忽略</button>
+      <button class="btn-secondary">分享</button>
+    </div>
+  </div>
+
+  <!-- ============ 主题集群 ============ -->
+  <div class="section-label">你在反复想这些事</div>
+
+  <div class="cluster-card">
+    <div class="cluster-info">
+      <h4>记忆与遗忘的边界</h4>
+      <div class="cluster-meta">7 条记忆 · 5月2日–5月10日</div>
+    </div>
+    <span class="cluster-arrow">›</span>
+  </div>
+
+  <div class="cluster-card">
+    <div class="cluster-info">
+      <h4>克制的产品哲学</h4>
+      <div class="cluster-meta">6 条记忆 · 5月4日–5月11日</div>
+    </div>
+    <span class="cluster-arrow">›</span>
+  </div>
+
+  <div class="cluster-card">
+    <div class="cluster-info">
+      <h4>AI 记忆层的技术实践</h4>
+      <div class="cluster-meta">6 条记忆 · 5月5日–5月11日</div>
+    </div>
+    <span class="cluster-arrow">›</span>
+  </div>
+
+  <div class="cluster-card">
+    <div class="cluster-info">
+      <h4>身体与情绪的自我监测</h4>
+      <div class="cluster-meta">4 条记忆 · 5月3日–5月9日</div>
+    </div>
+    <span class="cluster-arrow">›</span>
+  </div>
+
+  <div class="cluster-card">
+    <div class="cluster-info">
+      <h4>通知与打断设计</h4>
+      <div class="cluster-meta">4 条记忆 · 5月6日–5月10日</div>
+    </div>
+    <span class="cluster-arrow">›</span>
+  </div>
+
+  <div class="cluster-card">
+    <div class="cluster-info">
+      <h4>产品定位与自我质疑</h4>
+      <div class="cluster-meta">5 条记忆 · 5月2日–5月9日</div>
+    </div>
+    <span class="cluster-arrow">›</span>
+  </div>
+
+  <!-- ============ 碎片河流 ============ -->
+  <div class="section-label">还有一些碎片</div>
+
+  <div class="river-item">
+    <div class="date-tag">5月5日</div>
+    今天跑了人生第一个 10 公里。不是因为想减肥，就是想知道自己的身体还有没有被自己低估的能力
+  </div>
+  <div class="river-item">
+    <div class="date-tag">5月7日</div>
+    深夜刷到一条抖音：一个农民工在工地上弹吉他唱《海阔天空》…有时候好的东西不来自技术纯度，来自那个东西在「不该出现的地方」出现了
+  </div>
+  <div class="river-item">
+    <div class="date-tag">5月8日</div>
+    测试 Claude 4.7 的长上下文能力。喂了 50 页论文进去，它能在第 47 页找出和第 3 页矛盾的一个数据点。这已经不是搜索了，这是在替我读书
+  </div>
+  <div class="river-item">
+    <div class="date-tag">5月2日</div>
+    发现在不同 app 之间复制粘贴的体验其实是一个设计空白带
+  </div>
+
+  <!-- ============ 洞察日历 ============ -->
+  <div class="section-label">过去 7 天</div>
+  <div class="calendar-strip">
+    <div class="cal-day">5/5<br>一<div class="dot"></div></div>
+    <div class="cal-day has-insight">5/6<br>二<div class="dot"></div></div>
+    <div class="cal-day has-insight">5/7<br>三<div class="dot"></div></div>
+    <div class="cal-day">5/8<br>四</div>
+    <div class="cal-day has-insight">5/9<br>五<div class="dot"></div></div>
+    <div class="cal-day">5/10<br>六</div>
+    <div class="cal-day has-insight">5/11<br>日<div class="dot"></div></div>
+  </div>
+
+  <!-- ============ Pipeline 调试面板 ============ -->
+  <details class="debug-panel">
+    <summary>Pipeline 内部日志（研发可见）</summary>
+
+    <div class="debug-step">
+      <h5>Pipeline 1 · 压缩 — 2026-05-12 05:00 执行</h5>
+      <p>
+        输入碎片: 40 条<br>
+        成功聚类: 6 个主题集群 (≥3条碎片)<br>
+        落入碎片河流: 4 条 (不足3条，不强行归类)<br>
+        各集群碎片分布: 7/6/6/4/4/5<br>
+        压缩比: 40 → 10 (6集群 + 4单独)
+      </p>
+    </div>
+
+    <div class="debug-step">
+      <h5>Pipeline 2 · 联想 — 2026-05-12 05:02 执行</h5>
+      <p>
+        待检测连接: C(6,2) = 15 对<br>
+        通过 Shannon 门槛: 3 对<br>
+        ── 克制哲学 × 通知设计 → 「同一问题在不同场景的回响」<br>
+        ── 记忆边界 × 产品定位 → 「多少记忆才算刚好够用」<br>
+        ── AI记忆技术 × 产品定位 → 「你在做的事本身就是最好的案例」<br>
+        被门槛挡掉: 12 对 (代表高频词的弱关联 / 同一事件的不同侧面 / 无张力的语义重复)
+      </p>
+    </div>
+
+    <div class="debug-step">
+      <h5>Pipeline 3 · 表达 — 2026-05-12 05:03 执行</h5>
+      <p>
+        3 条联想 → 3 条洞察卡片<br>
+        标题均 ≤12字，结论均 ≤40字<br>
+        每条引用 2-4 个来源片段<br>
+        等待用户首次打开底2tab时呈现
+      </p>
+    </div>
+  </details>
+
+  <!-- ============ TabBar ============ -->
+  <div class="tabbar">
+    <div class="tab-item" style="color:#212121">
+      <div class="tab-icon" style="background:#F5F5F5">💬</div>
+      记录
+    </div>
+    <div class="tab-item active">
+      <div class="tab-icon">🔍</div>
+      洞察
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

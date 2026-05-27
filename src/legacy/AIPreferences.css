@@ -1,0 +1,571 @@
+/* ===== Page Shell ===== */
+.ap-page {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ap-phone {
+  width: 393px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+/* ===== Top Bar ===== */
+.ap-topBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  width: 393px;
+}
+
+/* ===== Status Bar ===== */
+.ap-status {
+  height: 50px;
+  padding: 21px 16px 0;
+  box-sizing: border-box;
+}
+
+.ap-statusInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 154px;
+}
+
+.ap-statusTime {
+  flex: 1 0 0;
+  padding-top: 2px;
+  font-family: 'SF Pro', system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 22px;
+  color: #212121;
+  text-align: center;
+}
+
+.ap-statusIcons {
+  flex: 1 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding-top: 1px;
+}
+
+.ap-iconCell { width: 19.2px; height: 12.226px; display: block; }
+.ap-iconWifi { width: 17.142px; height: 12.328px; display: block; }
+.ap-iconBatt { width: 27.328px; height: 13px; display: block; }
+
+/* ===== Nav Header ===== */
+.ap-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 16px;
+}
+
+.ap-navBack {
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.ap-navBack:active { opacity: 0.5; }
+.ap-navBack img { width: 9px; height: 18px; }
+
+.ap-navTitle {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 26px;
+  color: #212121;
+}
+
+.ap-navPlaceholder { width: 20px; height: 20px; opacity: 0; }
+
+.ap-saveBtn {
+  position: absolute;
+  top: 58px;
+  left: 313px;
+  width: 64px;
+  height: 32px;
+  background: #000;
+  color: #fff;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.1s;
+  user-select: none;
+}
+.ap-saveBtn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+/* ===== Scrollable Content ===== */
+.ap-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 12px;
+  padding-bottom: 40px;
+}
+
+/* ===== Card 1: MindBack 人格 ===== */
+.ap-card1 {
+  position: relative;
+  width: 393px;
+  min-height: 654px;
+  border-radius: 32px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #deedff 0%, #fff 40%);
+  box-shadow: 0 11px 25px rgba(0, 0, 0, 0.02), 0 45px 45px rgba(0, 0, 0, 0.01);
+}
+
+/* Card 1 decorative */
+.ap-card1-decor {
+  position: absolute;
+  top: 3.09%;
+  left: 70.74%;
+  right: 9.92%;
+  bottom: 75.76%;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ap-card1-decor img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+
+.ap-card1-dot1 { position: absolute; left: 275px; top: 58px; width: 5px; height: 5px; pointer-events: none; }
+.ap-card1-dot1 img { position: absolute; inset: -40%; width: 180%; height: 180%; }
+
+.ap-card1-dot2 { position: absolute; left: 344px; top: 83px; width: 2px; height: 2px; pointer-events: none; }
+.ap-card1-dot2 img { position: absolute; inset: -50%; width: 200%; height: 200%; }
+
+.ap-card1-dot3 { position: absolute; left: 309px; top: 59px; width: 2px; height: 2px; pointer-events: none; }
+.ap-card1-dot3 img { width: 100%; height: 100%; display: block; }
+
+.ap-card1-dot4 { position: absolute; left: 350px; top: 40px; width: 11px; height: 11px; pointer-events: none; }
+.ap-card1-dot4 img { position: absolute; inset: -45.45%; width: 190.9%; height: 190.9%; }
+
+/* ===== Section Badge ===== */
+.ap-badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ap-badgeIcon { width: 18px; height: 18px; position: relative; }
+.ap-badgeIcon img { position: absolute; inset: 6%; width: 88%; height: 88%; }
+
+.ap-badgeText {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 26px;
+  white-space: nowrap;
+}
+
+/* ===== Card 1 Content ===== */
+.ap-card1-content {
+  position: absolute;
+  left: 24px;
+  top: 84px;
+  width: 345px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ap-personality { display: flex; flex-direction: column; gap: 24px; }
+.ap-personalityHead { display: flex; flex-direction: column; gap: 4px; }
+.ap-titleRow { display: flex; align-items: center; gap: 4px; position: relative; }
+
+.ap-titleText {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 40px;
+  color: #212121;
+}
+
+.ap-star1 {
+  position: absolute; left: 133.03px; top: -14px;
+  width: 33.974px; height: 27.355px;
+  display: flex; align-items: center; justify-content: center;
+}
+.ap-star1 img { width: 25px; height: 25px; transform: skewX(-12.32deg) scaleY(0.98); }
+
+.ap-star2 {
+  position: absolute; left: 160px; top: -15px;
+  width: 16.587px; height: 13.355px;
+  display: flex; align-items: center; justify-content: center;
+}
+.ap-star2 img { width: 12.2px; height: 12.2px; transform: skewX(-12.32deg) scaleY(0.98); }
+
+.ap-desc {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400; font-size: 14px; line-height: 24px;
+  color: #212121; margin: 0; width: 345px;
+}
+
+/* ===== Speech Bubble ===== */
+.ap-bubble {
+  position: relative;
+  width: 345px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.ap-bubbleBg {
+  position: absolute;
+  left: -0.3px; top: -13.19px;
+  width: 345px; height: 73.19px;
+  pointer-events: none;
+}
+
+.ap-bubbleText {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400; font-size: 14px; line-height: 22px;
+  color: rgba(60, 60, 67, 0.6);
+  margin: 0; position: relative; z-index: 1; min-width: 100%;
+  transition: opacity 0.3s;
+}
+
+/* ===== Slider Group ===== */
+.ap-sliderGroup { display: flex; flex-direction: column; gap: 8px; width: 345px; }
+
+.ap-sliderLabel {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400; font-size: 14px; line-height: 20px;
+  color: #212121; margin: 0;
+}
+
+.ap-track {
+  position: relative;
+  height: 48px;
+  width: 345px;
+  border-radius: 1000px;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.ap-trackBg {
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 1000px;
+}
+
+.ap-fill {
+  position: absolute; top: 2px; bottom: 2px;
+  background: #78aafa;
+  border-radius: 10000px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07), 0 1px 1px rgba(0, 0, 0, 0.04), 0 3px 1px rgba(0, 0, 0, 0.01);
+  transition: left 0.05s, right 0.05s;
+}
+.ap-fill::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+.ap-tickMark {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px; height: 8px;
+  pointer-events: none;
+}
+.ap-tickMark img { display: block; width: 2px; height: 9px; }
+
+.ap-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px; height: 36px;
+  transition: left 0.05s;
+  pointer-events: none;
+}
+.ap-thumb img {
+  position: absolute;
+  inset: -2.78% -13.89% -36.11% -13.89%;
+  width: 127.78%; height: 138.89%;
+  pointer-events: none;
+}
+
+.ap-sliderEnds {
+  display: flex; justify-content: space-between;
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400; font-size: 12px; line-height: 18px;
+  color: rgba(60, 60, 67, 0.3);
+}
+
+/* ===== Card 2: 内容与节奏偏好 ===== */
+.ap-card2 {
+  position: relative;
+  width: 393px;
+  min-height: 486px;
+  border-radius: 32px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffecdd 0%, #fff 40%);
+  box-shadow: 0 11px 25px rgba(0, 0, 0, 0.02), 0 45px 45px rgba(0, 0, 0, 0.01);
+}
+
+/* Card 2 decorative */
+.ap-card2-decor {
+  position: absolute; left: 204px; top: -68px;
+  width: 203.695px; height: 203.695px;
+  opacity: 0.1; mix-blend-mode: plus-lighter;
+  transform: rotate(12.4deg); pointer-events: none;
+}
+.ap-card2-decor img { width: 100%; height: 100%; object-fit: cover; }
+
+.ap-card2-star { position: absolute; left: 304px; top: 37px; width: 40px; height: 40px; pointer-events: none; }
+.ap-card2-star img { position: absolute; inset: -3.7%; width: 107.4%; height: 107.6%; }
+
+.ap-card2-starSmall { position: absolute; left: 321px; top: 51px; width: 9px; height: 9px; pointer-events: none; }
+.ap-card2-starSmall img { position: absolute; inset: -6%; width: 112%; height: 112%; }
+
+.ap-card2-dot1 { position: absolute; left: 277px; top: 47px; width: 11px; height: 11px; pointer-events: none; }
+.ap-card2-dot1 img { position: absolute; inset: -45.45%; width: 190.9%; height: 190.9%; }
+
+.ap-card2-dot2 { position: absolute; left: 377px; top: 74px; width: 5px; height: 5px; pointer-events: none; }
+.ap-card2-dot2 img { position: absolute; inset: -40%; width: 180%; height: 180%; }
+
+/* ===== Card 2 Content ===== */
+.ap-card2-content {
+  position: absolute;
+  left: 21px; top: 84px;
+  width: 351px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+
+.ap-sectionTitle {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 500; font-size: 16px; line-height: 26px;
+  color: #212121; margin: 0;
+}
+
+/* ===== Content Length Selector ===== */
+.ap-lengthSection { display: flex; flex-direction: column; gap: 16px; }
+
+.ap-lengthTrack {
+  position: relative;
+  height: 102px; width: 351px;
+  border-radius: 1000px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ap-lengthBg {
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 24px;
+}
+
+.ap-lengthActive {
+  position: absolute;
+  top: 2px; bottom: 2px;
+  width: 116px;
+  background: #916964;
+  border-radius: 22px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07), 0 1px 1px rgba(0, 0, 0, 0.04), 0 3px 1px rgba(0, 0, 0, 0.01);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+.ap-lengthActive::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+.ap-lengthActiveLabel {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 500; font-size: 16px; line-height: 22px;
+  color: #fff;
+}
+
+.ap-lengthActiveSub {
+  display: flex; flex-direction: column; align-items: center;
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400; font-size: 12px; line-height: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center; margin-top: 2px;
+}
+
+.ap-lengthTick {
+  position: absolute;
+  top: 50%; transform: translate(-50%, -50%);
+  width: 2px; height: 16px;
+  z-index: 1; pointer-events: none;
+}
+.ap-lengthTick img { display: block; width: 2px; height: 17px; }
+
+/* Clickable zones for the three options */
+.ap-lengthZone {
+  position: absolute;
+  top: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3;
+  cursor: pointer;
+}
+
+.ap-lengthInactiveLabel {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 500; font-size: 16px; line-height: 26px;
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* ===== Divider ===== */
+.ap-divider { position: relative; width: 100%; height: 0; }
+.ap-divider img {
+  position: absolute;
+  left: -0.14%; right: -0.14%;
+  top: -0.5px;
+  width: 100.28%; height: 1px;
+}
+
+/* ===== Time Section ===== */
+.ap-timeSection { display: flex; flex-direction: column; gap: 16px; }
+.ap-timeHeader { display: flex; flex-direction: column; gap: 4px; }
+
+.ap-timeHint {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400; font-size: 12px; line-height: 18px;
+  color: rgba(60, 60, 67, 0.3); margin: 0;
+}
+
+.ap-timeRows { display: flex; flex-direction: column; gap: 16px; }
+.ap-timeRow { display: flex; align-items: center; justify-content: space-between; }
+
+.ap-timeLabel {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400; font-size: 14px; line-height: 20px;
+  color: #212121;
+}
+
+.ap-timePill {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 1000px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ap-timePill:active {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.ap-timeVal {
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 500; font-size: 14px; line-height: 20px;
+  color: #212121;
+}
+
+.ap-timeClickable {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0 2px;
+  transition: background 0.15s;
+}
+.ap-timeClickable:active {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.ap-timeSep { width: 1px; height: 9.5px; position: relative; }
+.ap-timeSep img { display: block; width: 1px; height: 10px; }
+
+/* ===== Picker Popover ===== */
+.ap-pickerOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: ap-fadeIn 0.2s ease;
+}
+
+.ap-picker {
+  width: 100%;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 12px 0 34px;
+  animation: ap-slideUp 0.25s ease;
+}
+
+.ap-pickerItem {
+  padding: 14px 24px;
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #212121;
+  cursor: pointer;
+  transition: background 0.1s;
+  text-align: center;
+}
+.ap-pickerItem:active {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+@keyframes ap-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ap-slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* ===== Toast ===== */
+.ap-toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  z-index: 200;
+  animation: ap-toastIn 0.2s ease;
+  pointer-events: none;
+}
+
+@keyframes ap-toastIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}

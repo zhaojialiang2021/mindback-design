@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=393,initial-scale=1,user-scalable=no"/>
+<title>卡片滑动动画</title>
+<style>
+:root{
+  --lp:#212121;--ls:rgba(60,60,67,0.6);--lt:rgba(60,60,67,0.3);
+  --ln:rgba(0,0,0,0.08);--bt:#70a0ec;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  display:flex;justify-content:center;align-items:center;gap:28px;
+  min-height:100svh;background:#dde1e6;
+  font-family:'PingFang SC',-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+.phone{
+  width:393px;height:852px;border-radius:44px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.18),0 0 0 3px #1a1a1a;
+  background:#fafafa;position:relative;flex-shrink:0;
+}
+.push{height:310px;position:relative;overflow:visible}
+.lines{position:absolute;bottom:0;left:0;right:0;height:80px;display:flex;flex-direction:column;gap:10px;opacity:.06;justify-content:flex-end;padding-bottom:6px}
+.lines i{height:1px;background:var(--lp);border-radius:.5px;margin:0 8px}
+.lines i:nth-child(1){width:calc(100% - 16px)}.lines i:nth-child(2){width:calc(97% - 16px)}.lines i:nth-child(3){width:calc(93% - 16px)}.lines i:nth-child(4){width:calc(88% - 16px)}.lines i:nth-child(5){width:calc(82% - 16px)}.lines i:nth-child(6){width:calc(75% - 16px)}.lines i:nth-child(7){width:calc(67% - 16px)}.lines i:nth-child(8){width:calc(58% - 16px)}
+
+.stage{position:absolute;top:48px;left:50%;width:340px;height:340px;transform:translateX(-50%)}
+.slot{position:absolute;left:0;top:0;width:340px;height:340px;transform-origin:center center}
+.slot-0{z-index:3}.slot-1{z-index:2}.slot-2{z-index:1}
+
+.card{width:100%;height:100%;background:#fff;border:.5px solid var(--ln);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;transform-origin:center center}
+.card::before{content:'';position:absolute;inset:-.5px;border-radius:20px;background:linear-gradient(180deg,#eff4fc 0%,#fcfcfc 60%);z-index:0;pointer-events:none}
+.card>*{position:relative;z-index:1}
+.slot-0 .card{box-shadow:0 2px 20px rgba(0,0,0,.06)}
+.slot-1 .card{box-shadow:0 1px 10px rgba(0,0,0,.04);pointer-events:none}
+.slot-2 .card{box-shadow:0 1px 6px rgba(0,0,0,.03);pointer-events:none}
+
+.tag{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--bt);flex-shrink:0}
+.tag svg{width:18px;height:18px}
+.tt{font-size:16px;font-weight:500;color:var(--lp);line-height:22px;flex-shrink:0}
+.tb{flex:1;overflow:hidden;font-size:12.5px;color:var(--ls);line-height:19px;min-height:0}
+.tb p{margin-bottom:3px}.tb b{font-weight:500;color:var(--lp)}
+.tf{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--lt);flex-shrink:0}
+.tf .sep{flex:1;height:1px;background:var(--ln)}
+
+.spec{
+  background:#1a1a1e;color:#c8c8cc;font-size:11px;
+  font-family:'SF Mono',Menlo,monospace;line-height:1.7;
+  padding:18px 20px;border-radius:14px 14px 14px 0;
+  max-width:280px;flex-shrink:0;
+}
+.spec h3{color:#78aafa;font-size:12.5px;font-weight:500;margin:14px 0 6px}
+.spec h3:first-child{margin-top:0}
+.spec .r{display:flex;justify-content:space-between;gap:16px}
+.spec .v{color:#fff}
+.spec .dim{color:#6a6a6e;margin-top:14px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ic-summary" viewBox="0 0 24 24"><g clip-path="url(#clip0_12420_103672)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#7A8EDF"/></g></symbol>
+  <symbol id="ic-arrow-down" viewBox="0 0 24 24"><path d="M6 9L12 15L18 9" fill="none" stroke="#212121" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<div class="phone">
+<div class="push">
+  <div class="lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="stage" id="stage">
+    <div class="slot slot-0" id="S0"><div class="card" id="C0"></div></div>
+    <div class="slot slot-1" id="S1"><div class="card" id="C1"></div></div>
+    <div class="slot slot-2" id="S2"><div class="card" id="C2"></div></div>
+  </div>
+</div>
+</div>
+
+<div class="spec">
+<h3>卡片叠层</h3>
+<div class="r"><span>前卡尺寸</span><span class="v">340×340</span></div>
+<div class="r"><span>中卡缩放</span><span class="v">0.94 (≈320×320)</span></div>
+<div class="r"><span>后卡缩放</span><span class="v">0.90 (≈306×306)</span></div>
+<div class="r"><span>中卡 Y 偏移</span><span class="v">+24px</span></div>
+<div class="r"><span>后卡 Y 偏移</span><span class="v">+40px</span></div>
+<div class="r"><span>层级 z-index</span><span class="v">3 / 2 / 1</span></div>
+<div class="r"><span>前卡阴影</span><span class="v">0 2px 20px rgba(0,0,0,.06)</span></div>
+<div class="r"><span>中卡阴影</span><span class="v">0 1px 10px rgba(0,0,0,.04)</span></div>
+<div class="r"><span>后卡阴影</span><span class="v">0 1px 6px rgba(0,0,0,.03)</span></div>
+
+<h3>卡片内样式</h3>
+<div class="r"><span>圆角</span><span class="v">20px</span></div>
+<div class="r"><span>边框</span><span class="v">0.5px rgba(0,0,0,.08)</span></div>
+<div class="r"><span>内边距</span><span class="v">16px</span></div>
+<div class="r"><span>渐变底</span><span class="v">#eff4fc→#fcfcfc 60%</span></div>
+<div class="r"><span>类型标签 icon</span><span class="v">ic-summary (Bridge)</span></div>
+<div class="r"><span>标签色</span><span class="v">#70a0ec 13px/500</span></div>
+<div class="r"><span>标题</span><span class="v">#212121 16px/500</span></div>
+<div class="r"><span>正文</span><span class="v">rgba(60,60,67,.6) 12.5px/400</span></div>
+<div class="r"><span>引用箭头 icon</span><span class="v">ic-arrow-down (Bridge)</span></div>
+<div class="r"><span>引用文字</span><span class="v">rgba(60,60,67,.3) 11px</span></div>
+
+<h3>动画参数</h3>
+<div class="r"><span>触发阈值</span><span class="v">拖拽 >80px</span></div>
+<div class="r"><span>滑出距离</span><span class="v">±520px 旋转±22°</span></div>
+<div class="r"><span>滑出时长/曲线</span><span class="v">500ms bezier(.2,.85,.3,1.08)</span></div>
+<div class="r"><span>上浮时长/曲线</span><span class="v">500ms bezier(.15,.8,.35,1.15)</span></div>
+<div class="r"><span>弹入起始位</span><span class="v">X±280 Y-190 旋转±30°</span></div>
+<div class="r"><span>弹入时长/曲线</span><span class="v">850ms bezier(.08,.65,.3,1.15)</span></div>
+<div class="r"><span>同侧弹入</span><span class="v">右滑出→右弹入</span></div>
+
+<div class="dim">图标来源: figma.com/design/BMcStO5iYvdHBbI2eRh4JG
+icon section → SVG sprite → mindback-icons
+令牌: references/design-tokens.md</div>
+</div>
+
+<script>
+var cards=[
+  {t:'你的8月回顾',b:'<p>Hi 小依，8月就要过去啦！AI陪你一起回顾了这个月的点点滴滴，生成了你的专属"八月生活剪影"。</p><p>关键词：盼头 惊喜 美食 自省</p><p>8月，你一共记录了 48 条思绪，分享了 7 个瞬间，收藏了 10 份灵感。</p>',rc:23},
+  {t:'RAG&OCR技术追踪',b:'<p>注意到你近期重点关注 RAG 和 OCR 相关技术：</p><p><b>RAG 精准度提升</b>——引入Rerank模型作为精选步骤能显著提升精准度。</p><p><b>OCR领域突破</b>——Qwen和PaddleOCR在复杂场景识别上取得重要进展。</p>',rc:23},
+  {t:'产品设计思考',b:'<p>这个月你在产品设计上有很多深入的思考。</p><p>"好的设计不在于多华丽，而在于它在正确的时间做了正确的事情。"</p><p>你坚持品牌色只做点缀，让界面保持安静。</p>',rc:15},
+  {t:'周末出游合集',b:'<p>最近你收藏了不少周边游笔记——苏州园林、杭州西湖、莫干山民宿…</p><p>AI整理了三条路线。最推荐杭州两日游：周六G7501高铁出发，漫步苏堤、看《印象西湖》。</p>',rc:8},
+  {t:'技术周报摘要',b:'<p>LLM推理成本持续下降，Agent架构向多Agent协作演进。</p><p>有工程师主动优化请求结构，单次token消耗降低40%+，应用层优化空间很大。</p>',rc:12},
+];
+var N=cards.length, busy=false;
+var SR1=.94, SR2=.90, Y1=24, Y2=40;
+var idx=[0,1,2];
+
+function ch(d){return '<div class="tag"><svg><use href="#ic-summary"/></svg>智能总结</div><div class="tt">'+d.t+'</div><div class="tb">'+d.b+'</div><div class="tf"><svg width="10" height="7"><use href="#ic-arrow-down"/></svg>引用 '+d.rc+' 条相关内容<div class="sep"></div></div>'}
+
+var S0=document.getElementById('S0'),C0=document.getElementById('C0');
+var S1=document.getElementById('S1'),C1=document.getElementById('C1');
+var S2=document.getElementById('S2'),C2=document.getElementById('C2');
+
+function init(){
+  C0.innerHTML=ch(cards[idx[0]]); C1.innerHTML=ch(cards[idx[1]]); C2.innerHTML=ch(cards[idx[2]]);
+  S0.style.transform=''; S0.className='slot slot-0'; S0.style.zIndex='3';
+  S1.style.transition='none'; S1.style.transform='translateY('+Y1+'px) scale('+SR1+')'; S1.className='slot slot-1'; S1.style.zIndex='2';
+  S2.style.transition='none'; S2.style.transform='translateY('+Y2+'px) scale('+SR2+')'; S2.className='slot slot-2'; S2.style.zIndex='1';
+  C0.style.boxShadow='0 2px 20px rgba(0,0,0,.06)'; C0.style.pointerEvents='auto';
+  C1.style.boxShadow='0 1px 10px rgba(0,0,0,.04)'; C1.style.pointerEvents='none';
+  C2.style.boxShadow='0 1px 6px rgba(0,0,0,.03)'; C2.style.pointerEvents='none';
+}
+init();
+
+var sx=0,drag=false,dx=0,stx=0;
+function ds(e){if(busy)return;var p=e.touches?e.touches[0]:e;sx=p.clientX;drag=true;dx=0;var m=getComputedStyle(S0).transform;stx=(m&&m!=='none')?parseFloat(m.split(',')[4])||0:0;S0.style.transition='none'}
+function dm(e){if(!drag)return;var p=e.touches?e.touches[0]:e;dx=p.clientX-sx;var r=(stx+dx)*.08;S0.style.transform='translateX('+(stx+dx)+'px) rotate('+r+'deg)'}
+function de(){if(!drag)return;drag=false;if(Math.abs(stx+dx)>80)slide((stx+dx)>0?'right':'left');else{S0.style.transition='transform .45s cubic-bezier(.25,.1,.25,1)';S0.style.transform=''}}
+
+function slide(dir){
+  if(busy)return;busy=true;
+  var outX=dir==='right'?520:-520, outR=dir==='right'?22:-22;
+  var inX=dir==='right'?280:-280, inY=Y2-190, inR=dir==='right'?30:-30;
+  var outIdx=idx[0];
+  S0.style.transition='transform .5s cubic-bezier(.2,.85,.3,1.08)';
+  S0.style.transform='translateX('+outX+'px) rotate('+outR+'deg)';
+  S1.style.transition='transform .5s cubic-bezier(.15,.8,.35,1.15)';
+  S1.style.transform='';C1.style.boxShadow='0 2px 20px rgba(0,0,0,.06)';C1.style.pointerEvents='auto';
+  S2.style.transition='transform .5s cubic-bezier(.15,.8,.35,1.15)';
+  S2.style.transform='translateY('+Y1+'px) scale('+SR1+')';C2.style.boxShadow='0 1px 10px rgba(0,0,0,.04)';
+  setTimeout(function(){
+    idx[0]=idx[1];idx[1]=idx[2];idx[2]=outIdx;
+    S1.style.transition='none';S1.style.transform='';S1.style.zIndex='3';S1.className='slot slot-0';
+    S2.style.transition='none';S2.style.transform='translateY('+Y1+'px) scale('+SR1+')';S2.style.zIndex='2';S2.className='slot slot-1';
+    C0.innerHTML=ch(cards[outIdx]);
+    S0.style.transition='none';S0.style.zIndex='1';S0.className='slot slot-2';
+    C0.style.boxShadow='0 1px 6px rgba(0,0,0,.03)';C0.style.pointerEvents='none';
+    S0.style.transform='translateX('+inX+'px) translateY('+inY+'px) rotate('+inR+'deg)';
+    S0.offsetHeight;
+    S0.style.transition='transform .85s cubic-bezier(.08,.65,.3,1.15)';
+    S0.style.transform='translateY('+Y2+'px) scale('+SR2+')';
+    var tS=S0,tC=C0;S0=S1;C0=C1;S1=S2;C1=C2;S2=tS;C2=tC;
+    setTimeout(function(){S2.style.transition='';C2.style.transition='';busy=false},870);
+  },520);
+}
+
+var st=document.getElementById('stage');
+st.addEventListener('touchstart',ds,{passive:false});st.addEventListener('touchmove',dm,{passive:false});st.addEventListener('touchend',de);
+st.addEventListener('mousedown',ds);window.addEventListener('mousemove',function(e){if(drag)dm(e)});window.addEventListener('mouseup',de);
+</script>
+</body>
+</html>

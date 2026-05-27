@@ -1,0 +1,60 @@
+{
+  "timestamp": "2026-05-15T05:35:19.609Z",
+  "avgComposite": 0.8,
+  "results": [
+    {
+      "name": "01-login-page",
+      "metrics": {
+        "tokenUsageRate": 1,
+        "tokenRefsTotal": 40,
+        "tokenRefsValid": 40,
+        "hardcodedHex": 0,
+        "hardcodedRgba": 0,
+        "hardcodedPx": 1,
+        "componentCoverage": 1,
+        "componentsFound": [
+          {
+            "name": "Button",
+            "found": true
+          },
+          {
+            "name": "Input",
+            "found": true
+          }
+        ],
+        "stateCompleteness": 1,
+        "statesFound": [
+          {
+            "name": "empty",
+            "found": true
+          },
+          {
+            "name": "focus",
+            "found": true
+          },
+          {
+            "name": "error",
+            "found": true
+          },
+          {
+            "name": "disabled",
+            "found": true
+          }
+        ],
+        "propHitRate": 1,
+        "intentsFound": [
+          {
+            "name": "primary",
+            "found": true
+          },
+          {
+            "name": "ghost",
+            "found": true
+          }
+        ],
+        "composite": 0.8
+      },
+      "violations": []
+    }
+  ]
+}

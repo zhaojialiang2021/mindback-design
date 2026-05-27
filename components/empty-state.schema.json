@@ -1,0 +1,75 @@
+{
+  "$schema": "https://mindback.design/schemas/component.schema.json",
+  "slug": "empty-state",
+  "name": "Empty State",
+  "category": "feedback",
+  "description": "AI 最容易忘记的状态。空容器不是 bug，是产品的一个 view —— 必须给图、给话、给下一步。",
+  "props": {
+    "kind": {
+      "values": ["empty", "no-result", "no-permission", "error", "first-time"],
+      "default": "empty",
+      "description": "empty：本来就没数据；no-result：搜索/筛选未命中；no-permission：受限；error：加载失败；first-time：用户首次进入，引导创建"
+    },
+    "size": {
+      "values": ["inline", "centered", "fullscreen"],
+      "default": "centered",
+      "description": "inline 嵌入 list；centered 占当前容器中心；fullscreen 占整页"
+    },
+    "illustration": {
+      "values": ["icon", "spot", "scene", "none"],
+      "default": "icon",
+      "description": "icon 单图标 64x64；spot 中型插图 120x120；scene 大插图 200+；none 仅文字"
+    }
+  },
+  "states": ["idle", "loading-action"],
+  "constraints": [
+    {
+      "rule": "always_has_action",
+      "value": true,
+      "description": "除 size=inline 外，必须给至少一个动作按钮（创建、刷新、返回、了解更多）"
+    },
+    {
+      "rule": "first_time_must_explain_value",
+      "value": true,
+      "description": "first-time 必须说明使用价值，不只说「还没有内容」"
+    },
+    {
+      "rule": "error_must_be_actionable",
+      "value": true,
+      "description": "error 必须给「重试」或「查看详情」，不留死路"
+    }
+  ],
+  "tokens": {
+    "container.padding": "space-7",
+    "title.font": "headline-h3",
+    "title.color": "label-primary",
+    "description.font": "body-secondary",
+    "description.color": "label-secondary",
+    "title.gap": "space-3",
+    "description.gap": "space-2",
+    "action.gap": "space-5",
+    "icon.color": "label-tertiary",
+    "icon.size.icon": "64px",
+    "icon.size.spot": "120px",
+    "icon.size.scene": "200px"
+  },
+  "anatomy": [
+    { "part": "illustration", "tokens": ["icon.color", "icon.size.*"] },
+    { "part": "title", "tokens": ["title.font", "title.color"] },
+    { "part": "description (optional)", "tokens": ["description.font", "description.color"] },
+    { "part": "primary-action", "description": "Button intent=primary, size=standard" },
+    { "part": "secondary-action (optional)", "description": "Button intent=ghost" }
+  ],
+  "doDont": {
+    "do": [
+      "first-time 用积极语言：「记下你的第一条想法」而不是「这里空空如也」",
+      "no-result 给「清除筛选」或「修改关键词」的明确出口",
+      "error 给重试按钮 + 简短错误描述，不要堆栈"
+    ],
+    "dont": [
+      "不要只显示一个灰色的 emoji + 「没有数据」就完事",
+      "不要在 fullscreen 空状态里让用户找返回键",
+      "不要把 loading 当 empty 渲染（先转 spinner，超时后才进 empty）"
+    ]
+  }
+}

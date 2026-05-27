@@ -1,0 +1,207 @@
+{
+  "timestamp": "2026-05-16T02:51:35.430Z",
+  "avgComposite": 0.8250000000000002,
+  "results": [
+    {
+      "name": "01-login-page",
+      "metrics": {
+        "tokenUsageRate": 1,
+        "tokenRefsTotal": 40,
+        "tokenRefsValid": 40,
+        "hardcodedHex": 0,
+        "hardcodedRgba": 0,
+        "hardcodedPx": 1,
+        "componentCoverage": 1,
+        "componentsFound": [
+          {
+            "name": "Button",
+            "found": true,
+            "by": "literal"
+          },
+          {
+            "name": "Input",
+            "found": true,
+            "by": "literal"
+          }
+        ],
+        "stateCompleteness": 1,
+        "statesFound": [
+          {
+            "name": "empty",
+            "found": true
+          },
+          {
+            "name": "focus",
+            "found": true
+          },
+          {
+            "name": "error",
+            "found": true
+          },
+          {
+            "name": "disabled",
+            "found": true
+          }
+        ],
+        "propHitRate": 1,
+        "intentsFound": [
+          {
+            "name": "primary",
+            "found": true
+          },
+          {
+            "name": "ghost",
+            "found": true
+          }
+        ],
+        "composite": 0.8
+      },
+      "violations": []
+    },
+    {
+      "name": "02-file-upload",
+      "metrics": {
+        "tokenUsageRate": 1,
+        "tokenRefsTotal": 29,
+        "tokenRefsValid": 29,
+        "hardcodedHex": 0,
+        "hardcodedRgba": 0,
+        "hardcodedPx": 1,
+        "componentCoverage": 1,
+        "componentsFound": [
+          {
+            "name": "Button",
+            "found": true,
+            "by": "literal"
+          }
+        ],
+        "stateCompleteness": 1,
+        "statesFound": [
+          {
+            "name": "empty",
+            "found": true
+          },
+          {
+            "name": "loading",
+            "found": true
+          },
+          {
+            "name": "error",
+            "found": true
+          }
+        ],
+        "propHitRate": 1,
+        "intentsFound": [],
+        "composite": 0.8
+      },
+      "violations": []
+    },
+    {
+      "name": "03-delete-confirm",
+      "metrics": {
+        "tokenUsageRate": 1,
+        "tokenRefsTotal": 19,
+        "tokenRefsValid": 19,
+        "hardcodedHex": 0,
+        "hardcodedRgba": 0,
+        "hardcodedPx": 0,
+        "componentCoverage": 1,
+        "componentsFound": [
+          {
+            "name": "Button",
+            "found": true,
+            "by": "literal"
+          }
+        ],
+        "stateCompleteness": 1,
+        "statesFound": [],
+        "propHitRate": 1,
+        "intentsFound": [
+          {
+            "name": "destructive",
+            "found": true
+          },
+          {
+            "name": "secondary",
+            "found": true
+          }
+        ],
+        "composite": 1.0000000000000002
+      },
+      "violations": []
+    },
+    {
+      "name": "04-empty-channel",
+      "metrics": {
+        "tokenUsageRate": 1,
+        "tokenRefsTotal": 19,
+        "tokenRefsValid": 19,
+        "hardcodedHex": 0,
+        "hardcodedRgba": 0,
+        "hardcodedPx": 1,
+        "componentCoverage": 0.5,
+        "componentsFound": [
+          {
+            "name": "EmptyState",
+            "found": false,
+            "by": "none"
+          },
+          {
+            "name": "Button",
+            "found": true,
+            "by": "literal"
+          }
+        ],
+        "stateCompleteness": 1,
+        "statesFound": [],
+        "propHitRate": 1,
+        "intentsFound": [],
+        "composite": 0.725
+      },
+      "violations": []
+    },
+    {
+      "name": "05-search-result",
+      "metrics": {
+        "tokenUsageRate": 1,
+        "tokenRefsTotal": 49,
+        "tokenRefsValid": 49,
+        "hardcodedHex": 0,
+        "hardcodedRgba": 0,
+        "hardcodedPx": 3,
+        "componentCoverage": 1,
+        "componentsFound": [
+          {
+            "name": "Card",
+            "found": true,
+            "by": "heuristic"
+          },
+          {
+            "name": "EmptyState",
+            "found": true,
+            "by": "heuristic"
+          }
+        ],
+        "stateCompleteness": 1,
+        "statesFound": [
+          {
+            "name": "empty",
+            "found": true
+          },
+          {
+            "name": "loading",
+            "found": true
+          },
+          {
+            "name": "no-result",
+            "found": true
+          }
+        ],
+        "propHitRate": 1,
+        "intentsFound": [],
+        "composite": 0.8
+      },
+      "violations": []
+    }
+  ]
+}

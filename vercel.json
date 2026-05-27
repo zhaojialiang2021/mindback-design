@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run tokens && npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "headers": [
+    {
+      "source": "/(.+)\\.(md|json|txt)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/(.+)\\.(svg|png|ico)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/assets/(.+)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!skill\\.md|design\\.md|tokens\\.json|components\\.md|components\\.json|llms\\.txt|sitemap\\.xml|robots\\.txt|og-cover\\.svg|favicon\\.svg|icons\\.svg|assets/.*).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

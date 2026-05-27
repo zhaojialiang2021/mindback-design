@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindBack V3 — 产品汇报</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC",-apple-system,sans-serif;background:#1a1a1a;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden}
+.deck{width:960px;height:540px;background:#fff;border-radius:4px;box-shadow:0 16px 48px rgba(0,0,0,.4);position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;padding:48px 64px;opacity:0;pointer-events:none;transition:opacity .35s}
+.slide.active{opacity:1;pointer-events:auto}
+.slide-label{position:absolute;top:24px;right:32px;font-size:10px;color:rgba(60,60,67,.2);font-family:"SF Mono",Menlo,monospace}
+
+.nav{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border-radius:9999px;padding:6px 16px;z-index:999}
+.nav button{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nav button:hover{background:rgba(255,255,255,.2);color:#fff}
+.nav .page-num{color:rgba(255,255,255,.45);font-size:12px;min-width:56px;text-align:center;font-variant-numeric:tabular-nums;font-family:"SF Mono",Menlo,monospace}
+
+.s-title{justify-content:center;align-items:center;text-align:center;background:#212121;color:#fff}
+.s-title h1{font-size:38px;font-weight:500;letter-spacing:.03em;margin-bottom:14px;line-height:1.3}
+.s-title .st-sub{font-size:15px;color:rgba(255,255,255,.5);line-height:1.6}
+.s-title .st-line{width:40px;height:2px;background:#78aafa;margin:20px auto 0}
+
+.s-section{justify-content:center;align-items:center;text-align:center;background:#f5f5f5}
+.s-section .ss-num{font-size:72px;font-weight:500;color:rgba(0,0,0,.05);line-height:1}
+.s-section h2{font-size:30px;font-weight:500;margin-top:-14px;color:#212121}
+.s-section .ss-sub{font-size:14px;color:rgba(60,60,67,.45);margin-top:6px}
+
+.s-content h2{font-size:26px;font-weight:500;margin-bottom:22px;color:#212121}
+.s-content h3{font-size:16px;font-weight:500;margin-bottom:6px;color:#212121}
+.s-content p{font-size:14px;color:rgba(60,60,67,.65);line-height:1.6;margin-bottom:8px}
+
+.two-col{display:flex;gap:40px;flex:1}
+.two-col .col{flex:1}
+
+.big-quote{flex:1;display:flex;flex-direction:column;justify-content:center}
+.big-quote .bq-text{font-size:26px;font-weight:500;line-height:1.45;color:#212121;position:relative;padding-left:18px}
+.big-quote .bq-text::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;border-radius:2px;background:#78aafa}
+.big-quote .bq-src{font-size:13px;color:rgba(60,60,67,.4);margin-top:14px}
+
+/* Tension explain */
+.tension-explain{display:flex;gap:40px;flex:1;align-items:stretch}
+.tension-explain .te-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;border-radius:12px}
+.tension-explain .te-col.desire{background:rgba(120,170,250,.04);border:1px solid rgba(120,170,250,.12)}
+.tension-explain .te-col.reality{background:#f5f5f5;border:1px solid rgba(0,0,0,.06)}
+.tension-explain .te-icon{font-size:28px;margin-bottom:8px}
+.tension-explain .te-who{font-size:11px;font-weight:500;letter-spacing:.04em;margin-bottom:6px}
+.tension-explain .te-col.desire .te-who{color:#78aafa}
+.tension-explain .te-col.reality .te-who{color:rgba(60,60,67,.5)}
+.tension-explain .te-example{font-size:13px;line-height:1.55;color:rgba(60,60,67,.7);text-align:center}
+.tension-explain .te-date{font-size:10px;color:rgba(60,60,67,.25);margin-top:6px}
+.tension-explain .te-both{text-align:center;font-size:12px;color:rgba(60,60,67,.4);margin-top:10px}
+
+/* Tension viz */
+.tension-viz{display:flex;align-items:center;gap:20px;justify-content:center}
+.tension-viz .tv-side{flex:1;max-width:260px}
+.tension-viz .tv-label{font-size:12px;font-weight:500;margin-bottom:8px;letter-spacing:.03em;display:flex;align-items:center;gap:6px}
+.tension-viz .tv-desire .tv-label{color:#78aafa}
+.tension-viz .tv-reality .tv-label{color:rgba(60,60,67,.5)}
+.tension-viz .tv-badge{font-size:9px;font-weight:500;padding:1px 6px;border-radius:9999px}
+.tension-viz .tv-desire .tv-badge{background:rgba(120,170,250,.1);color:#78aafa}
+.tension-viz .tv-reality .tv-badge{background:rgba(0,0,0,.05);color:rgba(60,60,67,.5)}
+.tension-viz .tv-block{background:#f5f5f5;border-radius:10px;padding:12px;font-size:12px;line-height:1.5;color:rgba(60,60,67,.7)}
+.tension-viz .tv-desire .tv-block{background:rgba(120,170,250,.06);border:1px solid rgba(120,170,250,.12)}
+.tension-viz .tv-arrow{font-size:22px;color:#b4a08c;flex-shrink:0}
+.tension-viz .tv-tension-label{font-size:10px;color:#b4a08c;text-align:center;margin-top:2px}
+
+.cycle-viz{display:flex;align-items:center;gap:0;flex:1;justify-content:center}
+.cv-step{text-align:center;width:150px}
+.cv-step .cv-icon{width:56px;height:56px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.cv-step .cv-name{font-size:15px;font-weight:500;margin-bottom:2px}
+.cv-step .cv-desc{font-size:11px;color:rgba(60,60,67,.5);line-height:1.4}
+.cv-step.germ .cv-icon{background:rgba(120,170,250,.08)}
+.cv-step.assim .cv-icon{background:rgba(180,160,140,.08)}
+.cv-step.complete .cv-icon{background:rgba(52,199,89,.08)}
+.cv-arrow{font-size:20px;color:rgba(60,60,67,.2);margin:0 16px}
+
+.tab-viz{display:flex;gap:0;flex:1;align-items:stretch}
+.tab-viz .tv-col{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 14px}
+.tab-viz .tv-col.col-2{border-left:1px solid rgba(0,0,0,.06);border-right:1px solid rgba(0,0,0,.06)}
+.tab-viz .tv-icon{font-size:24px;margin-bottom:4px;text-align:center}
+.tab-viz .tv-name{font-size:16px;font-weight:500;text-align:center;margin-bottom:2px}
+.tab-viz .tv-tagline{font-size:11px;color:rgba(60,60,67,.45);text-align:center;margin-bottom:8px}
+.tab-viz .tv-items{list-style:none;padding:0}
+.tab-viz .tv-items li{font-size:11px;color:rgba(60,60,67,.6);line-height:1.55;padding:1px 0 1px 10px;position:relative}
+.tab-viz .tv-items li::before{content:"";position:absolute;left:0;top:7px;width:3px;height:3px;border-radius:50%}
+.col-1 .tv-items li::before{background:#212121}.col-2 .tv-items li::before{background:#b4a08c}.col-3 .tv-items li::before{background:rgba(60,60,67,.3)}
+
+/* Tab2 blocks */
+.t2b-blocks{display:flex;flex-direction:column;gap:7px;flex:1}
+.t2b-block{background:#f5f5f5;border-radius:10px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px}
+.t2b-block .t2b-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.t2b-block.tension .t2b-icon{background:rgba(180,160,140,.1)}
+.t2b-block.cycle .t2b-icon{background:rgba(52,199,89,.08)}
+.t2b-block.osc .t2b-icon{background:rgba(120,170,250,.08)}
+.t2b-block .t2b-body h4{font-size:13px;font-weight:500;margin-bottom:2px}
+.t2b-block .t2b-body p{font-size:11px;color:rgba(60,60,67,.55);line-height:1.45;margin-bottom:0}
+
+.card-row-sm{display:flex;gap:10px;flex-direction:column;flex:1}
+.card-sm{background:#f5f5f5;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column}
+.card-sm .cs-icon{font-size:18px;margin-bottom:4px}
+.card-sm h4{font-size:13px;font-weight:500;margin-bottom:2px}
+.card-sm .cs-body{font-size:11px;color:rgba(60,60,67,.55);line-height:1.45;flex:1}
+.card-sm .cs-sub{font-size:9px;color:rgba(60,60,67,.3);margin-top:6px}
+
+.pipe-viz{display:flex;align-items:center;gap:0;flex:1;justify-content:center;flex-wrap:wrap}
+.pv-node{background:#f5f5f5;border-radius:8px;padding:8px 12px;font-size:11px;text-align:center;min-width:56px}
+.pv-node .pvn{font-weight:500;color:#212121}
+.pv-node .pvs{font-size:8px;color:rgba(60,60,67,.4)}
+.pv-arrow{font-size:16px;color:#78aafa;margin:0 5px}
+.pv-gate{background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:7px;padding:5px 7px;font-size:8px;color:rgba(60,60,67,.45);text-align:center;margin:0 3px;line-height:1.3}
+.pv-gate .pvg{font-weight:500;color:#212121;font-size:9px}
+.pv-gate.warm{border-color:#b4a08c}.pv-gate.warn{border-color:#ff9500}.pv-gate.warn .pvg{color:#ff9500}
+
+.rl-table{width:100%;border-collapse:collapse;margin-top:8px}
+.rl-table th{text-align:left;font-size:10px;font-weight:500;color:rgba(60,60,67,.35);letter-spacing:.05em;padding-bottom:7px;border-bottom:1px solid rgba(0,0,0,.06)}
+.rl-table td{padding:7px 0;font-size:12px;border-bottom:1px solid rgba(0,0,0,.04);vertical-align:top}
+.rl-table .rl-n{width:22px;color:rgba(60,60,67,.2);font-size:11px;font-weight:500}
+.rl-table .rl-r{font-weight:500;color:#212121;padding-right:14px}
+.rl-table .rl-v{color:#d32f2f;font-size:11px;line-height:1.4}
+
+.thank-you{justify-content:center;align-items:center;text-align:center;background:#212121;color:#fff}
+.thank-you h1{font-size:34px;font-weight:500;margin-bottom:10px;line-height:1.35}
+.thank-you p{font-size:14px;color:rgba(255,255,255,.4)}
+
+/* ===== PHONE (ALL 400px) ===== */
+.phone{width:195px;height:400px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.1);display:flex;flex-direction:column;flex-shrink:0}
+.phone.wide{width:210px}
+.phones-row{display:flex;gap:10px;flex-shrink:0}
+.ph-status{height:24px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;font-family:"SF Pro",-apple-system,sans-serif;font-size:8px;font-weight:600;flex-shrink:0;color:#212121}
+.ph-nav{height:22px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;flex-shrink:0}
+.ph-scroll{flex:1;overflow:hidden}
+.ph-tabbar{height:38px;display:flex;border-top:.3px solid rgba(0,0,0,.08);padding-top:3px;flex-shrink:0}
+.ph-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:5.5px;color:rgba(60,60,67,.4)}
+.ph-tab.on{color:#212121}
+.ph-tab-icon{font-size:9px}
+
+.feed{padding:0 8px}
+.date-m{text-align:center;font-size:6.5px;color:rgba(60,60,67,.4);padding:5px 0}
+.umsg{display:flex;justify-content:flex-end;margin-bottom:3px}
+.umsg .bub{background:#fff;border:.4px solid rgba(0,0,0,.07);border-radius:9px;padding:5px 7px;max-width:calc(100% - 18px);font-size:7.5px;line-height:1.35}
+.aimsg{margin-bottom:5px}
+.aimsg .bub{background:rgba(120,170,250,.07);border:.4px solid rgba(120,170,250,.18);border-radius:9px;padding:7px;font-size:7.5px;line-height:1.35}
+.aimsg .bub .lead{margin-bottom:6px}
+.aimsg .bub .qblk{border-left:1px solid #78aafa;padding-left:6px;margin-bottom:6px}
+.aimsg .bub .qtitle{font-size:7px;font-weight:500;margin-bottom:2px}
+.aimsg .bub .qcopy{font-size:6.5px;color:rgba(60,60,67,.55)}
+.aimsg .bub .ailbl{font-size:6px;color:rgba(60,60,67,.25);margin-top:6px}
+
+.ph-input-wrap{padding:3px 8px 0;flex-shrink:0}
+.ph-input{display:flex;align-items:center;gap:3px;padding:3px 0}
+.ph-attach{width:22px;height:22px;border-radius:50%;background:#d8d8d8;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(60,60,67,.5);flex-shrink:0}
+.ph-field{flex:1;height:22px;border-radius:100px;background:#d8d8d8;display:flex;align-items:center;padding:0 7px}
+.ph-field .ph-ph{font-size:7.5px;color:rgba(60,60,67,.3)}
+
+.sec-label{padding:10px 8px 3px;font-size:6.5px;color:rgba(60,60,67,.4);display:flex;align-items:center;gap:3px}
+.sec-label::after{content:"";flex:1;height:.3px;background:rgba(0,0,0,.07)}
+.s-card{margin:3px 8px;border-radius:7px;padding:7px}
+.s-card.insight{background:linear-gradient(135deg,rgba(120,170,250,.05),rgba(120,170,250,.015));border:.4px solid rgba(120,170,250,.12)}
+.s-card.tension{background:linear-gradient(135deg,rgba(180,160,140,.05),rgba(180,160,140,.015));border:.4px solid rgba(180,160,140,.15)}
+.sc-hd{display:flex;align-items:center;gap:3px;margin-bottom:3px}
+.sc-dot{width:3px;height:3px;border-radius:50%;flex-shrink:0}
+.s-card.insight .sc-dot{background:#78aafa}.s-card.tension .sc-dot{background:#b4a08c}
+.s-card.insight .sc-lbl{font-size:5.5px;font-weight:500;color:#78aafa}
+.s-card.tension .sc-lbl{font-size:5.5px;font-weight:500;color:#b4a08c}
+.s-card h4{font-size:8.5px;font-weight:500;line-height:1.25;margin-bottom:2px}
+.s-card .sc-body{font-size:6.5px;color:rgba(60,60,67,.55);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.s-card .sc-hint{font-size:6px;color:rgba(60,60,67,.25);margin-top:3px}
+
+.ts-pair{margin:4px 0}
+.ts-side{margin-bottom:4px}
+.ts-label{font-size:5.5px;font-weight:500;margin-bottom:2px;letter-spacing:.03em;display:flex;align-items:center;gap:4px}
+.ts-side.desire .ts-label{color:#78aafa}.ts-side.reality .ts-label{color:rgba(60,60,67,.4)}
+.ts-badge{font-size:5px;font-weight:500;padding:0 4px;border-radius:9999px}
+.ts-side.desire .ts-badge{background:rgba(120,170,250,.1);color:#78aafa}
+.ts-side.reality .ts-badge{background:rgba(0,0,0,.04);color:rgba(60,60,67,.4)}
+.ts-item{font-size:6.5px;color:rgba(60,60,67,.5);line-height:1.3;padding:3px 5px;border-radius:5px;margin-bottom:2px}
+.ts-side.desire .ts-item{background:rgba(120,170,250,.035)}
+.ts-side.reality .ts-item{background:#f5f5f5}
+.ts-date{font-size:5px;color:rgba(60,60,67,.22)}
+
+.cy-phase{margin-bottom:10px}
+.cy-phase h5{font-size:7.5px;font-weight:500;margin-bottom:1px}
+.cy-sub{font-size:5.5px;color:rgba(60,60,67,.3);margin-bottom:3px}
+.cy-div{height:3px;border-radius:2px;margin-bottom:3px}
+.cy-div.green{background:rgba(52,199,89,.1)}.cy-div.blue{background:rgba(120,170,250,.1)}
+.cy-item{background:#fff;border:.4px solid rgba(0,0,0,.05);border-radius:5px;padding:5px 7px;margin-bottom:3px}
+.cy-item .cy-title{font-size:7.5px;font-weight:500;margin-bottom:1px}
+.cy-item .cy-meta{font-size:5.5px;color:rgba(60,60,67,.25);display:flex;gap:6px;align-items:center}
+
+.me-card{display:flex;align-items:center;gap:5px;padding:7px;margin:3px 8px;background:#fff;border:.4px solid rgba(0,0,0,.07);border-radius:9px}
+.me-av{width:18px;height:18px;border-radius:50%;background:#d8d8d8;display:flex;align-items:center;justify-content:center;font-size:9px}
+.me-nick{font-size:8.5px;font-weight:500}
+.me-uid{font-size:5.5px;color:rgba(60,60,67,.35)}
+.me-grp{margin-bottom:7px}
+.me-grp .mg-title{font-size:6.5px;color:rgba(60,60,67,.4);padding:3px 8px}
+.me-grp .mg-body{background:#fff;border:.4px solid rgba(0,0,0,.07);border-radius:9px;overflow:hidden;margin:0 8px}
+.me-rw{height:24px;padding:0 7px;display:flex;align-items:center;justify-content:space-between;font-size:7.5px}
+.me-rw+.me-rw{border-top:.3px solid rgba(0,0,0,.05)}
+.me-rw .rw-l{color:#212121}.me-rw .rw-v{color:rgba(60,60,67,.4);display:flex;align-items:center;gap:1px}
+
+.tp-layout{display:flex;gap:28px;flex:1;align-items:stretch}
+.tp-layout .tp-text{flex:1;display:flex;flex-direction:column;justify-content:center}
+.tp-layout .tp-phones{flex-shrink:0;display:flex;align-items:center}
+
+.flow-row{display:flex;align-items:center;justify-content:center;gap:0;font-size:13px;margin-bottom:10px}
+.fn{padding:10px 18px;border-radius:9999px;font-weight:500}
+.fn.fn1{background:#f5f5f5;color:#212121}
+.fn.fn2{background:#212121;color:#fff}
+.fn-arr{margin:0 12px;color:rgba(60,60,67,.18);font-size:18px}
+.flow-sub{display:flex;gap:16px;justify-content:center;font-size:11px;color:rgba(60,60,67,.5);margin-bottom:10px}
+.flow-sub span{width:130px;text-align:center}
+.flow-pills{display:flex;align-items:center;justify-content:center;gap:6px}
+.fp{padding:3px 10px;border-radius:9999px;font-size:10px}
+.fp.blue{background:rgba(120,170,250,.08);color:#78aafa}
+.fp.warm{background:rgba(180,160,140,.08);color:#b4a08c}
+.fp-dot{color:rgba(60,60,67,.15);font-size:10px}
+
+.highlight-box{background:rgba(180,160,140,.06);border:1px solid rgba(180,160,140,.15);border-radius:10px;padding:14px 18px;margin-top:12px}
+.highlight-box p{font-size:13px;color:rgba(60,60,67,.6);line-height:1.55;margin-bottom:0}
+.highlight-box .hl-title{font-size:11px;font-weight:500;color:#b4a08c;margin-bottom:4px;letter-spacing:.03em}
+
+@media(max-width:1000px){.deck{width:100vw;height:56vw;border-radius:0}.slide{padding:28px 22px}.s-title h1{font-size:24px}.s-content h2{font-size:20px}.big-quote .bq-text{font-size:20px}.two-col{flex-direction:column;gap:12px}.tp-layout{flex-direction:column;gap:12px}.tension-viz{flex-direction:column;gap:6px}.tension-explain{flex-direction:column;gap:12px}.cycle-viz{flex-direction:column;gap:2px}.cv-arrow{transform:rotate(90deg);margin:2px 0}.pipe-viz{flex-direction:column;gap:2px}.pv-arrow{transform:rotate(90deg)}.phones-row{flex-direction:column;gap:6px}.phone{width:160px;height:340px}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ===== 0: TITLE ===== -->
+<div class="slide s-title active" data-slide="0">
+<h1>MindBack<br>让记录活起来</h1>
+<div class="st-sub">底 2 Tab 融入《最小阻力之路》<br>结构性张力 · 来回摆荡 · 创造周期</div>
+<div class="st-line"></div>
+<div class="slide-label">0 / 19</div>
+</div>
+
+<!-- ===== 1: 问题 ===== -->
+<div class="slide s-content" data-slide="1">
+<h2>记录了很多，然后呢？</h2>
+<div class="two-col">
+<div class="col"><h3>现状</h3><p>用户每天在 Tab 1 记碎片——想法、情绪、纠结、发现。碎片流进来，AI 偶尔回应。但大部分沉底后再也没被看见。石头丢进河里，声音没了。</p></div>
+<div class="col"><h3>应该</h3><p>每片碎片都是对自己的一次观测。五百条碎片拼在一起，应该能让人看见自己的形状——渴望什么、卡在哪儿、什么东西在悄悄长出来。<b>记录不是为了记住，是发现自己。</b></p></div>
+</div>
+<p style="text-align:center;margin-top:12px;font-size:13px;color:rgba(60,60,67,.45)">解决路径：让 Tab 2 不仅看规律，更看见自己</p>
+<div class="slide-label">1 / 19</div>
+</div>
+
+<!-- ===== 2: 三 Tab 框架（文字） ===== -->
+<div class="slide s-content" data-slide="2">
+<h2>三 Tab 产品框架</h2>
+<div class="tab-viz">
+<div class="tv-col col-1"><div class="tv-icon">💬</div><div class="tv-name">记录</div><div class="tv-tagline">轻松 · 零压力</div><ul class="tv-items"><li>像聊天一样记</li><li>不需要分类、标签</li><li>文字/语音/图片随手丢</li><li>AI 只回应，不主动说话</li></ul></div>
+<div class="tv-col col-2"><div class="tv-icon">◑</div><div class="tv-name">洞察</div><div class="tv-tagline">发现 · 看见自己</div><ul class="tv-items"><li>系统从碎片中发现规律</li><li>渴望 vs 现实的张力</li><li>创造周期的追踪</li><li>用户判断，系统只呈现</li></ul></div>
+<div class="tv-col col-3"><div class="tv-icon">👤</div><div class="tv-name">我</div><div class="tv-tagline">分类查看 · 设置</div><ul class="tv-items"><li>所有记录分类查看</li><li>时间线浏览</li><li>通知 / AI 偏好 / 语言</li><li>帮助 · 条款 · 隐私</li></ul></div>
+</div>
+<p style="text-align:center;margin-top:14px;font-size:13px;color:rgba(60,60,67,.4)">Tab 1 只管记，Tab 2 让碎片活起来，Tab 3 分类查看与设置</p>
+<div class="slide-label">2 / 19</div>
+</div>
+
+<!-- ===== 3: 三 Tab 框架（三个手机） ===== -->
+<div class="slide s-content" data-slide="3">
+<h2>三个 Tab 的界面快照</h2>
+<div class="tp-layout">
+<div class="tp-text">
+<div style="display:flex;flex-direction:column;gap:24px;">
+<div style="display:flex;align-items:center;gap:12px;"><div style="font-size:22px;">💬</div><div><h3 style="margin-bottom:2px;">Tab 1 · 记录</h3><p style="font-size:12px;color:rgba(60,60,67,.45);margin-bottom:0;">聊天流，用户丢碎片，AI 回应。零分类，零压力。</p></div></div>
+<div style="display:flex;align-items:center;gap:12px;"><div style="font-size:22px;">◑</div><div><h3 style="margin-bottom:2px;">Tab 2 · 洞察</h3><p style="font-size:12px;color:rgba(60,60,67,.45);margin-bottom:0;">系统从碎片中发现的张力、周期、联想。用户来判断。</p></div></div>
+<div style="display:flex;align-items:center;gap:12px;"><div style="font-size:22px;">👤</div><div><h3 style="margin-bottom:2px;">Tab 3 · 我</h3><p style="font-size:12px;color:rgba(60,60,67,.45);margin-bottom:0;">所有记录分类查看，创造周期入口，设置与关于。</p></div></div>
+</div>
+</div>
+<div class="tp-phones"><div class="phones-row">
+
+<div class="phone">
+<div class="ph-status"><span>9:41</span><span style="opacity:.5">􀋦 􀊨 􀋭</span></div>
+<div class="ph-nav" style="justify-content:flex-start;padding:0 8px;"><span style="font-weight:600;">MindBack</span></div>
+<div class="ph-scroll"><div class="feed">
+<div class="date-m">5月8日</div>
+<div class="umsg"><div class="bub">今天又想到很多碎片，记了但没回看</div></div>
+<div class="umsg"><div class="bub">想要一个会主动提醒重点的搭子</div></div>
+<div class="date-m">5月8日 · AI</div>
+<div class="aimsg"><div class="bub"><div class="lead">久等啦，我先把这周的主题拎出来……</div><div class="qblk"><div class="qtitle">你焦虑的不是信息量，是错过回看时机</div><div class="qcopy">最近6条输入里，4条提到记录后没有后续动作。</div></div><div class="ailbl">引用自 3 条近期记录</div></div></div>
+</div></div>
+<div class="ph-input-wrap"><div class="ph-input"><div class="ph-attach">+</div><div class="ph-field"><span class="ph-ph">现在的想法</span></div></div></div>
+<div class="ph-tabbar"><div class="ph-tab on"><div class="ph-tab-icon">💬</div>记录</div><div class="ph-tab"><div class="ph-tab-icon">◑</div>洞察</div><div class="ph-tab"><div class="ph-tab-icon">👤</div>我</div></div>
+</div>
+
+<div class="phone">
+<div class="ph-status"><span>9:41</span><span style="opacity:.5">􀋦 􀊨 􀋭</span></div>
+<div class="ph-nav">洞察</div>
+<div class="ph-scroll">
+<div class="sec-label">今日张力</div>
+<div class="s-card tension"><div class="sc-hd"><div class="sc-dot"></div><div class="sc-lbl">结构性张力</div></div><h4>你想让产品更轻盈，但每天往上加</h4><div class="sc-body">一边说加功能就是加重量，一边纠结快速记录按钮。</div><div class="sc-hint">3 轮摆荡</div></div>
+<div class="sec-label">语义联想</div>
+<div class="s-card insight"><div class="sc-hd"><div class="sc-dot"></div><div class="sc-lbl">跨集群联想</div></div><h4>你在和同一个问题反复交手</h4><div class="sc-body">通知设计、产品定位、视觉规范里都有同一个主题回响。</div></div>
+<div class="sec-label">创造周期</div>
+<div style="padding:0 8px;">
+<div class="cy-phase"><h5>完成的</h5><div class="cy-div green"></div><div class="cy-item"><div class="cy-title">跑一次 10 公里</div><div class="cy-meta"><span>5条</span><span>5.3→5.5</span><span style="color:#34c759;">✓</span></div></div></div>
+<div class="cy-phase"><h5>进行中的</h5><div class="cy-div blue"></div><div class="cy-item"><div class="cy-title">克制 vs 触达</div><div class="cy-meta"><span>6条</span><span style="color:#78aafa;">3轮摆荡</span></div></div></div>
+</div>
+</div>
+<div class="ph-tabbar"><div class="ph-tab"><div class="ph-tab-icon">💬</div>记录</div><div class="ph-tab on"><div class="ph-tab-icon">◑</div>洞察</div><div class="ph-tab"><div class="ph-tab-icon">👤</div>我</div></div>
+</div>
+
+<div class="phone">
+<div class="ph-status"><span>9:41</span><span style="opacity:.5">􀋦 􀊨 􀋭</span></div>
+<div class="ph-nav">我</div>
+<div class="ph-scroll" style="padding:2px 0;">
+<div class="me-card"><div class="me-av">👤</div><div><div class="me-nick">赵家良</div><div class="me-uid">ID: mindback_2024</div></div></div>
+<div class="me-grp"><div class="mg-title">数据</div><div class="mg-body">
+<div class="me-rw"><span class="rw-l">创造周期</span><span class="rw-v">2完成·3进行中 ›</span></div>
+<div class="me-rw"><span class="rw-l">时间线浏览</span><span class="rw-v">全部记录 ›</span></div>
+<div class="me-rw"><span class="rw-l">月度总结</span><span class="rw-v">5月回顾 ›</span></div>
+<div class="me-rw"><span class="rw-l">能力资产</span><span class="rw-v">6 项能力 ›</span></div>
+</div></div>
+<div class="me-grp"><div class="mg-title">设置</div><div class="mg-body">
+<div class="me-rw"><span class="rw-l">通知</span><span class="rw-v"><span style="display:inline-block;width:18px;height:11px;border-radius:9999px;background:#6ec971;"></span></span></div>
+<div class="me-rw"><span class="rw-l">AI 偏好</span><span class="rw-v">段子手顾问 ›</span></div>
+<div class="me-rw"><span class="rw-l">应用语言</span><span class="rw-v">中文 ›</span></div>
+<div class="me-rw"><span class="rw-l">深色模式</span><span class="rw-v">跟随系统 ›</span></div>
+</div></div>
+</div>
+<div class="ph-tabbar"><div class="ph-tab"><div class="ph-tab-icon">💬</div>记录</div><div class="ph-tab"><div class="ph-tab-icon">◑</div>洞察</div><div class="ph-tab on"><div class="ph-tab-icon">👤</div>我</div></div>
+</div>
+
+</div></div></div>
+<div class="slide-label">3 / 19</div>
+</div>
+
+<!-- ===== 4: SECTION ===== -->
+<div class="slide s-section" data-slide="4">
+<div class="ss-num">01</div>
+<h2>《最小阻力之路》三个核心概念</h2>
+<div class="ss-sub">Robert Fritz · 1984</div>
+<div class="slide-label">4 / 19</div>
+</div>
+
+<!-- ===== 5: 结构性张力——先讲"都是你自己记的" ===== -->
+<div class="slide s-content" data-slide="5">
+<h2>什么是结构性张力？——先看清一件事</h2>
+<div class="two-col">
+<div class="col" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+<div style="text-align:center;padding:24px;background:rgba(120,170,250,.04);border:1px solid rgba(120,170,250,.12);border-radius:12px;width:100%;">
+<div style="font-size:28px;margin-bottom:8px;">💡</div>
+<div style="font-size:15px;font-weight:500;color:#212121;margin-bottom:6px;">系统不会生成任何内容</div>
+<div style="font-size:13px;color:rgba(60,60,67,.6);line-height:1.55;">所有发现都来自你自己记录过的碎片。<br>系统只是把它们放在一起，让你看见。</div>
+</div>
+</div>
+<div class="col">
+<p style="margin-bottom:12px;">有时候你记录了一句话，说你想做什么、渴望什么——「我想要早起」「我想让产品更轻」「我应该多运动」。</p>
+<p style="margin-bottom:12px;">过几天你又记录了一句话，说的却是现实——「今天又睡到 9 点」「又在纠结要不要加功能」「这周一次没跑」。</p>
+<p>这两次记录你自己可能都忘了。但系统找到它们，放在你面前。这中间的落差，就是<b>结构性张力</b>。不是系统说你矛盾，是你的记录里本来就有这段落差。</p>
+</div>
+</div>
+<div class="highlight-box"><p><span class="hl-title">关键</span>「渴望」和「现实」两张卡片上的每一句话，都是你某个时刻亲手记录的东西。系统不编造，不给建议，只是把原本散落的两句话放到了一起。</p></div>
+<div class="slide-label">5 / 19</div>
+</div>
+
+<!-- ===== 6: 结构性张力——概念 ===== -->
+<div class="slide s-content" data-slide="6">
+<h2>概念一：结构性张力</h2>
+<div class="big-quote">
+<div class="bq-text">你的渴望和你的现实之间有一段落差。这段落差本身就产生一股往渴望方向的拉力。不需要意志力——需要的是把落差留在意识里，让它自己做功。</div>
+<div class="bq-src">—— Robert Fritz《最小阻力之路》</div>
+</div>
+<div class="slide-label">6 / 19</div>
+</div>
+
+<!-- ===== 7: 张力案例 + demo ===== -->
+<div class="slide s-content" data-slide="7">
+<h2>你的碎片里有这样的张力吗？</h2>
+<div class="tp-layout">
+<div class="tp-text">
+<div class="tension-viz">
+<div class="tv-side tv-desire">
+<div class="tv-label"><span class="tv-badge">我记录的</span> 渴望的</div>
+<div class="tv-block">「放弃不是因为不重要，是因为每个都在削弱'轻记录'这个核心。加一个功能就加一层心理重量。」<div style="font-size:10px;color:rgba(60,60,67,.25);margin-top:6px;">5 月 6 日记录</div></div>
+</div>
+<div><div class="tv-arrow">⟷</div><div class="tv-tension-label">结构性张力</div></div>
+<div class="tv-side tv-reality">
+<div class="tv-label"><span class="tv-badge">我记录的</span> 现实的</div>
+<div class="tv-block">「我一直纠结要不要做快速记录的浮动按钮……没想清楚产品是在帮用户抓住每一刻还是放过大多数。」<div style="font-size:10px;color:rgba(60,60,67,.25);margin-top:6px;">5 月 2 日记录</div></div>
+</div>
+</div>
+<p style="text-align:center;margin-top:10px;font-size:12px;color:rgba(60,60,67,.4);">两张卡片上的话都是你在不同时间亲手记的。系统只把它们放到一起。</p>
+</div>
+<div class="tp-phones">
+<div class="phone wide">
+<div class="ph-status"><span>9:41</span><span style="opacity:.5">􀋦 􀊨 􀋭</span></div>
+<div class="ph-nav">洞察</div>
+<div class="ph-scroll">
+<div class="sec-label">今日张力</div>
+<div class="s-card tension" style="padding:8px;">
+<div class="sc-hd"><div class="sc-dot"></div><div class="sc-lbl">结构性张力</div></div>
+<h4>你想让产品更轻盈，但每天都在往上加重量</h4>
+<div class="sc-body">你反复在两个状态间摆荡：削到骨头→犹疑→加回来→再削。</div>
+<div class="ts-pair">
+<div class="ts-side desire"><div class="ts-label"><span class="ts-badge">我记的</span> 渴望的</div><div class="ts-item">「加一个功能就加一层心理重量。」<br><span class="ts-date">5月6日</span></div></div>
+<div class="ts-side reality"><div class="ts-label"><span class="ts-badge">我记的</span> 现实的</div><div class="ts-item">「一直纠结要不要做浮动按钮。」<br><span class="ts-date">5月2日</span></div></div>
+</div>
+<div style="display:flex;gap:5px;margin-top:6px;padding-top:5px;border-top:.3px solid rgba(0,0,0,.05);">
+<button style="flex:1;height:16px;border-radius:9999px;border:none;font-family:'PingFang SC',-apple-system,sans-serif;font-size:6.5px;font-weight:500;background:#212121;color:#fff;">追问</button>
+<button style="flex:1;height:16px;border-radius:9999px;border:none;font-family:'PingFang SC',-apple-system,sans-serif;font-size:6.5px;font-weight:500;background:transparent;color:rgba(60,60,67,.5);">忽略</button>
+<button style="flex:1;height:16px;border-radius:9999px;border:none;font-family:'PingFang SC',-apple-system,sans-serif;font-size:6.5px;font-weight:500;background:#f5f5f5;color:#212121;">看周期</button>
+</div>
+</div>
+</div>
+<div class="ph-tabbar"><div class="ph-tab"><div class="ph-tab-icon">💬</div>记录</div><div class="ph-tab on"><div class="ph-tab-icon">◑</div>洞察</div><div class="ph-tab"><div class="ph-tab-icon">👤</div>我</div></div>
+</div>
+</div></div>
+<div class="slide-label">7 / 19</div>
+</div>
+
+<!-- ===== 8: 摆荡 ===== -->
+<div class="slide s-content" data-slide="8">
+<h2>概念二：来回摆荡</h2>
+<div class="big-quote">
+<div class="bq-text">人反复在「努力→松懈→愧疚→再努力」里打转，不是因为意志力不够。底层结构就是支持摆荡的。破局不是更努力，是改变结构。得先看见结构。</div>
+<div class="bq-src">—— Robert Fritz《最小阻力之路》</div>
+</div>
+<div class="highlight-box"><p><span class="hl-title">在 MindBack 里</span> 同一个话题你记了「我想做」→「又没做」→「我真的要做」→「还是没做」。出现 ≥3 轮，系统标注「这件事上你来回走了 3 回」。</p></div>
+<div class="slide-label">8 / 19</div>
+</div>
+
+<!-- ===== 9: 创造周期 ===== -->
+<div class="slide s-content" data-slide="9">
+<h2>概念三：创造周期</h2>
+<div class="cycle-viz">
+<div class="cv-step germ"><div class="cv-icon">🌱</div><div class="cv-name">萌生</div><div class="cv-desc">一个想法第一次出现<br>你记下来了</div></div>
+<span class="cv-arrow">→</span>
+<div class="cv-step assim"><div class="cv-icon">⟳</div><div class="cv-name">同化</div><div class="cv-desc">反复思考、质疑、补充<br>可能卡在这里很久</div></div>
+<span class="cv-arrow">→</span>
+<div class="cv-step complete"><div class="cv-icon">✓</div><div class="cv-name">完成</div><div class="cv-desc">做完了、想通了<br>有头有尾的闭环</div></div>
+</div>
+<div class="slide-label">9 / 19</div>
+</div>
+
+<!-- ===== 10: 周期追踪 + demo ===== -->
+<div class="slide s-content" data-slide="10">
+<h2>你的碎片里，哪些东西活下来了？</h2>
+<div class="tp-layout">
+<div class="tp-text">
+<p>每个持续出现的想法被自动追踪它的旅程。<b>完成的</b>（萌生→同化→完成）、<b>进行中的</b>（还在走，标注几轮摆荡）、<b>消逝的</b>（出现后再也没提过）。</p>
+<p style="font-size:12px;color:rgba(60,60,67,.4);margin-top:8px;">不排名，不催进度。不安慰不鼓励。只展示结构。看见自己的创造模式。</p>
+</div>
+<div class="tp-phones">
+<div class="phone wide">
+<div class="ph-status"><span>9:41</span><span style="opacity:.5">􀋦 􀊨 􀋭</span></div>
+<div style="height:22px;display:flex;align-items:center;padding:0 8px;gap:5px;font-size:8px;flex-shrink:0;"><span style="color:rgba(60,60,67,.45);">←</span><span style="font-weight:500;">创造周期</span></div>
+<div class="ph-scroll" style="padding:0 8px;">
+<div class="cy-phase"><h5>完成的周期</h5><div class="cy-sub">有头有尾</div><div class="cy-div green"></div>
+<div class="cy-item"><div class="cy-title">跑一次 10 公里</div><div class="cy-meta"><span>5条</span><span>5.3→5.5</span><span style="color:#34c759;">✓</span></div></div>
+<div class="cy-item"><div class="cy-title">把底 2 tab 方案想清楚</div><div class="cy-meta"><span>8条</span><span>5.2→5.11</span><span style="color:#34c759;">✓</span></div></div>
+</div>
+<div class="cy-phase"><h5>进行中的</h5><div class="cy-sub">最近还出现过</div><div class="cy-div blue"></div>
+<div class="cy-item"><div class="cy-title">设计克制 vs 触达</div><div class="cy-meta"><span>6条</span><span style="color:#78aafa;">3轮摆荡</span></div></div>
+<div class="cy-item"><div class="cy-title">记忆是帮人还是害人</div><div class="cy-meta"><span>4条</span><span>反复回响中</span></div></div>
+<div class="cy-item"><div class="cy-title">习惯追踪做不做</div><div class="cy-meta"><span>3条</span><span style="color:#ff9500;">卡在同化</span></div></div>
+</div>
+<div class="cy-phase"><h5>消逝的</h5><div class="cy-sub">再也没提过</div><div class="cy-div" style="background:rgba(60,60,67,.05);"></div>
+<div class="cy-item"><div class="cy-title">大学时做的失败笔记软件</div><div class="cy-meta"><span>1条</span><span>5月10日</span></div></div>
+</div>
+</div>
+<div class="ph-tabbar"><div class="ph-tab"><div class="ph-tab-icon">💬</div>记录</div><div class="ph-tab on"><div class="ph-tab-icon">◑</div>洞察</div><div class="ph-tab"><div class="ph-tab-icon">👤</div>我</div></div>
+</div>
+</div></div>
+<div class="slide-label">10 / 19</div>
+</div>
+
+<!-- ===== 11: SECTION ===== -->
+<div class="slide s-section" data-slide="11">
+<div class="ss-num">02</div>
+<h2>注入 Tab 2「洞察」</h2>
+<div class="ss-sub">张力发现 + 摆荡识别 + 周期追踪 + 语义联想</div>
+<div class="slide-label">11 / 19</div>
+</div>
+
+<!-- ===== 12: Tab 2 四模块 ===== -->
+<div class="slide s-content" data-slide="12">
+<h2>Tab 2 四个并行的洞察模块</h2>
+<div class="t2b-blocks">
+<div class="t2b-block tension"><div class="t2b-icon">◑</div><div class="t2b-body"><h4>结构性张力</h4><p>同一话题下，你自己记录的「渴望」和「现实」形成落差。两边的每一句话都来自你的碎片。不给建议，只把落差放在你面前。</p></div></div>
+<div class="t2b-block osc"><div class="t2b-icon">↻</div><div class="t2b-body"><h4>来回摆荡识别</h4><p>同一话题 ≥3 轮「渴望→现实→再渴望」，间隔 ≤30 天→标注「这件事上你来回走了 3 回」。</p></div></div>
+<div class="t2b-block cycle"><div class="t2b-icon">○</div><div class="t2b-body"><h4>创造周期追踪</h4><p>自动追踪每个想法的萌生→同化→完成旅程。三类：完成的/进行中的/消逝的。不催不评。</p></div></div>
+<div class="t2b-block"><div class="t2b-icon" style="background:rgba(120,170,250,.08);">✦</div><div class="t2b-body"><h4>语义联想（保留）</h4><p>跨集群主题关联——「通知设计和产品定位在讨论同一件事」。蓝色卡片，Shannon 过滤。不超过 3 条/天。</p></div></div>
+</div>
+<div class="slide-label">12 / 19</div>
+</div>
+
+<!-- ===== 13: Tab 2 页面结构 + demo ===== -->
+<div class="slide s-content" data-slide="13">
+<h2>Tab 2 页面结构</h2>
+<div class="tp-layout">
+<div class="tp-text">
+<div class="card-row-sm">
+<div class="card-sm"><div class="cs-icon">◑</div><h4>张力卡片</h4><div class="cs-body">当天 0–2 组结构性张力。暖棕色视觉。渴望侧 vs 现实侧。追问/忽略/看周期。</div><div class="cs-sub">不多于 2 组/天</div></div>
+<div class="card-sm"><div class="cs-icon">○</div><h4>创造周期</h4><div class="cs-body">三大分区纵向展示。每个周期显示时间跨度和记录数。标注摆荡轮数。</div><div class="cs-sub">不排名不催促</div></div>
+<div class="card-sm"><div class="cs-icon">✦</div><h4>语义联想</h4><div class="cs-body">跨集群关联，蓝色卡片，3 条/天。引用 2–4 来源。追问/忽略。</div><div class="cs-sub">Shannon 过滤</div></div>
+</div>
+</div>
+<div class="tp-phones">
+<div class="phone wide">
+<div class="ph-status"><span>9:41</span><span style="opacity:.5">􀋦 􀊨 􀋭</span></div>
+<div class="ph-nav">洞察</div>
+<div class="ph-scroll">
+<div class="sec-label">今日张力</div>
+<div class="s-card tension"><div class="sc-hd"><div class="sc-dot"></div><div class="sc-lbl">结构性张力</div></div><h4>你想让产品更轻盈，但每天往上加</h4><div class="sc-body">一边说加功能就是加重量，一边纠结快速记录按钮。</div><div class="sc-hint">3 轮摆荡</div></div>
+<div class="sec-label">语义联想</div>
+<div class="s-card insight"><div class="sc-hd"><div class="sc-dot"></div><div class="sc-lbl">跨集群联想</div></div><h4>你在和同一个问题反复交手</h4><div class="sc-body">通知设计、产品定位、视觉规范里都有同一个主题回响。</div></div>
+<div class="s-card insight"><div class="sc-hd"><div class="sc-dot"></div><div class="sc-lbl">跨集群联想</div></div><h4>记忆是武器也是牢笼</h4><div class="sc-body">一边打造记忆系统，一边质疑记得太多是不是不自由。</div></div>
+<div class="sec-label">创造周期</div>
+<div style="padding:0 8px;">
+<div class="cy-phase"><h5>完成的</h5><div class="cy-div green"></div><div class="cy-item"><div class="cy-title">跑一次 10 公里</div><div class="cy-meta"><span>5条</span><span>5.3→5.5</span><span style="color:#34c759;">✓</span></div></div></div>
+<div class="cy-phase"><h5>进行中的</h5><div class="cy-div blue"></div><div class="cy-item"><div class="cy-title">克制 vs 触达</div><div class="cy-meta"><span>6条</span><span style="color:#78aafa;">3轮摆荡</span></div></div><div class="cy-item"><div class="cy-title">记忆：帮人还是害人</div><div class="cy-meta"><span>4条</span><span>回响中</span></div></div></div>
+</div>
+</div>
+<div class="ph-tabbar"><div class="ph-tab"><div class="ph-tab-icon">💬</div>记录</div><div class="ph-tab on"><div class="ph-tab-icon">◑</div>洞察</div><div class="ph-tab"><div class="ph-tab-icon">👤</div>我</div></div>
+</div>
+</div></div>
+<p style="text-align:center;margin-top:4px;font-size:10px;color:rgba(60,60,67,.3)">三类卡片在同一页面纵向展开。从上往下滑，自然地看到张力、联想、周期。</p>
+<div class="slide-label">13 / 19</div>
+</div>
+
+<!-- ===== 14: Pipeline ===== -->
+<div class="slide s-content" data-slide="14">
+<h2>Pipeline：从碎片到洞察的背后</h2>
+<div class="pipe-viz">
+<div class="pv-node"><div class="pvn">Pipeline 1</div><div class="pvs">压缩·聚类</div></div>
+<span class="pv-arrow">→</span>
+<div class="pv-node"><div class="pvn">Pipeline 2</div><div class="pvs">多维发现</div></div>
+<span class="pv-arrow">→</span>
+<div class="pv-gate"><div class="pvg">语义联想</div><span style="font-size:7px;">跨集群<br>Shannon过滤</span></div>
+<span class="pv-arrow">+</span>
+<div class="pv-gate warm"><div class="pvg">张力发现</div><span style="font-size:7px;">渴望 vs 现实<br>同一话题域</span></div>
+<span class="pv-arrow">+</span>
+<div class="pv-gate warm"><div class="pvg">摆荡识别</div><span style="font-size:7px;">≥3轮循环<br>间隔≤30天</span></div>
+<span class="pv-arrow">→</span>
+<div class="pv-node"><div class="pvn">Pipeline 3</div><div class="pvs">表达</div></div>
+<span class="pv-arrow">→</span>
+<div class="pv-gate warn"><div class="pvg">质量门禁</div><span style="font-size:7px;">后续互动率<br>≥ 阈值</span></div>
+<span class="pv-arrow">→</span>
+<div class="pv-node" style="background:#212121;color:#fff;"><div class="pvn" style="color:#fff;">Tab 2</div><div class="pvs" style="color:rgba(255,255,255,.4);">洞察页面</div></div>
+</div>
+<p style="text-align:center;margin-top:14px;font-size:11px;color:rgba(60,60,67,.35);line-height:1.5;">
+三种发现各自独立运行，互不阻塞。张力规则：同一域中渴望与现实文本特征匹配；摆荡规则：时间序列 ≥3 轮振荡。<br>所有卡片引用来源。质量门禁低于阈值 → 该类型暂停、不编造。每天凌晨 5 点运行。
+</p>
+<div class="slide-label">14 / 19</div>
+</div>
+
+<!-- ===== 15: Tab 3 ===== -->
+<div class="slide s-content" data-slide="15">
+<h2>Tab 3「我」：一切记录在此分类查看</h2>
+<div class="tp-layout">
+<div class="tp-text">
+<p>Tab 3 是所有记录的落脚点。创造周期、时间线浏览、月度总结——全部在此。</p>
+<p style="margin-top:6px;">从 Tab 2 的张力卡片或周期中点击「看周期」直接跳到此页面。张力被看见之后，周期被走过。</p>
+<p style="font-size:12px;color:rgba(60,60,67,.4);margin-top:8px;">数据按分类查看，设置区独立。不显示焦虑指标，不放运营位。</p>
+</div>
+<div class="tp-phones">
+<div class="phone wide">
+<div class="ph-status"><span>9:41</span><span style="opacity:.5">􀋦 􀊨 􀋭</span></div>
+<div class="ph-nav">我</div>
+<div class="ph-scroll" style="padding:2px 0;">
+<div class="me-card"><div class="me-av">👤</div><div><div class="me-nick">赵家良</div><div class="me-uid">ID: mindback_2024</div></div></div>
+<div class="me-grp"><div class="mg-title">数据</div><div class="mg-body">
+<div class="me-rw"><span class="rw-l">创造周期</span><span class="rw-v">2 完成 · 3 进行中 ›</span></div>
+<div class="me-rw"><span class="rw-l">记忆点</span><span class="rw-v">42 点 ›</span></div>
+<div class="me-rw"><span class="rw-l">时间线浏览</span><span class="rw-v">全部记录 ›</span></div>
+<div class="me-rw"><span class="rw-l">月度总结</span><span class="rw-v">5月回顾 ›</span></div>
+<div class="me-rw"><span class="rw-l">能力资产</span><span class="rw-v">6 项能力 ›</span></div>
+</div></div>
+<div class="me-grp"><div class="mg-title">设置</div><div class="mg-body">
+<div class="me-rw"><span class="rw-l">通知</span><span class="rw-v"><span style="display:inline-block;width:18px;height:11px;border-radius:9999px;background:#6ec971;"></span></span></div>
+<div class="me-rw"><span class="rw-l">AI 偏好</span><span class="rw-v">段子手顾问 ›</span></div>
+<div class="me-rw"><span class="rw-l">应用语言</span><span class="rw-v">中文 ›</span></div>
+<div class="me-rw"><span class="rw-l">深色模式</span><span class="rw-v">跟随系统 ›</span></div>
+</div></div>
+</div>
+<div class="ph-tabbar"><div class="ph-tab"><div class="ph-tab-icon">💬</div>记录</div><div class="ph-tab"><div class="ph-tab-icon">◑</div>洞察</div><div class="ph-tab on"><div class="ph-tab-icon">👤</div>我</div></div>
+</div>
+</div></div>
+<div class="slide-label">15 / 19</div>
+</div>
+
+<!-- ===== 16: 联动 ===== -->
+<div class="slide s-content" data-slide="16">
+<h2>三个 Tab 的联动关系</h2>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+<div class="flow-row">
+<div class="fn fn1">Tab 1 · 记录</div><span class="fn-arr">→</span>
+<div class="fn fn2">Tab 2 · 洞察</div><span class="fn-arr">⇢</span>
+<div class="fn fn1">Tab 3 · 我</div>
+</div>
+<div class="flow-sub"><span>碎片丢进来<br>零压力记</span><span>发现张力、周期<br>看见自己</span><span>分类查看所有记录<br>从周期过来</span></div>
+<div class="flow-pills">
+<span class="fp blue">追问 → 跳回 Tab 1 继续聊</span><span class="fp-dot">·</span>
+<span class="fp warm">看周期 → 跳到 Tab 3</span>
+</div>
+</div>
+<div class="slide-label">16 / 19</div>
+</div>
+
+<!-- ===== 17: AI 设计工作流 ===== -->
+<div class="slide s-content" data-slide="17">
+<h2>AI 设计工作流：17 个 Skill 三条管线</h2>
+<div class="two-col">
+<div class="col">
+<h3>设计师管线</h3><p style="font-size:12px;color:rgba(60,60,67,.45);margin-bottom:4px;">从想法到设计稿</p>
+<p style="font-size:11px;font-family:'SF Mono',monospace;color:rgba(60,60,67,.5);">/ideate → /component → /fill →<br>/preflight → /draw → /review</p>
+<h3 style="margin-top:12px;">跨角色管线</h3><p style="font-size:12px;color:rgba(60,60,67,.45);margin-bottom:4px;">从需求到代码</p>
+<p style="font-size:11px;font-family:'SF Mono',monospace;color:rgba(60,60,67,.5);">/describe → /component → /spec →<br>/build → /inspect → /ship</p>
+<p style="font-size:10px;color:rgba(60,60,67,.3);margin-top:8px;">辅助: /audit /health /checkpoint /retro /debug /archive</p>
+</div>
+<div class="col"><div class="wf-card">
+<h3>核心原则</h3><p style="font-size:12px;color:rgba(60,60,67,.55);line-height:1.55;">文档是真相源，画板是视觉验证<br>每个 Skill 只做一件事<br>AI 做二元判断，人做审美裁定<br>组件状态: placeholder → draft → complete<br><br>三道质量门: preflight / review(7 pass) / health</p>
+</div></div>
+</div>
+<div class="slide-label">17 / 19</div>
+</div>
+
+<!-- ===== 18: 权力底线 ===== -->
+<div class="slide s-content" data-slide="18">
+<h2>权力底线</h2>
+<table class="rl-table">
+<tr><th></th><th>规则</th><th>不可</th></tr>
+<tr><td class="rl-n">1</td><td class="rl-r">AI 不在用户没开口时主动说话</td><td class="rl-v">推送「看看你上周的记录吧」</td></tr>
+<tr><td class="rl-n">2</td><td class="rl-r">洞察在 Tab 2 自然等待，不推不抢</td><td class="rl-v">弹窗告知；Tab 1 流里插入卡片</td></tr>
+<tr><td class="rl-n">3</td><td class="rl-r">每条卡片必须标注来源片段</td><td class="rl-v">「你的关键洞察：缺乏执行力」</td></tr>
+<tr><td class="rl-n">4</td><td class="rl-r">张力卡片只呈现落差，不给建议</td><td class="rl-v">「建议你少做点功能」</td></tr>
+<tr><td class="rl-n">5</td><td class="rl-r">创造周期不排名不催进度不安慰</td><td class="rl-v">「加油！还有 3 个未完成周期！」</td></tr>
+<tr><td class="rl-n">6</td><td class="rl-r">Pipeline 低于质量阈值 → 自动暂停</td><td class="rl-v">互动率低仍继续生成填页面</td></tr>
+</table>
+<p style="text-align:center;margin-top:14px;font-size:11px;color:rgba(60,60,67,.25);">信任不是被功能清单建立的。信任是每一次选择不开口时建立的。</p>
+<div class="slide-label">18 / 19</div>
+</div>
+
+<!-- ===== 19: 结尾 ===== -->
+<div class="slide thank-you" data-slide="19">
+<h1>记录不是为了记住。<br>记录是为了发现自己。</h1>
+<p>MindBack V3 · 2026.05</p>
+</div>
+
+</div>
+
+<div class="nav">
+<button onclick="go(-1)">◂</button><span class="page-num" id="pageNum">1 / 20</span><button onclick="go(+1)">▸</button>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');let current=0;const total=slides.length;
+function go(d){slides[current].classList.remove('active');current=Math.max(0,Math.min(total-1,current+d));slides[current].classList.add('active');document.getElementById('pageNum').textContent=(current+1)+' / '+total}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();go(1)}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();go(-1)}});
+document.getElementById('deck').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect();if(e.clientX-r.left>r.width/2)go(1);else go(-1)});
+document.getElementById('pageNum').textContent='1 / '+total;
+</script>
+</body>
+</html>

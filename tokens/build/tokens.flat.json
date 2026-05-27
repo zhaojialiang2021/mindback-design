@@ -1,0 +1,563 @@
+{
+  "$generatedAt": "2026-05-15T11:18:43.759Z",
+  "$count": 69,
+  "tokens": [
+    {
+      "name": "color.label.primary",
+      "value": "#212121",
+      "type": "color",
+      "description": "标题、正文主文本",
+      "modes": {
+        "dark": "#F8F9F9"
+      }
+    },
+    {
+      "name": "color.label.secondary",
+      "value": "rgba(60,60,67,0.6)",
+      "type": "color",
+      "description": "辅助说明、副标题",
+      "modes": {
+        "dark": "rgba(235,235,245,0.6)"
+      }
+    },
+    {
+      "name": "color.label.tertiary",
+      "value": "rgba(60,60,67,0.3)",
+      "type": "color",
+      "description": "占位符、禁用态文本",
+      "modes": {
+        "dark": "rgba(235,235,245,0.3)"
+      }
+    },
+    {
+      "name": "color.label.quaternary",
+      "value": "rgba(60,60,67,0.22)",
+      "type": "color",
+      "description": "极弱提示、水印",
+      "modes": {
+        "dark": "rgba(235,235,245,0.22)"
+      }
+    },
+    {
+      "name": "color.bg.0",
+      "value": "#FFFFFF",
+      "type": "color",
+      "description": "卡片、弹窗、输入框",
+      "modes": {
+        "dark": "#101010"
+      }
+    },
+    {
+      "name": "color.bg.1",
+      "value": "#F5F5F5",
+      "type": "color",
+      "description": "页面底色",
+      "modes": {
+        "dark": "#1A1A1A"
+      }
+    },
+    {
+      "name": "color.bg.2",
+      "value": "#EBEBEB",
+      "type": "color",
+      "description": "导航选中态、分组背景",
+      "modes": {
+        "dark": "#242424"
+      }
+    },
+    {
+      "name": "color.bg.3",
+      "value": "#D8D8D8",
+      "type": "color",
+      "description": "底部安全区、分割带",
+      "modes": {
+        "dark": "#2C2C2C"
+      }
+    },
+    {
+      "name": "color.bg.4",
+      "value": "#E6E6E6",
+      "type": "color",
+      "description": "极深层级背景",
+      "modes": {
+        "dark": "#333333"
+      }
+    },
+    {
+      "name": "color.fill.primary",
+      "value": "rgba(120,120,128,0.2)",
+      "type": "color",
+      "description": "开关关闭态、滑块轨道",
+      "modes": {
+        "dark": "rgba(120,120,128,0.36)"
+      }
+    },
+    {
+      "name": "color.fill.secondary",
+      "value": "rgba(120,120,128,0.16)",
+      "type": "color",
+      "description": "进度条底色",
+      "modes": {
+        "dark": "rgba(120,120,128,0.32)"
+      }
+    },
+    {
+      "name": "color.fill.tertiary",
+      "value": "rgba(120,120,128,0.12)",
+      "type": "color",
+      "description": "占位图底色",
+      "modes": {
+        "dark": "rgba(120,120,128,0.24)"
+      }
+    },
+    {
+      "name": "color.fill.quaternary",
+      "value": "rgba(120,120,128,0.08)",
+      "type": "color",
+      "description": "极弱填充",
+      "modes": {
+        "dark": "rgba(120,120,128,0.18)"
+      }
+    },
+    {
+      "name": "color.fill.inverted-primary",
+      "value": "rgba(255,255,255,0.32)",
+      "type": "color",
+      "description": "深色上的白填充",
+      "modes": null
+    },
+    {
+      "name": "color.fill.inverted-secondary",
+      "value": "rgba(255,255,255,0.24)",
+      "type": "color",
+      "description": "深色上的弱白填充",
+      "modes": null
+    },
+    {
+      "name": "color.fill.inverted-tertiary",
+      "value": "rgba(255,255,255,0.16)",
+      "type": "color",
+      "description": "深色上的极弱白填充",
+      "modes": null
+    },
+    {
+      "name": "color.fill.inverted-quaternary",
+      "value": "rgba(255,255,255,0.08)",
+      "type": "color",
+      "description": "深色上的微弱白填充",
+      "modes": null
+    },
+    {
+      "name": "color.line.opaque",
+      "value": "#C5C5C7",
+      "type": "color",
+      "description": "强分割（约 10% 场景）",
+      "modes": {
+        "dark": "#545458"
+      }
+    },
+    {
+      "name": "color.line.non-opaque",
+      "value": "rgba(0,0,0,0.08)",
+      "type": "color",
+      "description": "默认分割（约 90% 场景）",
+      "modes": {
+        "dark": "rgba(255,255,255,0.08)"
+      }
+    },
+    {
+      "name": "color.brand.blue",
+      "value": "#78AAFA",
+      "type": "color",
+      "description": "品牌蓝，只做点缀",
+      "modes": null
+    },
+    {
+      "name": "color.brand.blue-light",
+      "value": "rgba(120,170,250,0.08)",
+      "type": "color",
+      "description": "AI 回应气泡背景",
+      "modes": null
+    },
+    {
+      "name": "color.brand.blue-border",
+      "value": "rgba(120,170,250,0.2)",
+      "type": "color",
+      "description": "AI 回应气泡边框",
+      "modes": null
+    },
+    {
+      "name": "color.brand.blue-text",
+      "value": "#4184EF",
+      "type": "color",
+      "description": "AI 回应文本色",
+      "modes": null
+    },
+    {
+      "name": "color.accent.blue",
+      "value": "#78AAFA",
+      "type": "color",
+      "description": "智能总结标签",
+      "modes": null
+    },
+    {
+      "name": "color.accent.yellow",
+      "value": "#FFCC00",
+      "type": "color",
+      "description": "待办事项标签",
+      "modes": null
+    },
+    {
+      "name": "color.accent.green",
+      "value": "#34C759",
+      "type": "color",
+      "description": "日记标签",
+      "modes": null
+    },
+    {
+      "name": "color.accent.pink",
+      "value": "#FF6482",
+      "type": "color",
+      "description": "持续月录标签",
+      "modes": null
+    },
+    {
+      "name": "color.accent.brown",
+      "value": "#916964",
+      "type": "color",
+      "description": "文件标签",
+      "modes": null
+    },
+    {
+      "name": "color.accent.event-blue",
+      "value": "#5B9BDB",
+      "type": "color",
+      "description": "事件追踪标签",
+      "modes": null
+    },
+    {
+      "name": "color.link",
+      "value": "#133667",
+      "type": "color",
+      "description": "可点击链接",
+      "modes": {
+        "dark": "#C6D9EF"
+      }
+    },
+    {
+      "name": "color.backdrop",
+      "value": "rgba(0,0,0,0.32)",
+      "type": "color",
+      "description": "Modal / Sheet 背后的遮罩底色",
+      "modes": null
+    },
+    {
+      "name": "color.deco.teal",
+      "value": "#81D5CA",
+      "type": "color",
+      "description": "Live 图功能图标背景",
+      "modes": null
+    },
+    {
+      "name": "color.deco.sky",
+      "value": "#84B1EB",
+      "type": "color",
+      "description": "Web 端 / 时间碎片图标背景",
+      "modes": null
+    },
+    {
+      "name": "color.deco.lavender",
+      "value": "#9F8CCF",
+      "type": "color",
+      "description": "AI 溯源图标背景",
+      "modes": null
+    },
+    {
+      "name": "color.deco.sage",
+      "value": "#A0C484",
+      "type": "color",
+      "description": "频道数量图标背景",
+      "modes": null
+    },
+    {
+      "name": "color.deco.rose",
+      "value": "#AA7D78",
+      "type": "color",
+      "description": "音视频解析图标背景",
+      "modes": null
+    },
+    {
+      "name": "space.1",
+      "value": "4px",
+      "type": "dimension",
+      "description": "图标与文字间距、紧凑内边距",
+      "modes": null
+    },
+    {
+      "name": "space.2",
+      "value": "8px",
+      "type": "dimension",
+      "description": "导航项圆角、小元素间距",
+      "modes": null
+    },
+    {
+      "name": "space.3",
+      "value": "12px",
+      "type": "dimension",
+      "description": "卡片间距、列表项间距",
+      "modes": null
+    },
+    {
+      "name": "space.4",
+      "value": "16px",
+      "type": "dimension",
+      "description": "卡片内边距、标准组件内间距",
+      "modes": null
+    },
+    {
+      "name": "space.5",
+      "value": "20px",
+      "type": "dimension",
+      "description": "区块间距、表单项间距",
+      "modes": null
+    },
+    {
+      "name": "space.6",
+      "value": "24px",
+      "type": "dimension",
+      "description": "页面边距（紧凑）",
+      "modes": null
+    },
+    {
+      "name": "space.7",
+      "value": "32px",
+      "type": "dimension",
+      "description": "页面边距（标准）",
+      "modes": null
+    },
+    {
+      "name": "space.8",
+      "value": "40px",
+      "type": "dimension",
+      "description": "大区块间距",
+      "modes": null
+    },
+    {
+      "name": "space.9",
+      "value": "48px",
+      "type": "dimension",
+      "description": "页面顶部留白",
+      "modes": null
+    },
+    {
+      "name": "space.10",
+      "value": "64px",
+      "type": "dimension",
+      "description": "最大留白",
+      "modes": null
+    },
+    {
+      "name": "radius.small",
+      "value": "6px",
+      "type": "dimension",
+      "description": "图片、缩略图",
+      "modes": null
+    },
+    {
+      "name": "radius.medium",
+      "value": "8px",
+      "type": "dimension",
+      "description": "导航项、输入框",
+      "modes": null
+    },
+    {
+      "name": "radius.large",
+      "value": "12px",
+      "type": "dimension",
+      "description": "内容卡、弹窗",
+      "modes": null
+    },
+    {
+      "name": "radius.xlarge",
+      "value": "20px",
+      "type": "dimension",
+      "description": "消息气泡、能力卡片、侧边栏信息卡",
+      "modes": null
+    },
+    {
+      "name": "radius.full",
+      "value": "9999px",
+      "type": "dimension",
+      "description": "Pill 按钮、标签、头像",
+      "modes": null
+    },
+    {
+      "name": "duration.fast",
+      "value": "150ms",
+      "type": "duration",
+      "description": "开关切换、选中态变化",
+      "modes": null
+    },
+    {
+      "name": "duration.normal",
+      "value": "250ms",
+      "type": "duration",
+      "description": "页面切换、展开收起",
+      "modes": null
+    },
+    {
+      "name": "duration.slow",
+      "value": "350ms",
+      "type": "duration",
+      "description": "弹窗出入场",
+      "modes": null
+    },
+    {
+      "name": "curve.default",
+      "value": "cubic-bezier(0.25, 0.1, 0.25, 1)",
+      "type": "cubicBezier",
+      "description": "标准缓动",
+      "modes": null
+    },
+    {
+      "name": "curve.spring",
+      "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      "type": "cubicBezier",
+      "description": "弹性效果（极少使用）",
+      "modes": null
+    },
+    {
+      "name": "curve.ease-out",
+      "value": "cubic-bezier(0, 0, 0.2, 1)",
+      "type": "cubicBezier",
+      "description": "元素退出",
+      "modes": null
+    },
+    {
+      "name": "shadow.modal",
+      "value": "0 8px 32px rgba(0,0,0,0.12)",
+      "type": "shadow",
+      "description": "弹窗投影",
+      "modes": {
+        "dark": "0 8px 32px rgba(0,0,0,0.48)"
+      }
+    },
+    {
+      "name": "font.family",
+      "value": "PingFang SC, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif",
+      "type": "fontFamily",
+      "description": "唯一字体族",
+      "modes": null
+    },
+    {
+      "name": "typography.headline-h1",
+      "value": {
+        "fontSize": "32px",
+        "fontWeight": 500,
+        "lineHeight": 1.2
+      },
+      "type": "typography",
+      "description": "页面主标题（极少使用）",
+      "modes": null
+    },
+    {
+      "name": "typography.headline-h2",
+      "value": {
+        "fontSize": "24px",
+        "fontWeight": 500,
+        "lineHeight": 1.3
+      },
+      "type": "typography",
+      "description": "区块标题",
+      "modes": null
+    },
+    {
+      "name": "typography.headline-h3",
+      "value": {
+        "fontSize": "20px",
+        "fontWeight": 500,
+        "lineHeight": 1.35
+      },
+      "type": "typography",
+      "description": "卡片标题",
+      "modes": null
+    },
+    {
+      "name": "typography.body-primary",
+      "value": {
+        "fontSize": "17px",
+        "fontWeight": 400,
+        "lineHeight": 1.5
+      },
+      "type": "typography",
+      "description": "正文主文本",
+      "modes": null
+    },
+    {
+      "name": "typography.body-secondary",
+      "value": {
+        "fontSize": "15px",
+        "fontWeight": 400,
+        "lineHeight": 1.45
+      },
+      "type": "typography",
+      "description": "辅助正文",
+      "modes": null
+    },
+    {
+      "name": "typography.callout",
+      "value": {
+        "fontSize": "16px",
+        "fontWeight": 500,
+        "lineHeight": 1.4
+      },
+      "type": "typography",
+      "description": "强调文本、按钮内文字",
+      "modes": null
+    },
+    {
+      "name": "typography.subhead",
+      "value": {
+        "fontSize": "14px",
+        "fontWeight": 400,
+        "lineHeight": 1.4
+      },
+      "type": "typography",
+      "description": "副标题、列表项",
+      "modes": null
+    },
+    {
+      "name": "typography.footnote",
+      "value": {
+        "fontSize": "13px",
+        "fontWeight": 400,
+        "lineHeight": 1.38
+      },
+      "type": "typography",
+      "description": "脚注、来源标注",
+      "modes": null
+    },
+    {
+      "name": "typography.caption-1",
+      "value": {
+        "fontSize": "12px",
+        "fontWeight": 400,
+        "lineHeight": 1.3
+      },
+      "type": "typography",
+      "description": "标签、辅助标记",
+      "modes": null
+    },
+    {
+      "name": "typography.caption-2",
+      "value": {
+        "fontSize": "11px",
+        "fontWeight": 400,
+        "lineHeight": 1.2
+      },
+      "type": "typography",
+      "description": "极小标注",
+      "modes": null
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+# MindBack Design System
+# 给爬虫和 AI agent 用：欢迎抓全站。AI 优先看 /llms.txt
+User-agent: *
+Allow: /
+
+# AI agent 友好端点
+# /llms.txt        站点入口索引
+# /skill.md        一站式 Skill 包
+# /design.md       设计令牌 markdown
+# /tokens.json     令牌 JSON
+# /components.md   组件契约 markdown
+# /components.json 组件契约 JSON
+
+Sitemap: https://docs.mindback.com/sitemap.xml

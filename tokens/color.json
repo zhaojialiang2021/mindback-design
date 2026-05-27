@@ -1,0 +1,215 @@
+{
+  "$description": "MindBack 颜色令牌。Light/Dark 双模式通过 $extensions.modes 表达。AI/工具消费时优先读 $value（默认 light），需要 dark 值时读 $extensions.modes.dark。",
+  "color": {
+    "label": {
+      "primary": {
+        "$value": "#212121",
+        "$type": "color",
+        "$description": "标题、正文主文本",
+        "$extensions": { "modes": { "dark": "#F8F9F9" } }
+      },
+      "secondary": {
+        "$value": "rgba(60,60,67,0.6)",
+        "$type": "color",
+        "$description": "辅助说明、副标题",
+        "$extensions": { "modes": { "dark": "rgba(235,235,245,0.6)" } }
+      },
+      "tertiary": {
+        "$value": "rgba(60,60,67,0.3)",
+        "$type": "color",
+        "$description": "占位符、禁用态文本",
+        "$extensions": { "modes": { "dark": "rgba(235,235,245,0.3)" } }
+      },
+      "quaternary": {
+        "$value": "rgba(60,60,67,0.22)",
+        "$type": "color",
+        "$description": "极弱提示、水印",
+        "$extensions": { "modes": { "dark": "rgba(235,235,245,0.22)" } }
+      }
+    },
+    "bg": {
+      "0": {
+        "$value": "#FFFFFF",
+        "$type": "color",
+        "$description": "卡片、弹窗、输入框",
+        "$extensions": { "modes": { "dark": "#101010" } }
+      },
+      "1": {
+        "$value": "#F5F5F5",
+        "$type": "color",
+        "$description": "页面底色",
+        "$extensions": { "modes": { "dark": "#1A1A1A" } }
+      },
+      "2": {
+        "$value": "#EBEBEB",
+        "$type": "color",
+        "$description": "导航选中态、分组背景",
+        "$extensions": { "modes": { "dark": "#242424" } }
+      },
+      "3": {
+        "$value": "#D8D8D8",
+        "$type": "color",
+        "$description": "底部安全区、分割带",
+        "$extensions": { "modes": { "dark": "#2C2C2C" } }
+      },
+      "4": {
+        "$value": "#E6E6E6",
+        "$type": "color",
+        "$description": "极深层级背景",
+        "$extensions": { "modes": { "dark": "#333333" } }
+      }
+    },
+    "fill": {
+      "primary": {
+        "$value": "rgba(120,120,128,0.2)",
+        "$type": "color",
+        "$description": "开关关闭态、滑块轨道",
+        "$extensions": { "modes": { "dark": "rgba(120,120,128,0.36)" } }
+      },
+      "secondary": {
+        "$value": "rgba(120,120,128,0.16)",
+        "$type": "color",
+        "$description": "进度条底色",
+        "$extensions": { "modes": { "dark": "rgba(120,120,128,0.32)" } }
+      },
+      "tertiary": {
+        "$value": "rgba(120,120,128,0.12)",
+        "$type": "color",
+        "$description": "占位图底色",
+        "$extensions": { "modes": { "dark": "rgba(120,120,128,0.24)" } }
+      },
+      "quaternary": {
+        "$value": "rgba(120,120,128,0.08)",
+        "$type": "color",
+        "$description": "极弱填充",
+        "$extensions": { "modes": { "dark": "rgba(120,120,128,0.18)" } }
+      },
+      "inverted-primary": {
+        "$value": "rgba(255,255,255,0.32)",
+        "$type": "color",
+        "$description": "深色上的白填充"
+      },
+      "inverted-secondary": {
+        "$value": "rgba(255,255,255,0.24)",
+        "$type": "color",
+        "$description": "深色上的弱白填充"
+      },
+      "inverted-tertiary": {
+        "$value": "rgba(255,255,255,0.16)",
+        "$type": "color",
+        "$description": "深色上的极弱白填充"
+      },
+      "inverted-quaternary": {
+        "$value": "rgba(255,255,255,0.08)",
+        "$type": "color",
+        "$description": "深色上的微弱白填充"
+      }
+    },
+    "line": {
+      "opaque": {
+        "$value": "#C5C5C7",
+        "$type": "color",
+        "$description": "强分割（约 10% 场景）",
+        "$extensions": { "modes": { "dark": "#545458" } }
+      },
+      "non-opaque": {
+        "$value": "rgba(0,0,0,0.08)",
+        "$type": "color",
+        "$description": "默认分割（约 90% 场景）",
+        "$extensions": { "modes": { "dark": "rgba(255,255,255,0.08)" } }
+      }
+    },
+    "brand": {
+      "blue": {
+        "$value": "#78AAFA",
+        "$type": "color",
+        "$description": "品牌蓝，只做点缀"
+      },
+      "blue-light": {
+        "$value": "rgba(120,170,250,0.08)",
+        "$type": "color",
+        "$description": "AI 回应气泡背景"
+      },
+      "blue-border": {
+        "$value": "rgba(120,170,250,0.2)",
+        "$type": "color",
+        "$description": "AI 回应气泡边框"
+      },
+      "blue-text": {
+        "$value": "#4184EF",
+        "$type": "color",
+        "$description": "AI 回应文本色"
+      }
+    },
+    "accent": {
+      "blue": {
+        "$value": "#78AAFA",
+        "$type": "color",
+        "$description": "智能总结标签"
+      },
+      "yellow": {
+        "$value": "#FFCC00",
+        "$type": "color",
+        "$description": "待办事项标签"
+      },
+      "green": {
+        "$value": "#34C759",
+        "$type": "color",
+        "$description": "日记标签"
+      },
+      "pink": {
+        "$value": "#FF6482",
+        "$type": "color",
+        "$description": "持续月录标签"
+      },
+      "brown": {
+        "$value": "#916964",
+        "$type": "color",
+        "$description": "文件标签"
+      },
+      "event-blue": {
+        "$value": "#5B9BDB",
+        "$type": "color",
+        "$description": "事件追踪标签"
+      }
+    },
+    "link": {
+      "$value": "#133667",
+      "$type": "color",
+      "$description": "可点击链接",
+      "$extensions": { "modes": { "dark": "#C6D9EF" } }
+    },
+    "backdrop": {
+      "$value": "rgba(0,0,0,0.32)",
+      "$type": "color",
+      "$description": "Modal / Sheet 背后的遮罩底色"
+    },
+    "deco": {
+      "teal": {
+        "$value": "#81D5CA",
+        "$type": "color",
+        "$description": "Live 图功能图标背景"
+      },
+      "sky": {
+        "$value": "#84B1EB",
+        "$type": "color",
+        "$description": "Web 端 / 时间碎片图标背景"
+      },
+      "lavender": {
+        "$value": "#9F8CCF",
+        "$type": "color",
+        "$description": "AI 溯源图标背景"
+      },
+      "sage": {
+        "$value": "#A0C484",
+        "$type": "color",
+        "$description": "频道数量图标背景"
+      },
+      "rose": {
+        "$value": "#AA7D78",
+        "$type": "color",
+        "$description": "音视频解析图标背景"
+      }
+    }
+  }
+}

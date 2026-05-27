@@ -1,0 +1,102 @@
+{
+  "$description": "MindBack 字号体系。仅 PingFang SC，禁止其他字体。每个 typography 令牌是一组（size + weight + line-height）。",
+  "font": {
+    "family": {
+      "$value": "PingFang SC, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif",
+      "$type": "fontFamily",
+      "$description": "唯一字体族"
+    }
+  },
+  "typography": {
+    "headline-h1": {
+      "$value": {
+        "fontSize": "32px",
+        "fontWeight": 500,
+        "lineHeight": 1.2
+      },
+      "$type": "typography",
+      "$description": "页面主标题（极少使用）"
+    },
+    "headline-h2": {
+      "$value": {
+        "fontSize": "24px",
+        "fontWeight": 500,
+        "lineHeight": 1.3
+      },
+      "$type": "typography",
+      "$description": "区块标题"
+    },
+    "headline-h3": {
+      "$value": {
+        "fontSize": "20px",
+        "fontWeight": 500,
+        "lineHeight": 1.35
+      },
+      "$type": "typography",
+      "$description": "卡片标题"
+    },
+    "body-primary": {
+      "$value": {
+        "fontSize": "17px",
+        "fontWeight": 400,
+        "lineHeight": 1.5
+      },
+      "$type": "typography",
+      "$description": "正文主文本"
+    },
+    "body-secondary": {
+      "$value": {
+        "fontSize": "15px",
+        "fontWeight": 400,
+        "lineHeight": 1.45
+      },
+      "$type": "typography",
+      "$description": "辅助正文"
+    },
+    "callout": {
+      "$value": {
+        "fontSize": "16px",
+        "fontWeight": 500,
+        "lineHeight": 1.4
+      },
+      "$type": "typography",
+      "$description": "强调文本、按钮内文字"
+    },
+    "subhead": {
+      "$value": {
+        "fontSize": "14px",
+        "fontWeight": 400,
+        "lineHeight": 1.4
+      },
+      "$type": "typography",
+      "$description": "副标题、列表项"
+    },
+    "footnote": {
+      "$value": {
+        "fontSize": "13px",
+        "fontWeight": 400,
+        "lineHeight": 1.38
+      },
+      "$type": "typography",
+      "$description": "脚注、来源标注"
+    },
+    "caption-1": {
+      "$value": {
+        "fontSize": "12px",
+        "fontWeight": 400,
+        "lineHeight": 1.3
+      },
+      "$type": "typography",
+      "$description": "标签、辅助标记"
+    },
+    "caption-2": {
+      "$value": {
+        "fontSize": "11px",
+        "fontWeight": 400,
+        "lineHeight": 1.2
+      },
+      "$type": "typography",
+      "$description": "极小标注"
+    }
+  }
+}

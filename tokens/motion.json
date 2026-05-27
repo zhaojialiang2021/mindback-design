@@ -1,0 +1,25 @@
+{
+  "$description": "MindBack 动效。封闭枚举。",
+  "duration": {
+    "fast": { "$value": "150ms", "$type": "duration", "$description": "开关切换、选中态变化" },
+    "normal": { "$value": "250ms", "$type": "duration", "$description": "页面切换、展开收起" },
+    "slow": { "$value": "350ms", "$type": "duration", "$description": "弹窗出入场" }
+  },
+  "curve": {
+    "default": {
+      "$value": "cubic-bezier(0.25, 0.1, 0.25, 1)",
+      "$type": "cubicBezier",
+      "$description": "标准缓动"
+    },
+    "spring": {
+      "$value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      "$type": "cubicBezier",
+      "$description": "弹性效果（极少使用）"
+    },
+    "ease-out": {
+      "$value": "cubic-bezier(0, 0, 0.2, 1)",
+      "$type": "cubicBezier",
+      "$description": "元素退出"
+    }
+  }
+}

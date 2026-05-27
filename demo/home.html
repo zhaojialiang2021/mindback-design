@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=393,initial-scale=1.0"/>
+<title>MindBack 首页 — 基座原型</title>
+<style>
+:root {
+  --lp: #212121;
+  --ls: rgba(60,60,67,0.6);
+  --lt: rgba(60,60,67,0.3);
+  --lq: rgba(60,60,67,0.22);
+  --bg0: #fff;
+  --bg1: #f5f5f5;
+  --bg2: #ebebeb;
+  --bg3: #f3f3f3;
+  --ln: rgba(0,0,0,0.08);
+  --bb: #78aafa;
+  --bbl: rgba(120,170,250,0.08);
+  --bbb: rgba(120,170,250,0.2);
+  --bbt: #4184ef;
+  --aw: #fff;
+  --ab: #000;
+  --s2: 8px; --s3: 12px; --s4: 16px; --s6: 24px; --s7: 32px;
+  --rx: 20px; --rf: 9999px;
+  --df: 150ms; --dn: 250ms;
+  --cd: cubic-bezier(0.25,0.1,0.25,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  display:flex;justify-content:center;align-items:center;
+  min-height:100svh;background:#dde1e6;
+  font-family:'PingFang SC',-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.phone{
+  width:393px;height:852px;border-radius:44px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.18),0 0 0 3px #1a1a1a;
+  display:flex;flex-direction:column;background:#1a1a1a;
+  position:relative;
+}
+.notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:126px;height:35px;background:#000;border-radius:0 0 20px 20px;
+  z-index:99;pointer-events:none;
+}
+.sb{
+  height:54px;background:var(--bg0);flex-shrink:0;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 28px 8px;
+}
+.sb-l{font-family:'SF Pro',system-ui;font-size:15px;font-weight:590;color:var(--lp);width:54px}
+.sb-m{width:54px}
+.sb-r{width:54px;display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.sb-r svg{display:block;color:var(--lp)}
+
+.head{
+  height:48px;background:var(--bg0);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--s4);
+}
+.head-logo{font-size:16px;font-weight:500;color:var(--lp);letter-spacing:0.32px}
+.head-right{display:flex;align-items:center;gap:var(--s4)}
+.star-btn{
+  width:20px;height:20px;border:none;background:none;cursor:pointer;padding:0;
+  display:flex;align-items:center;opacity:0.45;transition:all var(--df) var(--cd);
+}
+.star-btn:hover{opacity:1}
+.star-btn.on{opacity:1;color:#f5a623}
+
+.msgs{
+  flex:1;overflow-y:auto;background:var(--bg0);
+  scroll-behavior:smooth;
+}
+.msgs::-webkit-scrollbar{width:0}
+
+.date{
+  text-align:center;font-size:12px;color:var(--lt);
+  padding:10px 0;letter-spacing:0.24px;
+}
+
+/* ——— user bubbles ——— */
+.ur{display:flex;justify-content:flex-end;padding:0 var(--s4) var(--s3)}
+.msg-text{
+  font-size:16px;color:var(--lp);background:var(--bg3);
+  padding:var(--s3) var(--s4);border-radius:var(--rx);
+  max-width:329px;line-height:24px;word-break:break-word;letter-spacing:0.32px;
+}
+.msg-voice{
+  display:flex;align-items:center;gap:8px;
+  font-size:16px;color:var(--lp);background:var(--bg3);
+  padding:var(--s3) 14px;border-radius:var(--rx);
+  min-width:80px;max-width:240px;cursor:pointer;user-select:none;
+  transition:background var(--df) var(--cd);
+}
+.msg-voice:active{background:var(--bg2)}
+.msg-voice .bars{display:flex;align-items:flex-end;gap:2.5px;height:14px}
+.msg-voice .bars i{width:2.5px;background:var(--bbt);border-radius:1px;min-height:3px}
+.msg-voice.playing .bars i{animation:vb .42s ease-in-out infinite alternate}
+.msg-voice.playing .bars i:nth-child(2){animation-delay:.11s}
+.msg-voice.playing .bars i:nth-child(3){animation-delay:.22s}
+.msg-voice.playing .bars i:nth-child(4){animation-delay:.33s}
+@keyframes vb{0%{height:3px}100%{height:14px}}
+
+.msg-link{
+  background:var(--bg0);border:.5px solid var(--ln);
+  border-radius:var(--rx);padding:var(--s3) var(--s4);
+  max-width:329px;display:flex;flex-direction:column;gap:8px;
+  cursor:pointer;transition:background var(--df) var(--cd);
+}
+.msg-link:hover{background:var(--bg1)}
+.msg-link .tl{
+  font-size:16px;color:var(--lp);line-height:24px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.msg-link .row{display:flex;gap:8px;align-items:flex-start}
+.msg-link .thumb{
+  width:68px;height:68px;border-radius:8px;background:linear-gradient(135deg,#e8e4f0,#f0ecf6);
+  flex-shrink:0;
+}
+.msg-link .desc{
+  font-size:14px;color:var(--ls);line-height:22px;flex:1;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.msg-link .src{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--lt);line-height:18px;
+}
+.msg-link .src-dot{width:14px;height:14px;border-radius:3px;background:#ff4d4d;flex-shrink:0}
+
+.msg-photo{
+  width:164px;height:218px;border:.5px solid var(--ln);
+  border-radius:var(--rx);overflow:hidden;cursor:pointer;position:relative;
+}
+.msg-photo img{width:100%;height:100%;object-fit:cover}
+
+.photo-stack{
+  width:236px;height:258px;position:relative;cursor:pointer;
+}
+.photo-stack .p{
+  position:absolute;border:.5px solid var(--ln);
+  border-radius:var(--rx);width:158px;height:210px;overflow:hidden;
+}
+.photo-stack .p img{width:100%;height:100%;object-fit:cover}
+.photo-stack .p:nth-child(1){rotate:-4deg;left:0;top:28px}
+.photo-stack .p:nth-child(2){rotate:3.5deg;left:33px;top:18px}
+.photo-stack .p:nth-child(3){rotate:-4deg;left:65px;top:7px}
+.photo-stack .p:nth-child(4){rotate:4deg;left:33px;top:39px}
+
+/* ——— AI bubbles ——— */
+.ai-row{padding:0 var(--s4) var(--s3)}
+.ai-bub{
+  background:var(--bbl);border:.5px solid var(--bbb);
+  border-radius:var(--rx);padding:var(--s3) var(--s4);
+  font-size:16px;color:var(--bbt);line-height:24px;
+  cursor:pointer;transition:background var(--df) var(--cd);
+}
+.ai-bub:hover{background:rgba(120,170,250,0.13)}
+.ai-loading{display:flex;align-items:center;gap:6px}
+.ai-loading .d{
+  width:8px;height:8px;background:var(--bbt);border-radius:50%;
+  animation:pl .8s infinite alternate;
+}
+.ai-loading .d:nth-child(2){animation-delay:.2s}
+.ai-loading .d:nth-child(3){animation-delay:.4s}
+@keyframes pl{0%{opacity:.3;transform:scale(.8)}100%{opacity:1;transform:scale(1.15)}}
+.ai-src{
+  display:flex;align-items:center;gap:6px;margin-top:8px;
+  font-size:12px;color:var(--ls);line-height:18px;
+  flex-wrap:wrap;
+}
+.ai-src svg{flex-shrink:0;opacity:.4}
+.ai-label{text-align:center;font-size:12px;color:var(--lq);padding:4px 0 32px}
+
+/* AI structured */
+.ai-struct{padding:0 var(--s4) var(--s3)}
+.ai-struct .ct{font-size:16px;color:var(--lp);line-height:26px}
+.ai-struct .ct p{margin-bottom:var(--s3)}
+.ai-struct .qt{display:flex;gap:8px;margin-bottom:var(--s3)}
+.ai-struct .qt .bar{width:2px;background:var(--lq);border-radius:1px;flex-shrink:0}
+.ai-struct .qt .txt{font-size:16px;color:var(--ls);line-height:26px}
+.ai-struct .h3{font-size:20px;font-weight:500;color:var(--lp);line-height:28px;margin-bottom:var(--s3)}
+.ai-struct .li{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;font-size:16px;color:var(--lp);line-height:26px}
+.ai-struct .li .dot{width:6px;height:6px;margin-top:10px;border-radius:50%;background:var(--lt);flex-shrink:0}
+.ai-struct .li b{font-weight:500}
+.ai-struct .divider{height:0;border-top:.5px solid var(--ln);margin-bottom:var(--s3)}
+
+/* ——— input ——— */
+.input-bar{
+  background:var(--bg0);flex-shrink:0;
+  display:flex;align-items:center;gap:var(--s2);
+  padding:10px var(--s3) 34px;
+}
+.attach-btn{
+  width:46px;height:46px;border-radius:28px;background:var(--bg3);
+  border:none;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ls);transition:all var(--df) var(--cd);
+}
+.attach-btn:active{background:var(--bg2)}
+.attach-btn.open{background:var(--bbl)}
+.input-wrap{
+  flex:1;height:48px;background:var(--bg3);border-radius:100px;
+  display:flex;align-items:center;padding:0 8px 0 var(--s4);gap:var(--s3);
+}
+.input-wrap input{
+  flex:1;border:none;background:transparent;font-family:inherit;
+  font-size:16px;color:var(--lp);outline:none;min-width:0;
+}
+.input-wrap input::placeholder{color:var(--lt)}
+.send-btn{
+  width:32px;height:32px;border-radius:50%;background:var(--ab);
+  border:none;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity var(--df) var(--cd),transform var(--df) var(--cd);
+}
+.send-btn:active{transform:scale(.92)}
+.send-btn:disabled{opacity:.25;pointer-events:none}
+
+/* attach panel */
+.att-panel{
+  display:none;background:var(--bg0);
+  border-top:.5px solid var(--ln);
+  padding:var(--s3) var(--s6) 20px;
+  justify-content:space-around;flex-shrink:0;
+}
+.att-panel.open{display:flex}
+.att-item{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  border:none;background:none;font-family:inherit;cursor:pointer;
+  transition:opacity var(--df) var(--cd);
+}
+.att-item:hover{opacity:.65}
+.att-ico{
+  width:38px;height:38px;border-radius:var(--rf);
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  color:var(--ls);
+}
+.att-lbl{font-size:12px;color:var(--ls)}
+
+/* context menu */
+.ctx{
+  position:fixed;display:none;flex-direction:column;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(24px);
+  border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06);
+  padding:4px;z-index:200;min-width:150px;
+}
+.ctx.show{display:flex}
+.ctx button{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:12px;
+  border:none;background:none;font-family:inherit;font-size:15px;
+  color:var(--lp);cursor:pointer;transition:background var(--df) var(--cd);
+}
+.ctx button:hover{background:var(--bg1)}
+.ctx .danger{color:#e74c3c}
+
+/* toast */
+.toast{
+  position:absolute;top:70px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.85);color:var(--aw);font-size:14px;
+  padding:10px 20px;border-radius:12px;
+  opacity:0;pointer-events:none;z-index:300;
+  transition:opacity var(--dn) var(--cd);
+}
+.toast.show{opacity:1}
+
+/* home indicator */
+.hi{
+  height:34px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;background:var(--bg0);
+  position:absolute;bottom:0;left:0;right:0;pointer-events:none;
+}
+.hi-bar{width:134px;height:5px;background:var(--lp);border-radius:100px}
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+<div class="notch"></div>
+
+<!-- status bar -->
+<div class="sb">
+  <span class="sb-l">9:41</span>
+  <div class="sb-m"></div>
+  <div class="sb-r">
+    <svg width="19" height="13" viewBox="0 0 19 13"><rect x="0" y="7" width="3" height="6" rx="1"/><rect x="5" y="5" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="1" width="3" height="12" rx="1" opacity=".35"/></svg>
+    <svg width="17" height="13" viewBox="0 0 17 13"><path d="M8.5 2a6.5 6.5 0 016.5 6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="8.5" r="2" fill="currentColor"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y="2" width="23" height="9" rx="3" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="24" y="4.5" width="2.5" height="4" rx="1.2" opacity=".4"/><rect x="3" y="5" width="17" height="3" rx="1.5"/></svg>
+  </div>
+</div>
+
+<!-- head -->
+<div class="head">
+  <span class="head-logo">MindBack</span>
+  <div class="head-right">
+    <button class="star-btn" id="starBtn" onclick="toggleStar()" aria-label="收藏">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l1.8 5.5h5.8l-4.7 3.4 1.8 5.5L12 13l-4.7 3.4 1.8-5.5L4.4 7.5h5.8z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- messages -->
+<div class="msgs" id="msgs" onclick="hideCtx()">
+  <div class="date">2025/06/11</div>
+
+  <div class="ur"><div class="msg-text">上海 WAIC 大会</div></div>
+
+  <div class="ur"><div class="msg-voice" onclick="playVoice(this)"><span>1"</span><div class="bars"><i></i><i></i><i></i><i></i></div></div></div>
+
+  <div class="ur"><div class="msg-voice" onclick="playVoice(this)"><span>20"</span><div class="bars"><i></i><i></i><i></i><i></i></div></div></div>
+
+  <div class="ur">
+    <div class="msg-link">
+      <div class="tl">Good Taste Leads to money</div>
+      <div class="row">
+        <div class="thumb"></div>
+        <div class="desc">当一块地毯不再只是覆盖地面的织物，当经纬交织的纹路成为空间递出的名片，当光脚触碰到毯面的瞬间…</div>
+      </div>
+      <div class="src"><div class="src-dot"></div>小红书</div>
+    </div>
+  </div>
+
+  <div class="ur"><div class="msg-photo" style="background:linear-gradient(135deg,#e8dff5,#f0e8f8,#d4c8e0)"></div></div>
+
+  <div class="ur">
+    <div class="photo-stack">
+      <div class="p" style="background:linear-gradient(135deg,#d5e8f0,#e0f0f8,#c0d8e8)"></div>
+      <div class="p" style="background:linear-gradient(135deg,#e0d5e8,#f0e0f8,#d0c0e8)"></div>
+      <div class="p" style="background:linear-gradient(135deg,#d5e0e8,#e0eaf0,#c0d0e0)"></div>
+      <div class="p" style="background:linear-gradient(135deg,#e8d8d5,#f8e8e0,#e0c8c0)"></div>
+    </div>
+  </div>
+
+  <div class="date">2025/06/11</div>
+
+  <div class="ai-row">
+    <div class="ai-bub" id="ai1">
+      <div class="ai-loading" id="ai1-load">
+        <div class="d"></div><div class="d"></div><div class="d"></div>
+        <span style="color:var(--bbt);font-size:16px;margin-left:4px">正在思考…</span>
+      </div>
+      <div id="ai1-res" style="display:none">帮我总结一下上面的信息帮我总结一下</div>
+    </div>
+    <div class="ai-src">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+      <span>想要这周末去趟杭州玩，计划从上海直接座高铁去，第一天就先去苏堤散散步，第二天还想去 …</span>
+    </div>
+  </div>
+  <div class="ai-label">内容由 AI 生成</div>
+
+  <div class="date">2025/06/11</div>
+
+  <div class="ai-struct">
+    <div class="ct">
+      <p>久等啦～ 针对你刚才提出的问题：</p>
+      <div class="qt"><div class="bar"></div><div class="txt">帮我总结一下上面的信息帮我总结一下上面的信息帮我总结一下上面帮我总结一下上面的信息</div></div>
+      <p>我把要点整理成了一篇杭州周末出游计划，希望对你有帮助。</p>
+      <div class="divider"></div>
+      <p class="h3">杭州周末出游计划 摘要</p>
+      <p class="h3">主要议题与热点内容</p>
+      <p style="font-size:16px;font-weight:500;color:var(--lp);line-height:26px;margin-bottom:6px">1. 核心信息</p>
+      <div class="li"><div class="dot"></div><span><b>目的地：</b>杭州</span></div>
+      <div class="li"><div class="dot"></div><span><b>时间：</b>这个周末（10月26日 - 10月27日）</span></div>
+      <div class="li"><div class="dot"></div><span><b>交通方式：</b>我们决定坐高铁前往，方便又快捷。</span></div>
+      <p style="font-size:16px;font-weight:500;color:var(--lp);line-height:26px;margin:12px 0 6px">2. 行程安排</p>
+      <p style="font-size:16px;font-weight:500;color:var(--lp);line-height:26px;margin-bottom:6px">Day 1（周六）：</p>
+      <div class="li" style="padding-left:20px"><div class="dot"></div><span>上午：乘坐 G7501 次列车（09:05 出发）前往杭州。</span></div>
+      <div class="li" style="padding-left:20px"><div class="dot"></div><span>下午：入住西湖边的"静庐"民宿后，沿苏堤漫步。</span></div>
+      <div class="li" style="padding-left:20px"><div class="dot"></div><span>晚上：去看你很期待的《印象西湖》演出。</span></div>
+    </div>
+  </div>
+  <div class="ai-label">内容由 AI 生成</div>
+</div>
+
+<!-- attach panel -->
+<div class="att-panel" id="attPanel">
+  <button class="att-item" onclick="doAttach('照片')">
+    <div class="att-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+    <span class="att-lbl">照片</span>
+  </button>
+  <button class="att-item" onclick="doAttach('拍摄')">
+    <div class="att-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span class="att-lbl">拍摄</span>
+  </button>
+  <button class="att-item" onclick="doAttach('文件')">
+    <div class="att-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+    <span class="att-lbl">文件</span>
+  </button>
+</div>
+
+<!-- input bar -->
+<div class="input-bar">
+  <button class="attach-btn" id="attBtn" onclick="toggleAtt()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="2" width="16" height="20" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M22 17l-5-5-3.5 3.5L10 12l-6 6"/></svg>
+  </button>
+  <div class="input-wrap">
+    <input type="text" id="inp" placeholder="现在的想法" onkeydown="if(event.key==='Enter')send()" oninput="document.getElementById('sbtn').disabled=!this.value.trim()"/>
+  </div>
+  <button class="send-btn" id="sbtn" disabled onclick="send()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--aw)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+</div>
+
+<div class="hi"><div class="hi-bar"></div></div>
+
+<div class="ctx" id="ctx">
+  <button onclick="ctxAct('复制')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>复制</button>
+  <button onclick="ctxAct('引用')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h12"/><path d="M10 11h4a4 4 0 014 4v2"/></svg>引用</button>
+  <button onclick="ctxAct('分享')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>分享</button>
+  <button class="danger" onclick="ctxAct('删除')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6h12"/></svg>删除</button>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+function toggleStar(){
+  var b=document.getElementById('starBtn');
+  b.classList.toggle('on');
+  toast(b.classList.contains('on')?'已收藏':'已取消收藏');
+}
+function toggleAtt(){
+  document.getElementById('attPanel').classList.toggle('open');
+  document.getElementById('attBtn').classList.toggle('open');
+}
+function doAttach(t){toast(t+' 功能开发中');document.getElementById('attPanel').classList.remove('open');document.getElementById('attBtn').classList.remove('open')}
+function playVoice(el){
+  document.querySelectorAll('.msg-voice').forEach(function(v){v.classList.remove('playing')});
+  el.classList.add('playing');
+  toast('正在播放语音…');
+  setTimeout(function(){el.classList.remove('playing')},2200)
+}
+function send(){
+  var inp=document.getElementById('inp');
+  var t=inp.value.trim();if(!t)return;
+  var ms=document.getElementById('msgs');
+  var now=new Date();
+  var ds=now.getFullYear()+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+String(now.getDate()).padStart(2,'0');
+  var bgs=ms.querySelectorAll('.date');
+  if(!bgs.length||bgs[bgs.length-1].textContent!==ds){var d=document.createElement('div');d.className='date';d.textContent=ds;ms.appendChild(d)}
+  var ur=document.createElement('div');ur.className='ur';ur.innerHTML='<div class="msg-text">'+esc(t)+'</div>';ms.appendChild(ur);
+  var ar=document.createElement('div');ar.className='ai-row';ar.innerHTML='<div class="ai-bub"><div class="ai-loading"><div class="d"></div><div class="d"></div><div class="d"></div><span style="color:var(--bbt);font-size:16px;margin-left:4px">正在思考…</span></div><div style="display:none" class="ai-res"></div></div><div class="ai-src"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" opacity="0.4"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg><span>'+esc(t)+'</span></div>';ms.appendChild(ar);
+  var lb=document.createElement('div');lb.className='ai-label';lb.textContent='内容由 AI 生成';lb.style.display='none';ms.appendChild(lb);
+  setTimeout(function(){
+    ar.querySelector('.ai-loading').style.display='none';
+    var r=ar.querySelector('.ai-res');r.style.display='block';
+    var reps=['收到～ 已经记下了「'+esc(t)+'」，我会在合适的时间提醒你。','好的，这条信息我已经归档到你的记忆流中，随时可以回溯。','明白了！需要我帮你总结一下相关内容吗？','记下了。要看看相关的历史记录吗？'];
+    r.textContent=reps[Math.floor(Math.random()*reps.length)];
+    lb.style.display='';
+    ms.scrollTop=ms.scrollHeight
+  },1000+Math.random()*1200);
+  inp.value='';document.getElementById('sbtn').disabled=true;
+  document.getElementById('attPanel').classList.remove('open');
+  document.getElementById('attBtn').classList.remove('open');
+  ms.scrollTop=ms.scrollHeight
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+var ctxEl=null;
+function showCtx(e,el){e.preventDefault();ctxEl=el;var m=document.getElementById('ctx');m.style.left=Math.min(e.clientX-70,250)+'px';m.style.top=Math.min(e.clientY-20,620)+'px';m.classList.add('show');return false}
+function hideCtx(){document.getElementById('ctx').classList.remove('show');ctxEl=null}
+function ctxAct(a){
+  if(ctxEl&&a==='删除'){ctxEl.style.opacity='0';ctxEl.style.transform='scale(.9)';ctxEl.style.transition='all 250ms cubic-bezier(0.25,0.1,0.25,1)';setTimeout(function(){ctxEl.remove()},250)}
+  toast(a+(ctxEl?' 操作已执行':''));
+  hideCtx()
+}
+
+var ttTimer;
+function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(ttTimer);ttTimer=setTimeout(function(){e.classList.remove('show')},2000)}
+
+setTimeout(function(){var l=document.getElementById('ai1-load');var r=document.getElementById('ai1-res');if(l&&r){l.style.display='none';r.style.display='block'}},1800);
+
+document.getElementById('msgs').addEventListener('click',function(e){if(!e.target.closest('.msg-voice')&&!e.target.closest('.msg-link')&&!e.target.closest('.msg-photo')&&!e.target.closest('.photo-stack')){document.getElementById('attPanel').classList.remove('open');document.getElementById('attBtn').classList.remove('open')}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')hideCtx()});
+
+// 给可长按的消息绑事件
+document.querySelectorAll('.ur').forEach(function(r){r.addEventListener('contextmenu',function(e){showCtx(e,r)})});
+</script>
+</body>
+</html>

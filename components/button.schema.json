@@ -1,0 +1,90 @@
+{
+  "$schema": "https://mindback.design/schemas/component.schema.json",
+  "slug": "button",
+  "name": "Button",
+  "category": "action",
+  "description": "用户主动触发的动作单元。MindBack 风格：Pill / Rounded Rect 形态、品牌色克制使用、单视图最多一个 primary。",
+  "props": {
+    "intent": {
+      "values": ["primary", "secondary", "soft", "ghost", "destructive"],
+      "default": "primary",
+      "description": "意图层级。primary 主操作（CTA、提交）；secondary 次要操作（取消）；soft 品牌色辅助（小红点击操作如「填写领取」）；ghost 极弱（链接状）；destructive 不可逆动作（删除/退出）"
+    },
+    "size": {
+      "values": ["compact", "standard", "large"],
+      "default": "standard",
+      "description": "compact 34px / standard 48px / large 51px"
+    },
+    "icon": {
+      "values": ["none", "leading", "only"],
+      "default": "none",
+      "description": "图标位置。leading 文字左侧 20px 图标；only 图标按钮，无文字"
+    },
+    "fullWidth": {
+      "values": [false, true],
+      "default": false,
+      "description": "是否占满容器宽度（启动页 CTA 等场景）"
+    }
+  },
+  "states": ["idle", "hover", "active", "loading", "disabled"],
+  "constraints": [
+    {
+      "rule": "max_primary_per_view",
+      "value": 1,
+      "description": "同一页面最多一个 primary 按钮，避免主次失焦"
+    },
+    {
+      "rule": "destructive_requires",
+      "value": "irreversible_action",
+      "description": "destructive 仅用于不可逆动作（删除、退出登录、清空）"
+    },
+    {
+      "rule": "icon_only_requires_aria_label",
+      "value": true,
+      "description": "icon=only 时必须提供 aria-label"
+    }
+  ],
+  "tokens": {
+    "intent.primary.bg": "label-primary",
+    "intent.primary.fg": "bg-0",
+    "intent.secondary.bg": "transparent",
+    "intent.secondary.fg": "label-primary",
+    "intent.secondary.border": "label-secondary",
+    "intent.soft.bg": "brand-blue-light",
+    "intent.soft.fg": "brand-blue-text",
+    "intent.ghost.bg": "transparent",
+    "intent.ghost.fg": "label-primary",
+    "intent.destructive.bg": "accent-pink",
+    "intent.destructive.fg": "bg-0",
+    "size.compact.height": "34px",
+    "size.standard.height": "48px",
+    "size.large.height": "51px",
+    "size.compact.font": "caption-1",
+    "size.standard.font": "callout",
+    "size.large.font": "callout",
+    "size.compact.padding-x": "space-3",
+    "size.standard.padding-x": "space-4",
+    "size.large.padding-x": "space-5",
+    "radius": "radius-full"
+  },
+  "haptics": {
+    "active": "light"
+  },
+  "anatomy": [
+    { "part": "container", "tokens": ["bg", "radius", "padding-x", "height"] },
+    { "part": "icon", "tokens": ["fg", "size:20px", "gap:space-1"] },
+    { "part": "label", "tokens": ["fg", "font"] }
+  ],
+  "doDont": {
+    "do": [
+      "在 CTA 位置使用 size=large + fullWidth=true",
+      "destructive 配合二次确认弹层使用",
+      "icon=only 时按钮宽高都是 size 的高度，正方形"
+    ],
+    "dont": [
+      "不要在同一视图放两个 intent=primary 的按钮",
+      "不要把 destructive 用在「保存」「确认」这种正向动作",
+      "不要在 button 内嵌 button 或链接"
+    ]
+  }
+}

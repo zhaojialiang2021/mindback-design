@@ -1,0 +1,139 @@
+/* tokens.css —— 由 scripts/build-tokens.mjs 从 tokens/*.json 生成
+ * 不要手动修改。改令牌请改 tokens/*.json，跑 node scripts/build-tokens.mjs。
+ * 真相源：tokens/*.json (W3C Design Tokens 格式)
+ */
+
+:root {
+  --label-primary: #212121;
+  --label-secondary: rgba(60,60,67,0.6);
+  --label-tertiary: rgba(60,60,67,0.3);
+  --label-quaternary: rgba(60,60,67,0.22);
+  --bg-0: #FFFFFF;
+  --bg-1: #F5F5F5;
+  --bg-2: #EBEBEB;
+  --bg-3: #D8D8D8;
+  --bg-4: #E6E6E6;
+  --fill-primary: rgba(120,120,128,0.2);
+  --fill-secondary: rgba(120,120,128,0.16);
+  --fill-tertiary: rgba(120,120,128,0.12);
+  --fill-quaternary: rgba(120,120,128,0.08);
+  --fill-inverted-primary: rgba(255,255,255,0.32);
+  --fill-inverted-secondary: rgba(255,255,255,0.24);
+  --fill-inverted-tertiary: rgba(255,255,255,0.16);
+  --fill-inverted-quaternary: rgba(255,255,255,0.08);
+  --line-opaque: #C5C5C7;
+  --line-non-opaque: rgba(0,0,0,0.08);
+  --brand-blue: #78AAFA;
+  --brand-blue-light: rgba(120,170,250,0.08);
+  --brand-blue-border: rgba(120,170,250,0.2);
+  --brand-blue-text: #4184EF;
+  --accent-blue: #78AAFA;
+  --accent-yellow: #FFCC00;
+  --accent-green: #34C759;
+  --accent-pink: #FF6482;
+  --accent-brown: #916964;
+  --accent-event-blue: #5B9BDB;
+  --link: #133667;
+  --backdrop: rgba(0,0,0,0.32);
+  --deco-teal: #81D5CA;
+  --deco-sky: #84B1EB;
+  --deco-lavender: #9F8CCF;
+  --deco-sage: #A0C484;
+  --deco-rose: #AA7D78;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --radius-small: 6px;
+  --radius-medium: 8px;
+  --radius-large: 12px;
+  --radius-x-large: 20px;
+  --radius-xlarge: 20px; /* 别名：保持 BEM-like 命名习惯，与 --radius-x-large 等价 */
+  --radius-full: 9999px;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --curve-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --curve-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --curve-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --shadow-modal: 0 8px 32px rgba(0,0,0,0.12);
+  --font-family: PingFang SC, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif;
+  --headline-h1-size: 32px;
+  --headline-h1-weight: 500;
+  --headline-h1-line-height: 1.2;
+  --headline-h2-size: 24px;
+  --headline-h2-weight: 500;
+  --headline-h2-line-height: 1.3;
+  --headline-h3-size: 20px;
+  --headline-h3-weight: 500;
+  --headline-h3-line-height: 1.35;
+  --body-primary-size: 17px;
+  --body-primary-weight: 400;
+  --body-primary-line-height: 1.5;
+  --body-secondary-size: 15px;
+  --body-secondary-weight: 400;
+  --body-secondary-line-height: 1.45;
+  --callout-size: 16px;
+  --callout-weight: 500;
+  --callout-line-height: 1.4;
+  --subhead-size: 14px;
+  --subhead-weight: 400;
+  --subhead-line-height: 1.4;
+  --footnote-size: 13px;
+  --footnote-weight: 400;
+  --footnote-line-height: 1.38;
+  --caption-1-size: 12px;
+  --caption-1-weight: 400;
+  --caption-1-line-height: 1.3;
+  --caption-2-size: 11px;
+  --caption-2-weight: 400;
+  --caption-2-line-height: 1.2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --label-primary: #F8F9F9;
+    --label-secondary: rgba(235,235,245,0.6);
+    --label-tertiary: rgba(235,235,245,0.3);
+    --label-quaternary: rgba(235,235,245,0.22);
+    --bg-0: #101010;
+    --bg-1: #1A1A1A;
+    --bg-2: #242424;
+    --bg-3: #2C2C2C;
+    --bg-4: #333333;
+    --fill-primary: rgba(120,120,128,0.36);
+    --fill-secondary: rgba(120,120,128,0.32);
+    --fill-tertiary: rgba(120,120,128,0.24);
+    --fill-quaternary: rgba(120,120,128,0.18);
+    --line-opaque: #545458;
+    --line-non-opaque: rgba(255,255,255,0.08);
+    --link: #C6D9EF;
+    --shadow-modal: 0 8px 32px rgba(0,0,0,0.48);
+  }
+}
+
+[data-theme='dark'] {
+  --label-primary: #F8F9F9;
+  --label-secondary: rgba(235,235,245,0.6);
+  --label-tertiary: rgba(235,235,245,0.3);
+  --label-quaternary: rgba(235,235,245,0.22);
+  --bg-0: #101010;
+  --bg-1: #1A1A1A;
+  --bg-2: #242424;
+  --bg-3: #2C2C2C;
+  --bg-4: #333333;
+  --fill-primary: rgba(120,120,128,0.36);
+  --fill-secondary: rgba(120,120,128,0.32);
+  --fill-tertiary: rgba(120,120,128,0.24);
+  --fill-quaternary: rgba(120,120,128,0.18);
+  --line-opaque: #545458;
+  --line-non-opaque: rgba(255,255,255,0.08);
+  --link: #C6D9EF;
+  --shadow-modal: 0 8px 32px rgba(0,0,0,0.48);
+}

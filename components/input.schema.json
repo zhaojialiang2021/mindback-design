@@ -1,0 +1,88 @@
+{
+  "$schema": "https://mindback.design/schemas/component.schema.json",
+  "slug": "input",
+  "name": "Input",
+  "category": "form",
+  "description": "单行文字输入。状态最多的组件——empty / focus / error / disabled / loading 必须全覆盖，否则 AI 生成时会随机漏。",
+  "props": {
+    "size": {
+      "values": ["compact", "standard"],
+      "default": "standard",
+      "description": "compact 36px / standard 44px"
+    },
+    "kind": {
+      "values": ["text", "search", "password"],
+      "default": "text",
+      "description": "类型。search 左侧带搜索图标；password 右侧带 eye 切换"
+    },
+    "leadingIcon": {
+      "values": [false, true],
+      "default": false,
+      "description": "是否显示前置图标位"
+    },
+    "trailingAction": {
+      "values": ["none", "clear", "submit"],
+      "default": "none",
+      "description": "尾部动作。clear 已输入时显示叉号；submit 显示发送按钮"
+    }
+  },
+  "states": ["empty", "focus", "filled", "error", "disabled", "loading"],
+  "constraints": [
+    {
+      "rule": "error_requires_message",
+      "value": true,
+      "description": "error 状态必须配文案，不能只让边框变红"
+    },
+    {
+      "rule": "loading_disables_input",
+      "value": true,
+      "description": "loading 时输入框不可编辑（disabled 视觉），右侧显示菊花"
+    },
+    {
+      "rule": "placeholder_not_label",
+      "value": true,
+      "description": "placeholder 不能替代 label，必须有独立的 label 或 aria-label"
+    }
+  ],
+  "tokens": {
+    "container.bg": "fill-quaternary",
+    "container.bg.focus": "bg-0",
+    "container.border.idle": "transparent",
+    "container.border.focus": "brand-blue",
+    "container.border.error": "accent-pink",
+    "container.radius": "radius-medium",
+    "container.padding-x": "space-3",
+    "container.height.compact": "36px",
+    "container.height.standard": "44px",
+    "label.font": "subhead",
+    "label.color": "label-secondary",
+    "value.font": "body-secondary",
+    "value.color": "label-primary",
+    "placeholder.color": "label-tertiary",
+    "error.font": "footnote",
+    "error.color": "accent-pink",
+    "icon.size": "20px",
+    "icon.color": "label-tertiary"
+  },
+  "anatomy": [
+    { "part": "label", "tokens": ["label.font", "label.color"] },
+    { "part": "container", "tokens": ["container.bg", "container.border.*", "container.radius", "container.height.*"] },
+    { "part": "leading-icon", "tokens": ["icon.size", "icon.color"] },
+    { "part": "value", "tokens": ["value.font", "value.color"] },
+    { "part": "placeholder", "tokens": ["placeholder.color"] },
+    { "part": "trailing-action", "tokens": ["icon.size"] },
+    { "part": "error-message", "tokens": ["error.font", "error.color"] }
+  ],
+  "doDont": {
+    "do": [
+      "label 写在输入框上方，不要和 placeholder 二选一",
+      "error 状态同时改边框 + 显示文案 + 触发 haptic light",
+      "loading 用菊花替代 trailingAction，禁用输入"
+    ],
+    "dont": [
+      "不要用 placeholder 当 label",
+      "不要让 disabled 看起来像 idle（区别于 read-only）",
+      "不要把验证错误悄悄塞在角落，必须显式占行"
+    ]
+  }
+}

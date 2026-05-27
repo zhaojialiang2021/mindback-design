@@ -1,0 +1,81 @@
+{
+  "$schema": "https://mindback.design/schemas/component.schema.json",
+  "slug": "sheet",
+  "name": "Sheet",
+  "category": "overlay",
+  "description": "弹层 / 抽屉的语义统一。很多团队把 Sheet / Drawer / Modal / Action Sheet 混着用，MindBack 强制语义区分：Sheet 是从屏幕边缘滑入的临时上下文，Modal 是中央对齐的强制选择。",
+  "props": {
+    "side": {
+      "values": ["bottom", "right"],
+      "default": "bottom",
+      "description": "滑入方向。bottom 移动端常用（高度 50–90%），right 桌面常用（宽 320–480px）"
+    },
+    "size": {
+      "values": ["compact", "standard", "full"],
+      "default": "standard",
+      "description": "compact 占屏 40%，standard 65%，full 95%（保留状态栏）"
+    },
+    "modal": {
+      "values": [true, false],
+      "default": true,
+      "description": "是否屏蔽背景点击。modal=true 时点遮罩外才关闭；false 时 sheet 像 popover"
+    },
+    "dragToDismiss": {
+      "values": [true, false],
+      "default": true,
+      "description": "是否允许下拉 / 右滑关闭。仅 side=bottom 且 size != full 生效"
+    }
+  },
+  "states": ["entering", "open", "closing", "closed"],
+  "constraints": [
+    {
+      "rule": "not_for_critical_choice",
+      "value": true,
+      "description": "需要用户做不可逆决策时用 Modal，不用 Sheet（Sheet 容易被滑掉）"
+    },
+    {
+      "rule": "single_sheet_at_a_time",
+      "value": true,
+      "description": "同一时刻只允许一个 Sheet 打开，禁止 Sheet 上叠 Sheet"
+    },
+    {
+      "rule": "drag_handle_required",
+      "value": true,
+      "description": "side=bottom 且 dragToDismiss=true 时必须显示拖拽 handle（视觉提示）"
+    }
+  ],
+  "tokens": {
+    "container.bg": "bg-0",
+    "container.shadow": "shadow-modal",
+    "container.radius.bottom": "radius-x-large radius-x-large 0px 0px",
+    "container.radius.right": "radius-x-large 0px 0px radius-x-large",
+    "backdrop.bg": "color.backdrop",
+    "handle.bg": "fill-tertiary",
+    "handle.width": "36px",
+    "handle.height": "4px",
+    "padding": "space-5",
+    "duration.enter": "duration-slow",
+    "duration.exit": "duration-normal",
+    "curve": "curve-default"
+  },
+  "anatomy": [
+    { "part": "backdrop", "tokens": ["backdrop.bg", "duration.enter"] },
+    { "part": "container", "tokens": ["container.bg", "container.shadow", "container.radius.*", "padding"] },
+    { "part": "drag-handle (bottom only)", "tokens": ["handle.bg", "handle.size"] },
+    { "part": "header (optional)", "description": "标题 + 关闭按钮，typography.headline-h3" },
+    { "part": "content", "description": "可滚动主体" },
+    { "part": "footer (optional)", "description": "动作区，sticky 在底部" }
+  ],
+  "doDont": {
+    "do": [
+      "选择列表 / 筛选 / 详情预览用 Sheet",
+      "side=bottom 时高度跟随内容，超过 90vh 时启用滚动",
+      "拖拽到 30% 阈值才触发关闭，避免误触"
+    ],
+    "dont": [
+      "不要用 Sheet 做关键确认（删除前的二次确认必须 Modal）",
+      "不要在 Sheet 上再叠 Sheet",
+      "不要让 Sheet 的圆角与全屏页混淆 —— 永远露出顶部状态栏的 backdrop"
+    ]
+  }
+}

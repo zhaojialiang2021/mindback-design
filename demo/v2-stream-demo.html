@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindBack V2 — 圆桌终态方案</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang SC", -apple-system, sans-serif;
+    background: #EBEBEB;
+    padding: 40px 16px 80px;
+    color: #212121;
+  }
+
+  /* ============ Header ============ */
+  .page-header {
+    text-align: center; margin-bottom: 48px;
+  }
+  .page-header h1 {
+    font-size: 28px; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 8px;
+  }
+  .page-header .sub {
+    font-size: 14px; color: rgba(60,60,67,0.5); max-width: 520px; margin: 0 auto; line-height: 1.6;
+  }
+
+  /* ============ Roundtable Summary ============ */
+  .summary-bar {
+    max-width: 800px; margin: 0 auto 48px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .summary-card {
+    background: #FFFFFF; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .summary-card .sc-verdict {
+    font-size: 13px; font-weight: 500; margin-bottom: 4px;
+  }
+  .sc-verdict.keep { color: #34C759; }
+  .sc-verdict.change { color: #FF9500; }
+  .sc-verdict.drop { color: #D32F2F; }
+  .summary-card h4 { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+  .summary-card p { font-size: 13px; color: rgba(60,60,67,0.6); line-height: 1.55; }
+
+  /* ============ Main Layout ============ */
+  .demo-row {
+    display: flex; justify-content: center; align-items: flex-start;
+    gap: 48px; flex-wrap: wrap; margin-bottom: 56px;
+  }
+
+  /* ============ Phone ============ */
+  .phone {
+    width: 393px; background: #FFFFFF; border-radius: 20px;
+    overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    display: flex; flex-direction: column; max-height: 852px; flex-shrink: 0;
+  }
+
+  .statusbar {
+    height: 50px; padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "SF Pro", -apple-system, sans-serif;
+    font-size: 17px; font-weight: 600; flex-shrink: 0;
+  }
+
+  .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+
+  /* ---- Stream Header ---- */
+  .stream-header {
+    padding: 12px 16px 0; display: flex; justify-content: space-between; align-items: center;
+  }
+  .stream-header .logo {
+    font-size: 18px; font-weight: 600; color: #212121;
+  }
+  .stream-header .profile-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #F5F5F5; border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; cursor: pointer;
+  }
+
+  /* ---- Insight at Top of Stream ---- */
+  .insight-banner {
+    margin: 12px 16px 4px;
+    background: linear-gradient(135deg, rgba(120,170,250,0.06) 0%, rgba(120,170,250,0.02) 100%);
+    border: 1px solid rgba(120,170,250,0.15);
+    border-radius: 16px; padding: 16px;
+    cursor: pointer;
+  }
+  .insight-banner .ib-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  }
+  .insight-banner .ib-icon {
+    width: 20px; height: 20px; border-radius: 6px;
+    background: #78AAFA; color: #FFFFFF;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+  .insight-banner .ib-label {
+    font-size: 12px; color: #78AAFA; font-weight: 500;
+  }
+  .insight-banner h3 {
+    font-size: 16px; font-weight: 500; line-height: 1.4; margin-bottom: 4px;
+  }
+  .insight-banner .ib-thesis {
+    font-size: 14px; color: rgba(60,60,67,0.65); line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .insight-banner .ib-tap {
+    font-size: 12px; color: rgba(60,60,67,0.35); margin-top: 8px;
+  }
+
+  /* ---- Expanded Insight Card (click) ---- */
+  .insight-expanded {
+    margin: 8px 16px;
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px; padding: 20px;
+  }
+  .insight-expanded .ie-tag {
+    display: inline-block; background: #F5F5F5;
+    color: rgba(60,60,67,0.6); font-size: 12px;
+    padding: 2px 8px; border-radius: 9999px; margin-bottom: 12px;
+  }
+  .insight-expanded h3 {
+    font-size: 20px; font-weight: 500; line-height: 1.35; margin-bottom: 8px;
+  }
+  .insight-expanded .ie-thesis {
+    font-size: 17px; line-height: 1.5; margin-bottom: 16px;
+  }
+  .insight-expanded .ie-sources {
+    border-left: 2px solid #78AAFA; padding-left: 12px; margin-bottom: 16px;
+  }
+  .insight-expanded .ie-source-item {
+    font-size: 13px; color: rgba(60,60,67,0.6); line-height: 1.5; margin-bottom: 6px;
+  }
+  .ie-source-date { color: rgba(60,60,67,0.3); font-size: 11px; }
+  .insight-expanded .ie-actions {
+    display: flex; gap: 12px;
+  }
+  .insight-expanded .ie-actions button {
+    flex: 1; height: 36px; border-radius: 9999px; border: none;
+    font-family: "PingFang SC", -apple-system, sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+  }
+  .btn-primary { background: #212121; color: #FFFFFF; }
+  .btn-ghost { background: transparent; color: rgba(60,60,67,0.6); }
+  .btn-secondary { background: #F5F5F5; color: #212121; }
+
+  /* ---- Stream Messages ---- */
+  .feed { padding: 0 16px; }
+  .date-marker {
+    text-align: center; font-size: 13px;
+    color: rgba(60,60,67,0.45); padding: 12px 0;
+  }
+  .user-msg { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+  .user-msg .bubble {
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px; padding: 12px 16px;
+    max-width: calc(100% - 48px); font-size: 17px; line-height: 1.5;
+  }
+  .ai-msg { margin-bottom: 12px; }
+  .ai-msg .bubble {
+    background: rgba(120,170,250,0.08);
+    border: 1px solid rgba(120,170,250,0.2);
+    border-radius: 20px; padding: 16px;
+    font-size: 17px; line-height: 1.5;
+  }
+  .ai-msg .lead { margin-bottom: 12px; }
+  .ai-msg .quote-block {
+    border-left: 2px solid #78AAFA; padding-left: 12px; margin-bottom: 12px;
+  }
+  .ai-msg .quote-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .ai-msg .quote-copy { font-size: 14px; color: rgba(60,60,67,0.6); }
+  .ai-msg .ai-label { font-size: 12px; color: rgba(60,60,67,0.3); margin-top: 12px; }
+
+  .input-bar-wrap { padding: 8px 16px 0; flex-shrink: 0; }
+  .input-bar {
+    display: flex; align-items: center; gap: 8px; background: #FFFFFF; padding: 8px 0;
+  }
+  .attach-btn {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: #D8D8D8; border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: rgba(60,60,67,0.5); flex-shrink: 0;
+  }
+  .input-field {
+    flex: 1; height: 48px; border-radius: 100px;
+    background: #D8D8D8; border: none;
+    display: flex; align-items: center; padding: 0 16px; justify-content: space-between;
+  }
+  .input-field .placeholder { font-size: 17px; color: rgba(60,60,67,0.3); }
+  .input-right { display: flex; align-items: center; gap: 8px; }
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #212121; border: none; display: flex;
+    align-items: center; justify-content: center; color: #FFFFFF; font-size: 14px;
+  }
+
+  /* ---- TabBar v2: just 1 tab + search ---- */
+  .bottombar {
+    height: 84px; display: flex;
+    border-top: 0.5px solid rgba(0,0,0,0.08);
+    padding-top: 8px; flex-shrink: 0;
+  }
+  .bb-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    font-size: 10px; color: rgba(60,60,67,0.45);
+    user-select: none; padding-top: 4px; cursor: pointer;
+  }
+  .bb-item.on { color: #212121; }
+  .bb-icon {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  /* ============ Search Page ============ */
+  .search-page { padding: 0 16px; display: flex; flex-direction: column; height: 100%; }
+  .search-bar-wrap { padding: 12px 0; flex-shrink: 0; }
+  .search-bar {
+    height: 40px; border-radius: 12px; background: #F5F5F5;
+    display: flex; align-items: center; padding: 0 12px; gap: 8px;
+  }
+  .search-bar input {
+    flex: 1; border: none; background: transparent;
+    font-family: "PingFang SC", -apple-system, sans-serif;
+    font-size: 16px; color: #212121; outline: none;
+  }
+  .search-bar input::placeholder { color: rgba(60,60,67,0.3); }
+  .search-bar .clear-btn {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(60,60,67,0.2); border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; cursor: pointer; color: #FFFFFF;
+  }
+
+  .search-section { margin-bottom: 24px; flex-shrink: 0; }
+  .search-section h4 {
+    font-size: 14px; color: rgba(60,60,67,0.45); margin-bottom: 8px;
+  }
+
+  .search-result {
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px; padding: 16px; margin-bottom: 8px;
+  }
+  .search-result .sr-title {
+    font-size: 16px; font-weight: 500; margin-bottom: 4px;
+  }
+  .search-result .sr-snippet {
+    font-size: 14px; color: rgba(60,60,67,0.6); line-height: 1.45; margin-bottom: 8px;
+  }
+  .search-result .sr-meta {
+    font-size: 12px; color: rgba(60,60,67,0.35);
+    display: flex; gap: 12px; align-items: center;
+  }
+  .search-result .sr-source-tag {
+    padding: 1px 6px; border-radius: 9999px;
+    font-size: 10px; font-weight: 500;
+  }
+  .sr-tag-recorded { background: #F5F5F5; color: rgba(60,60,67,0.6); }
+  .sr-tag-hubble { background: rgba(120,170,250,0.1); color: #78AAFA; }
+
+  /* ============ Profile Modal ============ */
+  .profile-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 100;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .profile-sheet {
+    width: 393px; max-height: 80vh; background: #FFFFFF;
+    border-radius: 20px 20px 0 0; overflow: hidden;
+  }
+  .sheet-handle {
+    width: 36px; height: 4px; background: rgba(0,0,0,0.15);
+    border-radius: 2px; margin: 12px auto 0;
+  }
+  .sheet-content { padding: 16px; }
+  .user-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px; margin-bottom: 8px;
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); border-radius: 20px;
+  }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 50%; background: #D8D8D8;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  .user-info .nick { font-size: 18px; font-weight: 500; color: rgba(0,0,0,0.8); }
+  .user-info .uid { font-size: 12px; color: rgba(60,60,67,0.45); }
+
+  .me-group { margin-bottom: 16px; }
+  .me-group-title { font-size: 14px; color: rgba(60,60,67,0.45); padding: 8px 0; }
+  .me-group-body {
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px; overflow: hidden;
+  }
+  .me-row {
+    height: 48px; padding: 0 16px;
+    display: flex; align-items: center; justify-content: space-between; font-size: 16px;
+  }
+  .me-row + .me-row { border-top: 0.5px solid rgba(0,0,0,0.08); }
+  .me-row .row-label { color: #212121; }
+  .me-row .row-value { color: rgba(60,60,67,0.45); font-size: 16px; display: flex; align-items: center; gap: 4px; }
+  .switch-track {
+    width: 40px; height: 24px; border-radius: 9999px;
+    background: #6EC971; position: relative;
+  }
+  .switch-track::after {
+    content: ""; position: absolute;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #FFFFFF; top: 2px; right: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .version-row { text-align: center; padding: 8px; font-size: 12px; color: rgba(60,60,67,0.3); }
+
+  /* ============ Annotation Panel ============ */
+  .anno-panel {
+    width: 320px; flex-shrink: 0;
+  }
+  .anno-panel h2 {
+    font-size: 22px; font-weight: 500; margin-bottom: 4px;
+  }
+  .anno-panel .meta {
+    font-size: 13px; color: rgba(60,60,67,0.45); margin-bottom: 16px;
+    display: flex; gap: 12px;
+  }
+  .anno-panel .meta span {
+    background: #F5F5F5; padding: 2px 8px; border-radius: 9999px;
+  }
+  .anno-card {
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px; padding: 16px; margin-bottom: 12px; position: relative;
+  }
+  .anno-card::before {
+    content: ""; position: absolute; left: 0; top: 16px; bottom: 16px;
+    width: 3px; border-radius: 0 2px 2px 0;
+  }
+  .anno-card.a-green::before { background: #34C759; }
+  .anno-card.a-orange::before { background: #FF9500; }
+  .anno-card.a-red::before { background: #D32F2F; }
+  .anno-card .a-label {
+    font-size: 11px; font-weight: 500; margin-bottom: 4px; letter-spacing: 0.04em;
+  }
+  .anno-card.a-green .a-label { color: #34C759; }
+  .anno-card.a-orange .a-label { color: #FF9500; }
+  .anno-card.a-red .a-label { color: #D32F2F; }
+  .anno-card h4 { font-size: 15px; font-weight: 500; margin-bottom: 6px; color: #212121; }
+  .anno-card p { font-size: 13px; color: rgba(60,60,67,0.65); line-height: 1.6; }
+
+  /* ============ Change Log ============ */
+  .changelog {
+    max-width: 800px; margin: 0 auto 48px;
+    background: #FFFFFF; border-radius: 20px; padding: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .changelog h2 { font-size: 22px; font-weight: 500; margin-bottom: 20px; }
+  .change-item {
+    display: flex; gap: 16px; padding: 16px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .change-item:last-child { border-bottom: none; }
+  .change-badge {
+    font-size: 11px; font-weight: 500; padding: 2px 8px;
+    border-radius: 9999px; flex-shrink: 0; height: 20px;
+  }
+  .badge-remove { background: #FFE5E5; color: #D32F2F; }
+  .badge-modify { background: #FFF3E0; color: #FF9500; }
+  .badge-add { background: #E8F5E9; color: #34C759; }
+  .badge-keep { background: #F5F5F5; color: rgba(60,60,67,0.6); }
+  .change-body h4 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .change-body p { font-size: 13px; color: rgba(60,60,67,0.55); line-height: 1.5; }
+
+  /* ============ Pipeline Monitor ============ */
+  .monitor {
+    max-width: 800px; margin: 0 auto 48px;
+    background: #FFFFFF; border-radius: 20px; padding: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .monitor h2 { font-size: 22px; font-weight: 500; margin-bottom: 8px; }
+  .monitor .m-sub { font-size: 14px; color: rgba(60,60,67,0.45); margin-bottom: 24px; }
+  .metric-row {
+    display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
+  }
+  .metric-card {
+    flex: 1; min-width: 160px;
+    background: #F5F5F5; border-radius: 12px; padding: 16px; text-align: center;
+  }
+  .metric-card .m-v { font-size: 28px; font-weight: 500; margin-bottom: 4px; }
+  .metric-card .m-v.good { color: #34C759; }
+  .metric-card .m-v.warn { color: #FF9500; }
+  .metric-card .m-v.bad { color: #D32F2F; }
+  .metric-card .m-label { font-size: 12px; color: rgba(60,60,67,0.45); }
+  .pipeline-flow-m {
+    display: flex; align-items: center; gap: 0; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 24px;
+  }
+  .pm-node {
+    background: #F5F5F5; border-radius: 10px;
+    padding: 10px 14px; font-size: 13px; text-align: center; min-width: 70px;
+  }
+  .pm-node .pm-name { font-weight: 500; color: #212121; }
+  .pm-node .pm-stat { font-size: 10px; color: rgba(60,60,67,0.4); }
+  .pm-arrow { font-size: 18px; color: #78AAFA; margin: 0 8px; }
+  .pm-gate {
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 8px; padding: 8px 10px; font-size: 10px;
+    color: rgba(60,60,67,0.5); text-align: center; margin: 0 4px;
+    line-height: 1.4;
+  }
+  .pm-gate .pm-gate-name { font-weight: 500; color: #212121; font-size: 11px; }
+  .pm-gate.pass { border-color: #34C759; }
+  .pm-gate.fail { border-color: #D32F2F; }
+
+  /* ============ Redlines ============ */
+  .redlines {
+    max-width: 800px; margin: 0 auto 48px;
+    background: #FFFFFF; border-radius: 20px; padding: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .redlines h2 { font-size: 22px; font-weight: 500; margin-bottom: 16px; }
+  .rl-table { width: 100%; border-collapse: collapse; }
+  .rl-table th {
+    text-align: left; font-size: 11px; font-weight: 500;
+    color: rgba(60,60,67,0.4); letter-spacing: 0.05em;
+    padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .rl-table td {
+    padding: 14px 0; font-size: 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: top;
+  }
+  .rl-table .rl-num {
+    width: 32px; color: rgba(60,60,67,0.25); font-size: 13px; font-weight: 500;
+  }
+  .rl-table .rl-rule { font-weight: 500; color: #212121; padding-right: 24px; }
+  .rl-table .rl-v { color: #D32F2F; font-size: 13px; line-height: 1.5; }
+
+  @media (max-width: 860px) {
+    .demo-row { flex-direction: column; align-items: center; }
+    .anno-panel { width: 100%; max-width: 393px; }
+    .summary-bar { grid-template-columns: 1fr; }
+    .metric-row { flex-direction: column; }
+    .pipeline-flow-m { flex-direction: column; gap: 6px; }
+    .pm-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>MindBack V2 — 圆桌终态方案</h1>
+  <div class="sub">一个流 + 搜索增强 + 质量监控。零件越少，失败越少。</div>
+</div>
+
+<!-- ============ SUMMARY BAR ============ -->
+<div class="summary-bar">
+  <div class="summary-card">
+    <div class="sc-verdict keep">✓ 保留</div>
+    <h4>洞察在流顶部</h4>
+    <p>Pipeline 仍然产出洞察，但放在聊天流顶部当第一条消息。用户不需要切换 tab 就能看到，不想看就往下滑。Alexander 的有机体验 + Kahneman 的零切换成本。</p>
+  </div>
+  <div class="summary-card">
+    <div class="sc-verdict change">⟳ 改造</div>
+    <h4>哈勃半径进搜索</h4>
+    <p>不进 Pipeline 做自动关联，作为搜索增强独立存在。用户主动搜索时，结果中显示「你的关注半径里有相关内容」。Musk 的信噪比约束。</p>
+  </div>
+  <div class="summary-card">
+    <div class="sc-verdict drop">✗ 砍掉</div>
+    <h4>Tab 2 独立页面 &amp; Tab 3 独立页面</h4>
+    <p>不再需要独立洞察页和独立「我」页面。洞察在流里，设置在右上角 Profile 入口。Musk 的零件最少原则。</p>
+  </div>
+</div>
+
+<!-- ============ MAIN DEMO: STREAM ============ -->
+<div class="demo-row">
+  <div class="phone">
+    <div class="statusbar">
+      <span style="color:#212121">9:41</span>
+      <span style="color:#212121">􀋦 􀊨 􀋭</span>
+    </div>
+
+    <div class="scroll-area">
+      <!-- Stream header with profile button -->
+      <div class="stream-header">
+        <div class="logo">MindBack</div>
+        <button class="profile-btn" title="我与设置">👤</button>
+      </div>
+
+      <!-- Insight at TOP of stream -->
+      <div class="insight-banner">
+        <div class="ib-header">
+          <div class="ib-icon">✦</div>
+          <div class="ib-label">今日发现</div>
+        </div>
+        <h3>你在和同一个问题反复交手</h3>
+        <div class="ib-thesis">你最近在四个不同场景里讨论同一件事：「克制到什么程度才算尊重用户，什么时候克制会变成放弃责任」——通知设计、产品定位、视觉规范、团队沟通里都有这个主题。</div>
+        <div class="ib-tap">点击展开全部 →</div>
+      </div>
+
+      <!-- Expanded insight (shown after click) -->
+      <div class="insight-expanded">
+        <span class="ie-tag">跨集群联想</span>
+        <h3>你在和同一个问题反复交手</h3>
+        <div class="ie-thesis">你最近在四个不同场景里讨论同一件事：「克制到什么程度才算尊重用户，什么时候克制会变成放弃责任」。</div>
+        <div class="ie-sources">
+          <div class="ie-source-item">「设计评审的时候同事说我的通知设计太克制了…我说不知道比被打扰好」<br><span class="ie-source-date">5月6日</span></div>
+          <div class="ie-source-item">「极简是在剥夺掌控感还是在给予掌控感？极简有两个完全相反的方向」<br><span class="ie-source-date">5月4日</span></div>
+          <div class="ie-source-item">「放弃不是因为不重要，是因为每个都在削弱'轻记录'这个核心」<br><span class="ie-source-date">5月6日</span></div>
+        </div>
+        <div class="ie-actions">
+          <button class="btn-primary">追问</button>
+          <button class="btn-ghost">忽略</button>
+          <button class="btn-secondary">分享</button>
+        </div>
+      </div>
+
+      <!-- Normal message stream below -->
+      <div class="feed">
+        <div class="date-marker">2026/05/08</div>
+        <div class="user-msg"><div class="bubble">刚整理完这一周的碎片输入，发现很多想法都卡在"记了但没回看"。</div></div>
+        <div class="user-msg"><div class="bubble">我想让 MindBack 像一个会主动提醒重点的搭子，而不是只会存档。</div></div>
+
+        <div class="date-marker">2026/05/08 · AI 整理完成</div>
+        <div class="ai-msg">
+          <div class="bubble">
+            <div class="lead">久等啦，我先把你这周反复出现的主题拎出来了。</div>
+            <div class="quote-block">
+              <div class="quote-title">你真正焦虑的不是信息量，而是错过"回看时机"。</div>
+              <div class="quote-copy">最近 6 条输入里，有 4 条都提到记录后没有后续动作。</div>
+            </div>
+            <div class="ai-label">引用自 3 条近期记录</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-bar-wrap">
+      <div class="input-bar">
+        <button class="attach-btn">+</button>
+        <div class="input-field">
+          <span class="placeholder">现在的想法</span>
+          <div class="input-right">
+            <span style="font-size:16px;color:rgba(60,60,67,0.5);">🎤</span>
+            <span class="send-btn">↑</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottombar">
+      <div class="bb-item on"><div class="bb-icon">💬</div>记录</div>
+      <div class="bb-item"><div class="bb-icon">🔍</div>搜索</div>
+    </div>
+  </div>
+
+  <!-- ANNOTATIONS -->
+  <div class="anno-panel">
+    <h2>V2 新架构</h2>
+    <div class="meta">
+      <span>一个流</span><span>搜索增强</span><span>质量监控</span>
+    </div>
+
+    <div class="anno-card a-green">
+      <div class="a-label">NEW · 流顶部洞察</div>
+      <h4>洞察放在流的第一条，不抢关注</h4>
+      <p>用户打开 app 自然看到，不想看往下滑。和 Tab 1 自己的消息流零割裂。来自 Alexander（有机体验）+ Kahneman（零切换）+ Musk（用户不需要主动找）。</p>
+    </div>
+
+    <div class="anno-card a-orange">
+      <div class="a-label">NEW · 哈勃半径进搜索</div>
+      <h4>不进 Pipeline，搜索时标注关注源匹配</h4>
+      <p>来自 Musk（信噪比不够进 Pipeline）+ McLuhan（回声的价值在用户寻找时最大）。用户在搜索栏输入关键词时，结果区分「已记录」和「在你的关注半径里」。</p>
+    </div>
+
+    <div class="anno-card a-red">
+      <div class="a-label">REMOVED · 独立 Tab 2 + Tab 3</div>
+      <h4>「洞察」页和「我」页不再存在</h4>
+      <p>设置从右上角 Profile 按钮进入，作为底部面板弹出。来自 Musk（零件越少失败越少）。Alexander（三个房间不如一个空间）。</p>
+    </div>
+
+    <div class="anno-card a-green">
+      <div class="a-label">NEW · Pipeline 质量门禁</div>
+      <h4>后续对话率 < 阈值 → 停 Pipeline</h4>
+      <p>来自 Musk（没有质量监控的 Pipeline 会退化并持续消耗信任）。不再靠人手工判断质量。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SEARCH PAGE ============ -->
+<div class="demo-row">
+  <div class="phone">
+    <div class="statusbar">
+      <span style="color:#212121">9:41</span>
+      <span style="color:#212121">􀋦 􀊨 􀋭</span>
+    </div>
+
+    <div class="scroll-area">
+      <div class="search-page">
+        <div class="search-bar-wrap">
+          <div class="search-bar">
+            <span style="font-size:14px;color:rgba(60,60,67,0.3);">🔍</span>
+            <input type="text" value="通知设计 克制" readonly>
+            <button class="clear-btn">✕</button>
+          </div>
+        </div>
+
+        <div class="search-section">
+          <h4>你的记录</h4>
+          <div class="search-result">
+            <div class="sr-meta" style="margin-bottom:6px;"><span class="sr-source-tag sr-tag-recorded">已记录</span><span class="source-date">5月6日</span></div>
+            <div class="sr-title">设计评审时同事说我的通知设计太克制了</div>
+            <div class="sr-snippet">我说不知道比被打扰好。这是我为数不多不想妥协的点。</div>
+          </div>
+          <div class="search-result">
+            <div class="sr-meta" style="margin-bottom:6px;"><span class="sr-source-tag sr-tag-recorded">已记录</span><span class="source-date">5月9日</span></div>
+            <div class="sr-title">iOS 18 通知摘要功能挺好用的</div>
+            <div class="sr-snippet">但它还是不够懂我。它只知道哪些通知不重要，不知道哪些通知我正在等。</div>
+          </div>
+        </div>
+
+        <div class="search-section">
+          <h4>你的关注半径里也有</h4>
+          <div class="search-result">
+            <div class="sr-meta" style="margin-bottom:6px;"><span class="sr-source-tag sr-tag-hubble">来自关注源</span><span class="source-date">少数派 · 3周前</span></div>
+            <div class="sr-title">为什么最好的通知设计是让你忘记通知的存在</div>
+            <div class="sr-snippet">「推送频率」是一个错误的优化目标。真正应该优化的是用户对自己注意力的掌控感——每一次打断都应该让他觉得是自己做的决定。</div>
+          </div>
+          <div class="search-result">
+            <div class="sr-meta" style="margin-bottom:6px;"><span class="sr-source-tag sr-tag-hubble">来自关注源</span><span class="source-date">公众号「乱翻书」· 1月前</span></div>
+            <div class="sr-title">微信通知设计的十年：为什么改了又改回去</div>
+            <div class="sr-snippet">张小龙说过一次：好的产品是用完即走的。但我们后来做的所有事都是让用户用完走不了。通知是最大的帮凶。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottombar">
+      <div class="bb-item"><div class="bb-icon">💬</div>记录</div>
+      <div class="bb-item on"><div class="bb-icon">🔍</div>搜索</div>
+    </div>
+  </div>
+
+  <!-- ANNOTATIONS -->
+  <div class="anno-panel">
+    <h2>搜索页</h2>
+    <div class="meta">
+      <span>搜索增强</span><span>哈勃半径</span><span>主动查找</span>
+    </div>
+
+    <div class="anno-card a-green">
+      <div class="a-label">搜索增强设计</div>
+      <h4>结果分两区：已记录 / 关注半径</h4>
+      <p>已记录的结果优先展示（来自用户自己的记忆），然后才是关注源中的匹配。每项标注来源类型：「已记录」or「来自关注源」。来自 Musk ——哈勃半径不进 Pipeline，用户主动搜索时才有。</p>
+    </div>
+
+    <div class="anno-card a-orange">
+      <div class="a-label">哈勃半径接入点</div>
+      <h4>只在搜索时，不在自动关联里</h4>
+      <p>这是信噪比约束下的正确位置。用户带着明确意图进入搜索，看到「你的关注半径里也有人说过这个」——这是惊喜。在洞察卡片里自动出现——这是噪音。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PIPELINE MONITOR ============ -->
+<div class="monitor">
+  <h2>Pipeline 质量监控</h2>
+  <div class="m-sub">Musk 第三条约束：没有量化质量指标和自动关停机制，Pipeline 一定会退化并持续消耗信任。</div>
+
+  <div class="metric-row">
+    <div class="metric-card">
+      <div class="m-v good">73%</div>
+      <div class="m-label">7 天后续对话率</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-v good">2.1</div>
+      <div class="m-label">日均洞察数</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-v good">68%</div>
+      <div class="m-label">追问率</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-v warn">1</div>
+      <div class="m-label">低质量洞察数（本周）</div>
+    </div>
+  </div>
+
+  <div class="pipeline-flow-m">
+    <div class="pm-node"><div class="pm-name">Pipeline 1</div><div class="pm-stat">40 条 → 6 集群</div></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-node"><div class="pm-name">Pipeline 2</div><div class="pm-stat">15 对 → 3 对</div></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-gate pass">
+      <div class="pm-gate-name">Shannon</div>
+      门槛 ✓ 通过
+    </div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-node"><div class="pm-name">Pipeline 3</div><div class="pm-stat">3 条洞察</div></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-gate pass">
+      <div class="pm-gate-name">质量门禁</div>
+      后续对话率 73% ✓
+    </div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-node" style="background:#212121;color:#FFFFFF;"><div class="pm-name" style="color:#FFFFFF;">流顶部</div><div class="pm-stat" style="color:rgba(255,255,255,0.5);">第一条消息</div></div>
+  </div>
+
+  <p style="font-size:12px;color:rgba(60,60,67,0.4);text-align:center;">
+    质量指标 = 洞察产生后续对话的比例。低于 30% 超过 7 天 → Pipeline 自动暂停。不再生造洞察填充空位。
+  </p>
+</div>
+
+<!-- ============ CHANGELOG ============ -->
+<div class="changelog">
+  <h2>V1 → V2 变更清单</h2>
+
+  <div class="change-item">
+    <div class="change-badge badge-remove">砍掉</div>
+    <div class="change-body">
+      <h4>Tab 2 「洞察」独立页面</h4>
+      <p>原独立 tab 喂给用户抽象的洞察卡片，需要用户主动切换认知模式。Kahneman 论证认知吝啬鬼不会做这个切换，Musk 说 90% 的用户不会点。洞察改为放在 Tab 1 流顶部。</p>
+    </div>
+  </div>
+
+  <div class="change-item">
+    <div class="change-badge badge-remove">砍掉</div>
+    <div class="change-body">
+      <h4>Tab 3 「我」独立页面</h4>
+      <p>原独立 tab 作为数据入口 + 设置区。改为右上角 Profile 按钮 → 底部面板。Alexander：三个房间不如一个空间。</p>
+    </div>
+  </div>
+
+  <div class="change-item">
+    <div class="change-badge badge-modify">改造</div>
+    <div class="change-body">
+      <h4>哈勃半径接入方式</h4>
+      <p>从「加入 Pipeline 2 自动关联」改为「搜索增强」。用户在搜索栏输入关键词时，结果中分区显示：已记录 + 你的关注半径里也有。Musk 的信噪比约束 + McLuhan 的回声在寻找时最大。</p>
+    </div>
+  </div>
+
+  <div class="change-item">
+    <div class="change-badge badge-modify">改造</div>
+    <div class="change-body">
+      <h4>Pipeline 产出位置</h4>
+      <p>保持三个 Pipeline（压缩→联想→表达），但产出从独立 Tab 2 页面改为流顶部的第一条消息。用户打开 app 自然看到，不想看就往下滑。</p>
+    </div>
+  </div>
+
+  <div class="change-item">
+    <div class="change-badge badge-add">新增</div>
+    <div class="change-body">
+      <h4>Pipeline 质量门禁</h4>
+      <p>量化指标：后续对话率。定义 = (用户点追问 + 用户在 24h 内发起了与洞察主题相关的对话) / 总洞察数。低于 30% 超过 7 天 → Pipeline 自动暂停。不再生造洞察填充空位。</p>
+    </div>
+  </div>
+
+  <div class="change-item">
+    <div class="change-badge badge-add">新增</div>
+    <div class="change-body">
+      <h4>底部导航改为两项</h4>
+      <p>「记录」+「搜索」。设置从右上角 Profile 进入。零件从三减到二，符合 Musk 最小可行原则。</p>
+    </div>
+  </div>
+
+  <div class="change-item">
+    <div class="change-badge badge-keep">保留</div>
+    <div class="change-body">
+      <h4>Tab 1 聊天流 · AI 回应 · 通知系统 · 设计令牌</h4>
+      <p>这些不在此次圆桌讨论范围，保持不变。通知的追本结论（tick/light 触觉、静默时段、只有两种推送场景）不因架构变更而改变。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ REDLINES (unchanged) ============ -->
+<div class="redlines">
+  <h2>权力底线 · 不可变规则（V2 不变）</h2>
+  <p style="font-size:14px;color:rgba(60,60,67,0.5);margin-bottom:24px;">不论架构怎么演进，MindBack 作为「人类与 AI 关于记忆的信任合约」的基本条款不变。</p>
+  <table class="rl-table">
+    <tr><th></th><th>规则</th><th>违反示例</th></tr>
+    <tr>
+      <td class="rl-num">1</td>
+      <td class="rl-rule">AI 不在用户没开口时主动说话</td>
+      <td class="rl-v">推送「看看你上周的记录吧」；推荐「你还可以记这个」</td>
+    </tr>
+    <tr>
+      <td class="rl-num">2</td>
+      <td class="rl-rule">洞察在流顶部自然出现，不推不抢</td>
+      <td class="rl-v">弹窗告知洞察已生成；在用户打字时插入洞察卡片</td>
+    </tr>
+    <tr>
+      <td class="rl-num">3</td>
+      <td class="rl-rule">每条洞察必须标注来源片段</td>
+      <td class="rl-v">「本周关键洞察：你缺乏执行力」</td>
+    </tr>
+    <tr>
+      <td class="rl-num">4</td>
+      <td class="rl-rule">用户对所有内容有删除权</td>
+      <td class="rl-v">系统生成的总结不可删除</td>
+    </tr>
+    <tr>
+      <td class="rl-num">5</td>
+      <td class="rl-rule">不显示焦虑指标</td>
+      <td class="rl-v">连续打卡天数；记忆留存率</td>
+    </tr>
+    <tr>
+      <td class="rl-num">6</td>
+      <td class="rl-rule">Pipeline 低于质量阈值自动暂停</td>
+      <td class="rl-v">后续对话率掉到 20% 仍继续生成洞察填充流顶部</td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>

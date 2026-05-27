@@ -1,0 +1,22 @@
+{
+  "$description": "MindBack 间距、圆角。封闭枚举，禁止自定义中间值。",
+  "space": {
+    "1": { "$value": "4px", "$type": "dimension", "$description": "图标与文字间距、紧凑内边距" },
+    "2": { "$value": "8px", "$type": "dimension", "$description": "导航项圆角、小元素间距" },
+    "3": { "$value": "12px", "$type": "dimension", "$description": "卡片间距、列表项间距" },
+    "4": { "$value": "16px", "$type": "dimension", "$description": "卡片内边距、标准组件内间距" },
+    "5": { "$value": "20px", "$type": "dimension", "$description": "区块间距、表单项间距" },
+    "6": { "$value": "24px", "$type": "dimension", "$description": "页面边距（紧凑）" },
+    "7": { "$value": "32px", "$type": "dimension", "$description": "页面边距（标准）" },
+    "8": { "$value": "40px", "$type": "dimension", "$description": "大区块间距" },
+    "9": { "$value": "48px", "$type": "dimension", "$description": "页面顶部留白" },
+    "10": { "$value": "64px", "$type": "dimension", "$description": "最大留白" }
+  },
+  "radius": {
+    "small": { "$value": "6px", "$type": "dimension", "$description": "图片、缩略图" },
+    "medium": { "$value": "8px", "$type": "dimension", "$description": "导航项、输入框" },
+    "large": { "$value": "12px", "$type": "dimension", "$description": "内容卡、弹窗" },
+    "xlarge": { "$value": "20px", "$type": "dimension", "$description": "消息气泡、能力卡片、侧边栏信息卡" },
+    "full": { "$value": "9999px", "$type": "dimension", "$description": "Pill 按钮、标签、头像" }
+  }
+}

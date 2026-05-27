@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FAFBFC" />
+      <stop offset="1" stop-color="#F0F2F5" />
+    </linearGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.9" fill="#000" fill-opacity="0.06" />
+    </pattern>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#dots)" />
+
+  <!-- 顶部 brand -->
+  <g transform="translate(80, 80)">
+    <text font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+          font-size="22" font-weight="600" fill="#212121" letter-spacing="0.5">
+      MindBack Design System
+    </text>
+    <line x1="0" y1="38" x2="56" y2="38" stroke="#78AAFA" stroke-width="3" />
+  </g>
+
+  <!-- 标题 -->
+  <g transform="translate(80, 220)">
+    <text font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+          font-size="76" font-weight="600" fill="#212121"
+          letter-spacing="-2.5">
+      给 AI 也设计的
+    </text>
+    <text y="92" font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+          font-size="76" font-weight="600" fill="#212121"
+          letter-spacing="-2.5">
+      <tspan>设计</tspan><tspan fill="#212121" text-decoration="underline" text-decoration-color="#78AAFA" text-decoration-thickness="3">系统</tspan>
+    </text>
+  </g>
+
+  <!-- 副文 -->
+  <g transform="translate(80, 430)">
+    <text font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+          font-size="22" font-weight="400" fill="rgba(60,60,67,0.6)"
+          letter-spacing="-0.3">
+      传统设计系统是「给人看的约定」。
+    </text>
+    <text y="36" font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+          font-size="22" font-weight="400" fill="rgba(60,60,67,0.6)"
+          letter-spacing="-0.3">
+      AI-native 设计系统是「给机器读的契约」。
+    </text>
+  </g>
+
+  <!-- 底部 KPI 横排 -->
+  <g transform="translate(80, 540)">
+    <g>
+      <text font-family="'SF Mono', ui-monospace, Menlo, monospace"
+            font-size="12" font-weight="600" fill="rgba(60,60,67,0.45)"
+            letter-spacing="1.4">
+        TOKENS
+      </text>
+      <text y="32" font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+            font-size="28" font-weight="600" fill="#212121"
+            letter-spacing="-0.5">
+        68
+      </text>
+    </g>
+    <g transform="translate(170, 0)">
+      <text font-family="'SF Mono', ui-monospace, Menlo, monospace"
+            font-size="12" font-weight="600" fill="rgba(60,60,67,0.45)"
+            letter-spacing="1.4">
+        DEEP COMPONENTS
+      </text>
+      <text y="32" font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+            font-size="28" font-weight="600" fill="#212121"
+            letter-spacing="-0.5">
+        5
+      </text>
+    </g>
+    <g transform="translate(420, 0)">
+      <text font-family="'SF Mono', ui-monospace, Menlo, monospace"
+            font-size="12" font-weight="600" fill="rgba(60,60,67,0.45)"
+            letter-spacing="1.4">
+        AI ENDPOINTS
+      </text>
+      <text y="32" font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+            font-size="28" font-weight="600" fill="#212121"
+            letter-spacing="-0.5">
+        6
+      </text>
+    </g>
+    <g transform="translate(620, 0)">
+      <text font-family="'SF Mono', ui-monospace, Menlo, monospace"
+            font-size="12" font-weight="600" fill="rgba(60,60,67,0.45)"
+            letter-spacing="1.4">
+        ZERO-SHOT KPI
+      </text>
+      <text y="32" font-family="-apple-system, 'PingFang SC', system-ui, sans-serif"
+            font-size="28" font-weight="600" fill="#212121"
+            letter-spacing="-0.5">
+        ≥ 80%
+      </text>
+    </g>
+  </g>
+
+  <!-- 右下角 URL -->
+  <g transform="translate(1040, 575)">
+    <text font-family="'SF Mono', ui-monospace, Menlo, monospace"
+          font-size="14" fill="rgba(60,60,67,0.6)"
+          letter-spacing="-0.2" text-anchor="end" x="80">
+      docs.mindback.com
+    </text>
+  </g>
+</svg>

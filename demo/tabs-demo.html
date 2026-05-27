@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindBack 三Tab改版 Demo（含设计标注）</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "PingFang SC", -apple-system, sans-serif;
+    background: #F5F5F5;
+    color: #212121;
+    padding: 48px 24px 80px;
+  }
+
+  /* ============ Header ============ */
+  .page-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .page-header h1 {
+    font-size: 28px; font-weight: 500; letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+  .page-header .sub {
+    font-size: 14px; color: rgba(60,60,67,0.5);
+    max-width: 440px; margin: 0 auto; line-height: 1.6;
+  }
+
+  /* ============ Tab Row ============ */
+  .tab-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 64px;
+    flex-wrap: wrap;
+  }
+
+  /* ============ Phone ============ */
+  .phone {
+    width: 393px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    max-height: 852px;
+    flex-shrink: 0;
+  }
+
+  .statusbar {
+    height: 50px; padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "SF Pro", -apple-system, sans-serif;
+    font-size: 17px; font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .nav {
+    height: 48px; display: flex; align-items: center;
+    justify-content: center; font-size: 16px; font-weight: 500;
+    flex-shrink: 0; position: relative;
+  }
+  .nav .nav-action {
+    position: absolute; right: 16px;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+
+  /* ---- Tab 1 ---- */
+  .feed { padding: 0 16px; }
+  .date-marker {
+    text-align: center; font-size: 13px;
+    color: rgba(60,60,67,0.45); padding: 12px 0;
+  }
+  .user-msg { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+  .user-msg .bubble {
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px; padding: 12px 16px;
+    max-width: calc(100% - 48px); font-size: 17px; line-height: 1.5;
+  }
+  .ai-msg { margin-bottom: 12px; }
+  .ai-msg .bubble {
+    background: rgba(120,170,250,0.08);
+    border: 1px solid rgba(120,170,250,0.2);
+    border-radius: 20px; padding: 16px;
+    font-size: 17px; line-height: 1.5;
+  }
+  .ai-msg .lead { margin-bottom: 12px; }
+  .ai-msg .quote-block {
+    border-left: 2px solid #78AAFA; padding-left: 12px; margin-bottom: 12px;
+  }
+  .ai-msg .quote-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .ai-msg .quote-copy { font-size: 14px; color: rgba(60,60,67,0.6); }
+  .ai-msg .section-title { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .ai-msg ul { list-style: none; padding: 0; }
+  .ai-msg ul li {
+    font-size: 15px; color: rgba(60,60,67,0.8);
+    padding: 4px 0 4px 12px; position: relative;
+  }
+  .ai-msg ul li::before {
+    content: ""; position: absolute; left: 0; top: 11px;
+    width: 5px; height: 5px; border-radius: 50%; background: #78AAFA;
+  }
+  .ai-label { font-size: 12px; color: rgba(60,60,67,0.3); margin-top: 12px; }
+
+  .input-bar-wrap { padding: 8px 16px 0; flex-shrink: 0; }
+  .input-bar { display: flex; align-items: center; gap: 8px; background: #FFFFFF; padding: 8px 0; }
+  .attach-btn {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: #D8D8D8; border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: rgba(60,60,67,0.5); flex-shrink: 0;
+  }
+  .input-field {
+    flex: 1; height: 48px; border-radius: 100px;
+    background: #D8D8D8; border: none;
+    display: flex; align-items: center; padding: 0 16px; justify-content: space-between;
+  }
+  .input-field .placeholder { font-size: 17px; color: rgba(60,60,67,0.3); }
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #212121; border: none; display: flex;
+    align-items: center; justify-content: center; color: #FFFFFF; font-size: 14px;
+  }
+
+  /* ---- Tab 2 ---- */
+  .section-label {
+    padding: 24px 16px 8px; font-size: 14px;
+    color: rgba(60,60,67,0.45);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after {
+    content: ""; flex: 1; height: 0.5px; background: rgba(0,0,0,0.08);
+  }
+  .insight-card {
+    margin: 8px 16px; background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.08); border-radius: 20px; padding: 20px;
+  }
+  .insight-card .card-tag {
+    display: inline-block; background: #F5F5F5;
+    color: rgba(60,60,67,0.6); font-size: 12px;
+    padding: 2px 8px; border-radius: 9999px; margin-bottom: 12px;
+  }
+  .insight-card h3 { font-size: 20px; font-weight: 500; line-height: 1.35; margin-bottom: 8px; }
+  .insight-card .thesis { font-size: 17px; line-height: 1.5; margin-bottom: 16px; }
+  .insight-card .sources { border-left: 2px solid #78AAFA; padding-left: 12px; }
+  .insight-card .source-item {
+    font-size: 13px; color: rgba(60,60,67,0.6); line-height: 1.5; margin-bottom: 6px;
+  }
+  .source-date { color: rgba(60,60,67,0.3); font-size: 11px; }
+  .insight-actions {
+    display: flex; gap: 12px; margin-top: 16px; padding-top: 12px;
+    border-top: 0.5px solid rgba(0,0,0,0.08);
+  }
+  .insight-actions button {
+    flex: 1; height: 36px; border-radius: 9999px; border: none;
+    font-family: "PingFang SC", -apple-system, sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+  }
+  .btn-primary { background: #212121; color: #FFFFFF; }
+  .btn-ghost { background: transparent; color: rgba(60,60,67,0.6); }
+  .btn-secondary { background: #F5F5F5; color: #212121; }
+
+  .cluster-card {
+    margin: 8px 16px; background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.08); border-radius: 20px;
+    padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .cluster-info h4 { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .cluster-meta { font-size: 13px; color: rgba(60,60,67,0.45); }
+  .cluster-arrow { color: rgba(60,60,67,0.3); font-size: 18px; }
+
+  .river-item {
+    margin: 4px 16px; padding: 12px 16px;
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 12px; font-size: 15px; line-height: 1.45;
+    color: rgba(60,60,67,0.8);
+  }
+  .river-item .date-tag { font-size: 11px; color: rgba(60,60,67,0.3); margin-bottom: 4px; }
+
+  .cal-strip { display: flex; gap: 8px; padding: 16px; overflow-x: auto; }
+  .cal-day {
+    min-width: 42px; height: 56px; background: #F5F5F5; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; font-size: 11px; color: rgba(60,60,67,0.45);
+  }
+  .cal-day.on { background: #212121; color: #FFFFFF; }
+  .cal-day .dot { width: 5px; height: 5px; border-radius: 50%; background: #78AAFA; margin-top: 3px; }
+
+  /* ---- Tab 3 ---- */
+  .me-scroll { padding: 0 16px; }
+  .user-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px; margin: 8px 0;
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); border-radius: 20px;
+  }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 50%; background: #D8D8D8;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  .user-info .nick { font-size: 18px; font-weight: 500; color: rgba(0,0,0,0.8); }
+  .user-info .uid { font-size: 12px; color: rgba(60,60,67,0.45); }
+
+  .me-group { margin-bottom: 16px; }
+  .me-group-title { font-size: 14px; color: rgba(60,60,67,0.45); padding: 8px 0; }
+  .me-group-body {
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px; overflow: hidden;
+  }
+  .me-row {
+    height: 48px; padding: 0 16px;
+    display: flex; align-items: center; justify-content: space-between; font-size: 16px;
+  }
+  .me-row + .me-row { border-top: 0.5px solid rgba(0,0,0,0.08); }
+  .me-row .label { color: #212121; }
+  .me-row .value { color: rgba(60,60,67,0.45); font-size: 16px; display: flex; align-items: center; gap: 4px; }
+  .switch-track {
+    width: 40px; height: 24px; border-radius: 9999px;
+    background: #6EC971; position: relative;
+  }
+  .switch-track::after {
+    content: ""; position: absolute;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #FFFFFF; top: 2px; right: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .version-row { text-align: center; padding: 16px; font-size: 12px; color: rgba(60,60,67,0.3); }
+
+  /* ---- TabBar ---- */
+  .tabbar {
+    height: 84px; display: flex;
+    border-top: 0.5px solid rgba(0,0,0,0.08);
+    padding-top: 8px; flex-shrink: 0;
+  }
+  .tab-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    font-size: 10px; color: rgba(60,60,67,0.45);
+    user-select: none; padding-top: 4px;
+  }
+  .tab-item.on { color: #212121; }
+  .tab-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+  /* ============ Annotation Panel ============ */
+  .anno-panel {
+    width: 320px;
+    flex-shrink: 0;
+  }
+  .anno-tab-label {
+    margin-bottom: 16px;
+  }
+  .anno-tab-label h2 {
+    font-size: 22px; font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .anno-tab-label .meta {
+    font-size: 13px; color: rgba(60,60,67,0.45);
+    display: flex; gap: 16px;
+  }
+  .anno-tab-label .meta span {
+    background: #F5F5F5; padding: 2px 8px; border-radius: 9999px;
+  }
+
+  .anno-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .anno-card::before {
+    content: "";
+    position: absolute; left: 0; top: 16px; bottom: 16px;
+    width: 3px; border-radius: 0 2px 2px 0;
+    background: #78AAFA;
+  }
+  .anno-card .anno-num {
+    font-size: 11px; font-weight: 500; color: #78AAFA;
+    margin-bottom: 4px; letter-spacing: 0.04em;
+  }
+  .anno-card h4 {
+    font-size: 15px; font-weight: 500; margin-bottom: 6px;
+    color: #212121;
+  }
+  .anno-card p {
+    font-size: 13px; color: rgba(60,60,67,0.65);
+    line-height: 1.6;
+  }
+  .anno-card .violation {
+    margin-top: 8px; padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    font-size: 12px; color: #D32F2F;
+  }
+
+  /* ============ Section Divider ============ */
+  .divider {
+    max-width: 840px; margin: 0 auto 56px;
+    border: none; border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* ============ Pipeline Section ============ */
+  .pipeline-section {
+    max-width: 840px; margin: 0 auto 56px;
+    background: #FFFFFF; border-radius: 20px;
+    padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .pipeline-section h2 {
+    font-size: 22px; font-weight: 500; margin-bottom: 8px;
+  }
+  .pipeline-section .p-sub {
+    font-size: 14px; color: rgba(60,60,67,0.45); margin-bottom: 32px;
+  }
+
+  .pipeline-flow {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 36px; flex-wrap: wrap; justify-content: center;
+  }
+  .p-node {
+    background: #F5F5F5; border-radius: 12px;
+    padding: 14px 18px; font-size: 14px; text-align: center; min-width: 90px;
+  }
+  .p-node .p-name { font-weight: 500; color: #212121; margin-bottom: 2px; }
+  .p-node .p-stat { font-size: 11px; color: rgba(60,60,67,0.45); }
+  .p-arrow { font-size: 20px; color: #78AAFA; margin: 0 10px; }
+  .p-gate {
+    background: #FFFFFF; border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 8px; padding: 10px 14px; font-size: 11px;
+    color: rgba(60,60,67,0.55); text-align: center; margin: 0 6px;
+    line-height: 1.5;
+  }
+  .p-gate .gate-name { font-weight: 500; color: #212121; font-size: 12px; }
+
+  .detail-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .detail-card {
+    background: #F5F5F5; border-radius: 12px; padding: 20px;
+  }
+  .detail-card h4 { font-size: 14px; font-weight: 500; margin-bottom: 10px; color: #78AAFA; }
+  .detail-card .d-line { font-size: 13px; color: rgba(60,60,67,0.7); line-height: 1.7; }
+
+  /* ============ Flow Section ============ */
+  .flow-section {
+    max-width: 840px; margin: 0 auto 56px;
+    background: #FFFFFF; border-radius: 20px;
+    padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .flow-section h2 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+  .flow-section .f-sub { font-size: 14px; color: rgba(60,60,67,0.45); margin-bottom: 28px; }
+
+  .flow-diagram {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; flex-wrap: wrap; font-size: 14px;
+  }
+  .flow-step {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .flow-node-big {
+    padding: 14px 24px; border-radius: 9999px;
+    font-weight: 500; text-align: center; font-size: 15px;
+  }
+  .flow-node-big.t1 { background: #F5F5F5; color: #212121; }
+  .flow-node-big.t2 { background: #212121; color: #FFFFFF; }
+  .flow-label-small { font-size: 11px; color: rgba(60,60,67,0.4); text-align: center; }
+  .flow-arrow-big {
+    font-size: 22px; color: rgba(60,60,67,0.2); margin: 0 16px;
+    line-height: 1;
+  }
+  .flow-loan-arrow {
+    display: flex; align-items: center; gap: 16px;
+    border: 1px dashed rgba(120,170,250,0.4);
+    border-radius: 9999px; padding: 8px 16px;
+    margin: 0 16px;
+  }
+  .flow-loan-arrow .f-arrow-icon { color: #78AAFA; font-size: 16px; }
+
+  /* ============ Redlines ============ */
+  .redlines-section {
+    max-width: 840px; margin: 0 auto 56px;
+    background: #FFFFFF; border-radius: 20px;
+    padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .redlines-section h2 { font-size: 22px; font-weight: 500; margin-bottom: 20px; }
+  .rl-table { width: 100%; border-collapse: collapse; }
+  .rl-table th {
+    text-align: left; font-size: 11px; font-weight: 500;
+    color: rgba(60,60,67,0.4); letter-spacing: 0.05em;
+    padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .rl-table td {
+    padding: 14px 0; font-size: 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    vertical-align: top;
+  }
+  .rl-table .rl-num {
+    width: 32px; color: rgba(60,60,67,0.25); font-size: 13px; font-weight: 500;
+  }
+  .rl-table .rl-rule { font-weight: 500; color: #212121; padding-right: 24px; }
+  .rl-table .rl-v {
+    color: #D32F2F; font-size: 13px; line-height: 1.5;
+  }
+
+  /* ============ Responsive ============ */
+  @media (max-width: 860px) {
+    .tab-row { flex-direction: column; align-items: center; }
+    .anno-panel { width: 100%; max-width: 393px; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .pipeline-flow { flex-direction: column; gap: 8px; }
+    .p-arrow { transform: rotate(90deg); }
+    .flow-diagram { flex-direction: column; gap: 12px; }
+    .flow-arrow-big { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>MindBack 三 Tab 改版</h1>
+  <div class="sub">记 → 停 → 看 · 三条权力线 · 三个 Pipeline · 一个信任合约</div>
+</div>
+
+<!-- ==================== TAB 1 ==================== -->
+<div class="tab-row">
+  <div class="phone">
+    <div class="statusbar">
+      <span style="color:#212121">9:41</span>
+      <span style="color:#212121">􀋦 􀊨 􀋭</span>
+    </div>
+    <div class="nav" style="justify-content:flex-start;padding:0 16px;">
+      <span style="font-weight:600;font-size:18px;color:#212121;">MindBack</span>
+      <span class="nav-action" style="color:rgba(60,60,67,0.6);">☆</span>
+    </div>
+    <div class="scroll-area">
+      <div class="feed">
+        <div class="date-marker">2026/05/08</div>
+        <div class="user-msg"><div class="bubble">刚整理完这一周的碎片输入，发现很多想法都卡在"记了但没回看"。</div></div>
+        <div class="user-msg"><div class="bubble">我想让 MindBack 像一个会主动提醒重点的搭子，而不是只会存档。</div></div>
+        <div class="date-marker">2026/05/08 · AI 整理完成</div>
+        <div class="ai-msg">
+          <div class="bubble">
+            <div class="lead">久等啦，我先把你这周反复出现的主题拎出来了。</div>
+            <div class="quote-block">
+              <div class="quote-title">你真正焦虑的不是信息量，而是错过"回看时机"。</div>
+              <div class="quote-copy">最近 6 条输入里，有 4 条都提到记录后没有后续动作。</div>
+            </div>
+            <div class="section-title">我建议下一步先做两件事</div>
+            <ul>
+              <li>把高频碎片统一回收到一个固定时间窗</li>
+              <li>让 AI 输出更短、更像行动提示而不是长总结</li>
+            </ul>
+            <div class="ai-label">引用自 3 条近期记录</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="input-bar-wrap">
+      <div class="input-bar">
+        <button class="attach-btn">+</button>
+        <div class="input-field">
+          <span class="placeholder">现在的想法</span>
+          <div class="right-actions" style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;color:rgba(60,60,67,0.5);">🎤</span>
+            <span class="send-btn">↑</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tab-item on"><div class="tab-icon">💬</div>记录</div>
+      <div class="tab-item"><div class="tab-icon">✦</div>洞察</div>
+      <div class="tab-item"><div class="tab-icon">👤</div>我</div>
+    </div>
+  </div>
+
+  <div class="anno-panel">
+    <div class="anno-tab-label">
+      <h2>Tab 1 · 记录</h2>
+      <div class="meta"><span>河流</span><span>零结构</span><span>用户有全部发言权</span></div>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 01</div>
+      <h4>AI 只有回应权</h4>
+      <p>AI 只能在用户开口后回应，不主动发起对话。不会推送「看看你上周的记录吧」，不会推荐「你还可以记这个」。用户有全部发言权，AI 是倾听者。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 02</div>
+      <h4>AI 产出视觉区分</h4>
+      <p>AI 气泡使用 Brand-Blue-Light 背景（rgba(120,170,250,0.08)）+ Brand-Blue-Border 边框。品牌色大面积使用的唯一豁免场景。蓝色竖线引文区标注来源，不制造无来由的权威感。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 03</div>
+      <h4>偷用户的聊天模式</h4>
+      <p>输入栏用「现在的想法」做 placeholder，不加标签、文件夹、分类。人在聊天的肌肉记忆里丢石头，而不是在文档工具里做结构管理。发送触觉 light，收到 AI 回应 tick。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">约束</div>
+      <h4>不放什么</h4>
+      <p>不显示未整理数字。不推荐记录内容。不让 AI 主动发起对话。不评价用户记录质量。</p>
+      <div class="violation">禁止：Tab 1 流里插入洞察卡片或推送通知——创造模式中不可强行切入审视模式</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== TAB 2 ==================== -->
+<div class="tab-row">
+  <div class="phone">
+    <div class="statusbar">
+      <span style="color:#212121">9:41</span>
+      <span style="color:#212121">􀋦 􀊨 􀋭</span>
+    </div>
+    <div class="nav">洞察</div>
+    <div class="scroll-area">
+      <div class="section-label">今日洞察</div>
+      <div class="insight-card">
+        <span class="card-tag">跨集群联想</span>
+        <h3>你在和同一个问题反复交手</h3>
+        <div class="thesis">你最近在四个不同场景里讨论同一件事：「克制到什么程度才算尊重用户，什么时候克制会变成放弃责任」。</div>
+        <div class="sources">
+          <div class="source-item">「设计评审的时候同事说我的通知设计太克制了…我说不知道比被打扰好」<br><span class="source-date">5月6日</span></div>
+          <div class="source-item">「极简是在剥夺掌控感还是在给予掌控感？」<br><span class="source-date">5月4日</span></div>
+          <div class="source-item">「放弃不是因为不重要，是因为每个都在削弱'轻记录'」<br><span class="source-date">5月6日</span></div>
+        </div>
+        <div class="insight-actions">
+          <button class="btn-primary">追问</button>
+          <button class="btn-ghost">忽略</button>
+          <button class="btn-secondary">分享</button>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <span class="card-tag">跨集群联想</span>
+        <h3>记忆是武器，也是牢笼</h3>
+        <div class="thesis">你一边打造更好的记忆系统，一边反复质疑「记得太多是不是反而不自由」。</div>
+        <div class="sources">
+          <div class="source-item">「Funes 记住了所有东西反而是残疾人」<br><span class="source-date">5月9日</span></div>
+          <div class="source-item">「如果我每天给他推 10 条洞察，他不会更智慧，只会更累」<br><span class="source-date">5月7日</span></div>
+        </div>
+        <div class="insight-actions">
+          <button class="btn-primary">追问</button>
+          <button class="btn-ghost">忽略</button>
+          <button class="btn-secondary">分享</button>
+        </div>
+      </div>
+
+      <div class="section-label">你在反复想这些事</div>
+      <div class="cluster-card">
+        <div class="cluster-info"><h4>记忆与遗忘的边界</h4><div class="cluster-meta">7 条记忆 · 5月2日–5月10日</div></div>
+        <span class="cluster-arrow">›</span>
+      </div>
+      <div class="cluster-card">
+        <div class="cluster-info"><h4>克制的产品哲学</h4><div class="cluster-meta">6 条记忆 · 5月4日–5月11日</div></div>
+        <span class="cluster-arrow">›</span>
+      </div>
+      <div class="cluster-card">
+        <div class="cluster-info"><h4>AI 记忆层的技术实践</h4><div class="cluster-meta">6 条记忆 · 5月5日–5月11日</div></div>
+        <span class="cluster-arrow">›</span>
+      </div>
+      <div class="cluster-card">
+        <div class="cluster-info"><h4>通知与打断设计</h4><div class="cluster-meta">4 条记忆 · 5月6日–5月10日</div></div>
+        <span class="cluster-arrow">›</span>
+      </div>
+
+      <div class="section-label">还有一些碎片</div>
+      <div class="river-item">
+        <div class="date-tag">5月5日</div>
+        今天跑了人生第一个 10 公里。不是因为想减肥，就是想知道自己的身体还有没有被自己低估的能力
+      </div>
+      <div class="river-item">
+        <div class="date-tag">5月7日</div>
+        深夜刷到一条抖音：一个农民工在工地上弹吉他唱《海阔天空》…有时候好的东西不来自技术纯度，来自它在「不该出现的地方」出现了
+      </div>
+
+      <div class="section-label">过去 7 天</div>
+      <div class="cal-strip">
+        <div class="cal-day">5/5<br>一<div class="dot"></div></div>
+        <div class="cal-day on">5/6<br>二<div class="dot"></div></div>
+        <div class="cal-day on">5/7<br>三<div class="dot"></div></div>
+        <div class="cal-day">5/8<br>四</div>
+        <div class="cal-day on">5/9<br>五<div class="dot"></div></div>
+        <div class="cal-day">5/10<br>六</div>
+        <div class="cal-day on">5/11<br>日<div class="dot"></div></div>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tab-item"><div class="tab-icon">💬</div>记录</div>
+      <div class="tab-item on"><div class="tab-icon">✦</div>洞察</div>
+      <div class="tab-item"><div class="tab-icon">👤</div>我</div>
+    </div>
+  </div>
+
+  <div class="anno-panel">
+    <div class="anno-tab-label">
+      <h2>Tab 2 · 洞察</h2>
+      <div class="meta"><span>摆渡</span><span>系统发现</span><span>用户裁定</span></div>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 01</div>
+      <h4>用户必须主动走进去</h4>
+      <p>洞察不在 Tab 1 流里插入，不推送通知告知。用户切到 Tab 2 时才呈现。避免在创造模式中强行切入审视模式——就像跑步时不能被拉住看心率数据。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 02</div>
+      <h4>每条洞察标注来源</h4>
+      <p>蓝色竖线引文区 = 系统说「请看，这是我依据的东西，你来断」。出处透明，逻辑交给人判断。不标来源的洞察是不可信的推断。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 03</div>
+      <h4>追问是闭环关键</h4>
+      <p>用户点「追问」→ 跳回 Tab 1 带上下文续聊。洞察→疑问→聊天→新碎片→下一次洞察。忽略则不再出现。发现权在系统，裁定权在用户。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">约束</div>
+      <h4>不放什么</h4>
+      <p>每天最多 3 条洞察（不足不编）。不做统计报表。不让 AI 评价用户。不引入未记录的新内容。碎片不足 3 条的进河流而非强制归类。</p>
+      <div class="violation">禁止：在 Tab 1 中插入洞察卡片；禁止推荐未记录的外部内容（哈勃半径留给未来）</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== TAB 3 ==================== -->
+<div class="tab-row">
+  <div class="phone">
+    <div class="statusbar">
+      <span style="color:#212121">9:41</span>
+      <span style="color:#212121">􀋦 􀊨 􀋭</span>
+    </div>
+    <div class="nav">我</div>
+    <div class="scroll-area">
+      <div class="me-scroll">
+        <div class="user-card">
+          <div class="avatar">👤</div>
+          <div class="user-info">
+            <div class="nick">赵家良</div>
+            <div class="uid">ID: mindback_2024</div>
+          </div>
+          <span style="margin-left:auto;color:rgba(60,60,67,0.3);font-size:18px;">›</span>
+        </div>
+        <div class="me-group">
+          <div class="me-group-title">数据</div>
+          <div class="me-group-body">
+            <div class="me-row"><span class="label">记忆点</span><span class="value">42 点 ›</span></div>
+            <div class="me-row"><span class="label">时间线浏览</span><span class="value">全部记录 ›</span></div>
+            <div class="me-row"><span class="label">月度总结</span><span class="value">5月回顾 ›</span></div>
+            <div class="me-row"><span class="label">能力资产</span><span class="value">6 项能力 ›</span></div>
+          </div>
+        </div>
+        <div class="me-group">
+          <div class="me-group-title">设置</div>
+          <div class="me-group-body">
+            <div class="me-row"><span class="label">通知</span><span class="value"><div class="switch-track"></div></span></div>
+            <div class="me-row"><span class="label">AI 偏好</span><span class="value">段子手顾问 ›</span></div>
+            <div class="me-row"><span class="label">应用语言</span><span class="value">中文 ›</span></div>
+            <div class="me-row"><span class="label">深色模式</span><span class="value">跟随系统 ›</span></div>
+          </div>
+        </div>
+        <div class="me-group">
+          <div class="me-group-title">关于</div>
+          <div class="me-group-body">
+            <div class="me-row"><span class="label">帮助中心</span><span class="value">›</span></div>
+            <div class="me-row"><span class="label">使用条款</span><span class="value">›</span></div>
+            <div class="me-row"><span class="label">隐私政策</span><span class="value">›</span></div>
+          </div>
+        </div>
+        <div class="version-row">MindBack v1.0</div>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tab-item"><div class="tab-icon">💬</div>记录</div>
+      <div class="tab-item"><div class="tab-icon">✦</div>洞察</div>
+      <div class="tab-item on"><div class="tab-icon">👤</div>我</div>
+    </div>
+  </div>
+
+  <div class="anno-panel">
+    <div class="anno-tab-label">
+      <h2>Tab 3 · 我</h2>
+      <div class="meta"><span>港湾</span><span>时间线索引</span><span>管理权</span></div>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 01</div>
+      <h4>原侧边栏设置内容并入</h4>
+      <p>不再需要独立的侧边栏滑出面板。设置项直接放在 Tab 3 主页面，减少一层导航层级。数据入口（时间线、总结、资产）与设置区在同一页。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 02</div>
+      <h4>时间是最诚实的索引</h4>
+      <p>所有记录默认按时间排列。不以「相关度」重新排序。用户可以删任何东西，可以改任何设置。完全透明。时间线浏览从「全部记录」入口进入。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">设计决策 03</div>
+      <h4>开关 off 就是真的关</h4>
+      <p>关闭通知 = 所有推送停止，包括定时提醒。不是静音，是关机。需向用户明确提示关闭后果。不隐藏或弱化任何开关。</p>
+    </div>
+
+    <div class="anno-card">
+      <div class="anno-num">约束</div>
+      <h4>不放什么</h4>
+      <p>不显示焦虑指标（连续天数、留存率）。不放运营 banner。不做社交排行。不显示 app 使用时长。无功能推荐。</p>
+      <div class="violation">禁止：显示「你 3 天没记了」、记忆留存率百分比、好友排行榜、运营 banner</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== PIPELINE ==================== -->
+<div class="pipeline-section">
+  <h2>Tab 2 Pipeline 运行机制</h2>
+  <div class="p-sub">每天凌晨 5 点执行一次。从碎片到洞察，三步不可跳过。</div>
+
+  <div class="pipeline-flow">
+    <div class="p-node">
+      <div class="p-name">40 条碎片</div>
+      <div class="p-stat">10 天周期</div>
+    </div>
+    <span class="p-arrow">→</span>
+    <div class="p-node">
+      <div class="p-name">Pipeline 1<br>压缩</div>
+      <div class="p-stat">≥3条 → 集群<br>不足3条 → 河流</div>
+    </div>
+    <span class="p-arrow">→</span>
+    <div class="p-gate">
+      <div class="gate-name">Shannon 门槛</div>
+      用户已知？→ 不过<br>
+      无张力同义反复？→ 不过<br>
+      连接太弱？→ 不过
+    </div>
+    <span class="p-arrow">→</span>
+    <div class="p-node">
+      <div class="p-name">Pipeline 3<br>表达</div>
+      <div class="p-stat">标题 ≤12字<br>结论 ≤40字</div>
+    </div>
+    <span class="p-arrow">→</span>
+    <div class="p-node" style="background:#212121;color:#FFFFFF;">
+      <div class="p-name" style="color:#FFFFFF;">3 条洞察</div>
+      <div class="p-stat" style="color:rgba(255,255,255,0.5);">等待用户打开 Tab 2</div>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-card">
+      <h4>Pipeline 1 · 压缩</h4>
+      <div class="d-line">
+        <b>输入</b>：过去 7 天所有新记忆碎片<br><br>
+        <b>方法</b>：语义聚类 + 关键词提取<br>
+        同类 ≥3 条 → 成集群<br>
+        不足 3 条 → 入碎片河流<br>
+        最大 8 个集群<br><br>
+        <b>Demo 结果</b>：40 条 → 6 集群 + 4 条河流
+      </div>
+    </div>
+    <div class="detail-card">
+      <h4>Pipeline 2 · 联想</h4>
+      <div class="d-line">
+        <b>输入</b>：最新主题集群 + 历史集群数据库<br><br>
+        <b>Shannon 门槛</b>：<br>
+        · 用户已知？→ 不过<br>
+        · 两侧用词过于接近？→ 不过（同一件事换说法）<br>
+        · 唯一共同词是高频停用词？→ 不过<br>
+        · 时间跨度 < 2 天？→ 不过（是同一件事）<br><br>
+        <b>每天最多 3 条联想</b>
+      </div>
+    </div>
+    <div class="detail-card">
+      <h4>Pipeline 3 · 表达</h4>
+      <div class="d-line">
+        <b>标题</b>：≤ 12 字<br>
+        不总结，只给方向感<br><br>
+        <b>结论</b>：≤ 40 字<br>
+        陈述一个发现，不指导行动<br><br>
+        <b>引用</b>：2–4 个来源片段<br>
+        每条标注蓝色引文区<br><br>
+        <b>风格</b>：无感叹号、无「建议」<br>
+        无「我们」「你也许」「值得注意的是」
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FLOW ==================== -->
+<div class="flow-section">
+  <h2>三 Tab 闭合环路</h2>
+  <div class="f-sub">Tab 1 产生材料，Tab 2 从材料中提问题，用户追着问题回到 Tab 1，Tab 3 是休息站</div>
+
+  <div class="flow-diagram">
+    <div class="flow-step">
+      <div class="flow-node-big t1">Tab 1 · 记录</div>
+      <div class="flow-label-small">碎片积累</div>
+    </div>
+    <span class="flow-arrow-big">→</span>
+    <div class="flow-step">
+      <div class="flow-node-big t2">Tab 2 · 洞察</div>
+      <div class="flow-label-small">停·看·追问</div>
+    </div>
+    <div class="flow-loan-arrow">
+      <span class="f-arrow-icon">↩</span>
+      <span style="font-size:13px;color:rgba(60,60,67,0.5);">追问 → 带上下文跳回 Tab 1</span>
+    </div>
+    <div class="flow-step">
+      <div class="flow-node-big t1">继续对话</div>
+      <div class="flow-label-small">新对话产生新材料</div>
+    </div>
+    <span class="flow-arrow-big">→</span>
+    <div class="flow-step">
+      <div class="flow-node-big" style="background:#F5F5F5;color:#212121;">Tab 3 · 我</div>
+      <div class="flow-label-small">翻翻过去，找找感觉</div>
+    </div>
+    <span class="flow-arrow-big">→</span>
+    <div class="flow-step">
+      <div class="flow-node-big t1">新想法 → 继续记</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== REDLINES ==================== -->
+<div class="redlines-section">
+  <h2>权力底线 · 不可变规则</h2>
+  <p style="font-size:14px;color:rgba(60,60,67,0.5);margin-bottom:24px;">以下六条是 MindBack 作为「人类与 AI 之间关于记忆的信任合约」的基本条款。不管产品怎么迭代，不可破。</p>
+
+  <table class="rl-table">
+    <tr><th></th><th>规则</th><th>违反示例</th></tr>
+    <tr>
+      <td class="rl-num">1</td>
+      <td class="rl-rule">AI 不在用户没开口时主动说话</td>
+      <td class="rl-v">推送「看看你上周的记录吧」；推荐「你还可以记这个」</td>
+    </tr>
+    <tr>
+      <td class="rl-num">2</td>
+      <td class="rl-rule">洞察只在用户走进 Tab 2 时呈现</td>
+      <td class="rl-v">在 Tab 1 消息流中插入洞察卡片；推送通知告知洞察已生成</td>
+    </tr>
+    <tr>
+      <td class="rl-num">3</td>
+      <td class="rl-rule">每条洞察必须标注来源片段</td>
+      <td class="rl-v">「本周关键洞察：你缺乏执行力」——无引用来源，不标注依据</td>
+    </tr>
+    <tr>
+      <td class="rl-num">4</td>
+      <td class="rl-rule">用户对所有内容有删除权</td>
+      <td class="rl-v">系统生成的月度总结不可删除；AI 回应无删除按钮</td>
+    </tr>
+    <tr>
+      <td class="rl-num">5</td>
+      <td class="rl-rule">不显示焦虑指标</td>
+      <td class="rl-v">连续打卡天数；记忆留存率百分比；「你 3 天没记了」提醒</td>
+    </tr>
+    <tr>
+      <td class="rl-num">6</td>
+      <td class="rl-rule">所有开关 off 就是真的关，不弱化</td>
+      <td class="rl-v">关通知后 AI 回应完成仍震动；静默时段设为 00:00–23:59 仍推送</td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>
