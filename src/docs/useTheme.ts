@@ -16,14 +16,14 @@ function applyTheme(t: Theme) {
 }
 
 function readInitial(): Theme {
-  if (typeof window === 'undefined') return 'system'
+  if (typeof window === 'undefined') return 'light'
   try {
     const stored = window.localStorage.getItem(KEY)
     if (stored === 'light' || stored === 'dark' || stored === 'system') return stored
   } catch {
     /* ignore */
   }
-  return 'system'
+  return 'light'
 }
 
 export function useTheme() {
