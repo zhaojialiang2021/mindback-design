@@ -1655,7 +1655,7 @@ body.pitch-mode .docs-main__inner {
 
 .docs-problem {
   padding: 28px;
-  background: var(--fill-quaternary);
+  border: 1px solid var(--line-non-opaque);
   border-radius: 14px;
 }
 
