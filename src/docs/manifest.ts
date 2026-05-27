@@ -130,7 +130,7 @@ export type WritingMeta = {
 export const writings: WritingMeta[] = [
   {
     slug: 'manifesto',
-    title: '为什么是给 AI 也设计的设计系统',
+    title: '也是给 AI 设计的 Design System',
     desc: 'AI-native 设计系统的理念与方法论',
     status: 'draft',
   },
