@@ -1,5 +1,5 @@
 {
-  "$generatedAt": "2026-05-15T11:18:43.852Z",
+  "$generatedAt": "2026-06-12T07:31:35.667Z",
   "$count": 5,
   "components": [
     {
@@ -580,11 +580,12 @@
       "tokens": {
         "container.bg": "bg-0",
         "container.shadow": "shadow-modal",
-        "container.radius.bottom": "radius-x-large radius-x-large 0 0",
-        "container.radius.right": "radius-x-large 0 0 radius-x-large",
+        "container.radius.bottom": "radius-x-large radius-x-large 0px 0px",
+        "container.radius.right": "radius-x-large 0px 0px radius-x-large",
         "backdrop.bg": "color.backdrop",
         "handle.bg": "fill-tertiary",
-        "handle.size": "36px x 4px",
+        "handle.width": "36px",
+        "handle.height": "4px",
         "padding": "space-5",
         "duration.enter": "duration-slow",
         "duration.exit": "duration-normal",

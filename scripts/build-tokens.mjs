@@ -86,9 +86,13 @@ function buildCss(tokens) {
       lightLines.push(`  ${toCssVar(t.name)}-line-height: ${v.lineHeight};`)
       continue
     }
-    lightLines.push(`  ${toCssVar(t.name)}: ${t.value};`)
+    const cssVar = toCssVar(t.name)
+    lightLines.push(`  ${cssVar}: ${t.value};`)
+    if (t.name === 'radius.xlarge') {
+      lightLines.push(`  --radius-xlarge: ${t.value}; /* 别名：保持 BEM-like 命名习惯，与 --radius-x-large 等价 */`)
+    }
     if (t.modes?.dark) {
-      darkLines.push(`  ${toCssVar(t.name)}: ${t.modes.dark};`)
+      darkLines.push(`  ${cssVar}: ${t.modes.dark};`)
     }
   }
   return [

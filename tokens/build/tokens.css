@@ -54,6 +54,7 @@
   --radius-medium: 8px;
   --radius-large: 12px;
   --radius-x-large: 20px;
+  --radius-xlarge: 20px; /* 别名：保持 BEM-like 命名习惯，与 --radius-x-large 等价 */
   --radius-full: 9999px;
   --duration-fast: 150ms;
   --duration-normal: 250ms;
