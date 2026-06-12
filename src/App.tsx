@@ -7,6 +7,7 @@ import {
   AIPreferencesScreen,
   AISummaryScreen,
   TimeFragmentScreen,
+  DottedDemoScreen,
   type ScreenId,
 } from './screens'
 
@@ -62,6 +63,7 @@ const screenBySlug: Record<ScreenId, React.FC> = {
   'ai-preferences': AIPreferencesScreen,
   'ai-summary': AISummaryScreen,
   'time-fragment': TimeFragmentScreen,
+  'dotted-demo': DottedDemoScreen,
 }
 
 function AppInner() {

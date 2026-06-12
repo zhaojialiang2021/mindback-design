@@ -25,6 +25,7 @@ export type PageSlug =
   | 'ai-preferences'
   | 'ai-summary'
   | 'time-fragment'
+  | 'dotted-demo'
 
 export type ComponentMeta = {
   slug: ComponentSlug
@@ -101,6 +102,12 @@ export const pages: PageMeta[] = [
     subtitle: '能力资产',
     screenId: 'time-fragment',
     uses: ['card', 'button', 'type-tag', 'modal'],
+  },
+  {
+    slug: 'dotted-demo',
+    name: '点点demo',
+    subtitle: '外部流程验证',
+    screenId: 'dotted-demo',
   },
 ]
 

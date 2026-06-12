@@ -10,6 +10,7 @@ import { HomeScreen } from '../../screens/HomeScreen'
 import { AIPreferencesScreen } from '../../screens/AIPreferencesScreen'
 import { AISummaryScreen } from '../../screens/AISummaryScreen'
 import { TimeFragmentScreen } from '../../screens/TimeFragmentScreen'
+import { DottedDemoScreen } from '../../screens/DottedDemoScreen'
 
 const sources = import.meta.glob('../../../references/pages/*.md', {
   query: '?raw',
@@ -28,6 +29,7 @@ const screenBySid: Record<string, FC> = {
   'ai-preferences': AIPreferencesScreen,
   'ai-summary': AISummaryScreen,
   'time-fragment': TimeFragmentScreen,
+  'dotted-demo': DottedDemoScreen,
 }
 
 export function PagePage({ slug }: { slug: string }) {

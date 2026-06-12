@@ -12,7 +12,7 @@ export type AbilityCardItem = {
   tone: TypeTagTone
 }
 
-export type ScreenId = 'splash' | 'home' | 'ai-preferences' | 'ai-summary' | 'time-fragment'
+export type ScreenId = 'splash' | 'home' | 'ai-preferences' | 'ai-summary' | 'time-fragment' | 'dotted-demo'
 
 // === 数据常量 ===
 
