@@ -83,7 +83,7 @@ function flatten(node, path = []) {
 <Button color="red" size="big">删除</Button>
 ```
 
-每个字都看起来对，每个字都不在我的系统里。我的 Button 没有 `color` prop——只有 `intent: "destructive"`；没有 `size: "big"`——只有 `compact / standard / large`。
+每个字都看起来对，每个字都不在我的系统里。我的 Button 没有 `color` prop——只有 `variant: "filled" | "outline" | "neutral" | "ghost"`；没有 `size: "big"`——只有 `xLarge / large / medium / small / mini / micro`。
 
 我开始写 component schema：
 
@@ -91,24 +91,25 @@ function flatten(node, path = []) {
 {
   "Button": {
     "props": {
-      "intent": {
-        "values": ["primary", "secondary", "soft", "ghost", "destructive"],
-        "default": "primary"
+      "variant": {
+        "values": ["filled", "outline", "neutral", "ghost"],
+        "default": "filled"
       },
       "size": {
-        "values": ["compact", "standard", "large"]
+        "values": ["xLarge", "large", "medium", "small", "mini", "micro"],
+        "default": "medium"
       }
     },
     "states": ["idle", "hover", "active", "loading", "disabled"],
     "constraints": [
-      { "rule": "max_primary_per_view", "value": 1 },
-      { "rule": "destructive_requires", "value": "irreversible_action" }
+      { "rule": "max_filled_per_view", "value": 1 },
+      { "rule": "icon_only_requires_aria_label", "value": true }
     ]
   }
 }
 ```
 
-注意 `constraints`。这是经典文档里写在散文里的规则——「不要在同一视图放两个 primary 按钮」——现在它是一个**可被检查的字段**。
+注意 `constraints`。这是经典文档里写在散文里的规则——「不要在同一视图放两个 filled 按钮」——现在它是一个**可被检查的字段**。
 
 我没真的写规则引擎跑约束（v1 不做），但这份 schema 直接被两件事消费：
 1. ComponentPage 渲染时用 schema 生成 props 表 + 状态矩阵
@@ -119,8 +120,8 @@ function flatten(node, path = []) {
 ```markdown
 # Component: Button
 ## Props
-- **intent** (["primary","secondary","soft","ghost","destructive"], default: "primary")
-- **size** (["compact","standard","large"], default: "standard")
+- **variant** (["filled","outline","neutral","ghost"], default: "filled")
+- **size** (["xLarge","large","medium","small","mini","micro"], default: "medium")
 ...
 ```
 
@@ -128,7 +129,7 @@ function flatten(node, path = []) {
 
 ## 第四步：HTTP 端点 + MCP Server
 
-Copy for AI 解决了"启动一个新会话"的场景。但生成过程中 AI 想确认「Button destructive 用什么 token」时，它没法每次都回到文档站点一次。
+Copy for AI 解决了"启动一个新会话"的场景。但生成过程中 AI 想确认「Button filled 用什么 token」时，它没法每次都回到文档站点一次。
 
 我做了两件事：
 
@@ -218,7 +219,7 @@ AI 输出粘到 `zero-shot-tests/samples/*.tsx`，跑评分脚本：
 
 写完上面这些，我清楚地知道**还有两件事我没做**：
 
-1. **Generative Rules 引擎**——schema 里 `constraints` 已经写了，但没有 runtime 跑去检查「这个视图有几个 primary 按钮」。v1 靠 lint 抓 token，靠 review 抓约束。
+1. **Generative Rules 引擎**——schema 里 `constraints` 已经写了，但没有 runtime 跑去检查「这个视图有几个 filled 按钮」。v1 靠 lint 抓 token，靠 review 抓约束。
 2. **跨平台输出**——iOS Swift / Android Kotlin 还没接。等 MindBack iOS native 团队真要用时再做。
 
 延期的理由不是技术不够。是**没必要**。设计系统的失败模式从来不是"功能不够"，是"维护它的成本超过用它的收益"。每一项功能都得拷问："不做这个，会有什么具体的事垮掉？"答得上来才做。

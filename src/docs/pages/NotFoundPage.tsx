@@ -86,14 +86,14 @@ export function NotFoundPage({ path }: { path: string }) {
         }}
       >
         <button
-          className="mb-button mb-button--primary mb-button--standard"
+          className="mb-button mb-button--filled mb-button--medium"
           onClick={() => navigate('/docs')}
         >
           <Icon.Back size={14} />
           {t('nf.back')}
         </button>
         <button
-          className="mb-button mb-button--ghost mb-button--standard"
+          className="mb-button mb-button--ghost mb-button--medium"
           onClick={() => navigate('/docs/components/button')}
         >
           {t('nf.explore')}

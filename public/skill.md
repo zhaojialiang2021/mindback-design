@@ -141,39 +141,42 @@
 
 **Category**: action
 
-用户主动触发的动作单元。MindBack 风格：Pill / Rounded Rect 形态、品牌色克制使用、单视图最多一个 primary。
+用户主动触发的动作单元。新版契约使用 variant 表达视觉层级、size 表达几何尺寸，避免旧版字段在生成时被误用。
 
 ### Props
-- `intent`: "primary" | "secondary" | "soft" | "ghost" | "destructive" _(default: `"primary"`)_
-  意图层级。primary 主操作（CTA、提交）；secondary 次要操作（取消）；soft 品牌色辅助（小红点击操作如「填写领取」）；ghost 极弱（链接状）；destructive 不可逆动作（删除/退出）
-- `size`: "compact" | "standard" | "large" _(default: `"standard"`)_
-  compact 34px / standard 48px / large 51px
-- `icon`: "none" | "leading" | "only" _(default: `"none"`)_
-  图标位置。leading 文字左侧 20px 图标；only 图标按钮，无文字
+- `variant`: "filled" | "outline" | "neutral" | "ghost" _(default: `"filled"`)_
+  视觉层级。filled 主操作；outline 强次级操作；neutral 普通次级操作；ghost 极弱操作，必须放在可见容器或有清晰文字语义的位置
+- `size`: "xLarge" | "large" | "medium" | "small" | "mini" | "micro" _(default: `"medium"`)_
+  xLarge 48px / large 44px / medium 36px / small 28px / mini 24px / micro 20px
+- `icon`: "none" | "leading" | "trailing" | "only" _(default: `"none"`)_
+  图标位置。leading 文字左侧；trailing 文字右侧；only 图标按钮，无文字
 - `fullWidth`: false | true _(default: `false`)_
-  是否占满容器宽度（启动页 CTA 等场景）
+  是否占满容器宽度。表单底部主操作通常使用 large + filled + fullWidth
+- `selected`: false | true _(default: `false`)_
+  是否处于选中态。仅用于分段选择、筛选或状态切换，不用于一次性提交按钮
 
 ### States
 `idle`, `hover`, `active`, `loading`, `disabled`
 
 ### Constraints
-- **max_primary_per_view**: 同一页面最多一个 primary 按钮，避免主次失焦
-- **destructive_requires**: destructive 仅用于不可逆动作（删除、退出登录、清空）
+- **max_filled_per_view**: 同一视图最多一个 filled 按钮，避免主次失焦
+- **ghost_requires_visible_surface**: ghost 按钮不能漂在空白背景上，必须依附于卡片、列表行或上下文明确的控制区
 - **icon_only_requires_aria_label**: icon=only 时必须提供 aria-label
+- **selected_requires_stateful_context**: selected=true 仅用于可保持状态的选择控件，不用于普通动作按钮
 
 ### Anatomy
-- **container**: bg, radius, padding-x, height
-- **icon**: fg, size:20px, gap:space-1
+- **container**: variant.*, radius, padding-x, height
+- **icon**: fg, icon.size, gap:space-1
 - **label**: fg, font
 
 ### Do
-- 在 CTA 位置使用 size=large + fullWidth=true
-- destructive 配合二次确认弹层使用
-- icon=only 时按钮宽高都是 size 的高度，正方形
+- 表单底部主操作使用 variant=filled + size=large + fullWidth=true
+- 卡片内部操作优先使用 size=small 或 size=mini
+- icon=only 时按钮宽高都是 size 的高度，正方形并提供 aria-label
 
 ### Don't
-- 不要在同一视图放两个 intent=primary 的按钮
-- 不要把 destructive 用在「保存」「确认」这种正向动作
+- 不要在同一视图放两个 variant=filled 的按钮
+- 不要继续使用旧版 Button 字段、旧版变体名或旧版尺寸名
 - 不要在 button 内嵌 button 或链接
 
 ---
@@ -244,8 +247,8 @@ AI 最容易忘记的状态。空容器不是 bug，是产品的一个 view —�
 - **illustration**: icon.color, icon.size.*
 - **title**: title.font, title.color
 - **description (optional)**: description.font, description.color
-- **primary-action**: Button intent=primary, size=standard
-- **secondary-action (optional)**: Button intent=ghost
+- **primary-action**: Button variant=neutral, size=medium；first-time 强引导可用 variant=filled
+- **secondary-action (optional)**: Button variant=ghost, size=medium
 
 ### Do
 - first-time 用积极语言：「记下你的第一条想法」而不是「这里空空如也」

@@ -84,9 +84,9 @@ export function EmptyStateDemo() {
             {c.desc}
           </div>
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <button className="mb-button mb-button--primary mb-button--standard">{c.primary}</button>
+            <button className="mb-button mb-button--neutral mb-button--medium">{c.primary}</button>
             {c.secondary && (
-              <button className="mb-button mb-button--ghost mb-button--standard">{c.secondary}</button>
+              <button className="mb-button mb-button--ghost mb-button--medium">{c.secondary}</button>
             )}
           </div>
         </div>

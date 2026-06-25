@@ -52,7 +52,7 @@ export function ModalPreview() {
               style={{
                 position: 'absolute',
                 inset: 0,
-                background: open ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0)',
+                background: open ? 'var(--backdrop)' : 'transparent',
                 transition: 'background var(--duration-normal) var(--curve-default)',
                 pointerEvents: open ? 'auto' : 'none',
               }}

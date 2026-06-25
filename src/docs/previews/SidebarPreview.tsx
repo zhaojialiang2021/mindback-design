@@ -16,7 +16,6 @@ export function SidebarPreview() {
             display: 'flex',
             flexDirection: 'column',
             gap: 16,
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.06)',
           }}
         >
           <GroupCard
@@ -153,8 +152,9 @@ function Switch({ on }: { on: boolean }) {
           width: 27,
           height: 27,
           borderRadius: '50%',
-          background: '#fff',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.15), 0 0 0 0.5px rgba(0,0,0,0.04)',
+          background: 'var(--bg-0)',
+          border: '0.5px solid var(--line-non-opaque)',
+          boxSizing: 'border-box',
           transition: 'left var(--duration-fast) var(--curve-default)',
         }}
       />

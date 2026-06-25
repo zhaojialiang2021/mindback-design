@@ -67,7 +67,6 @@ function Toast({ variant }: { variant: Variant }) {
         fontSize: 14.5,
         fontWeight: 500,
         letterSpacing: '-0.005em',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.16)',
         animation: 'docs-toast-in 240ms cubic-bezier(0.34, 1.56, 0.64, 1)',
       }}
     >

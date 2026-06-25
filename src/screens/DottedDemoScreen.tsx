@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent, type RefObject, type WheelEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent, type RefObject, type WheelEvent } from 'react'
 import dotsActionAddCircle from '../assets/dotted/dots-action-add-circle.svg'
 import dotsActionCamera from '../assets/dotted/dots-action-camera.svg'
 import dotsActionKeyboard from '../assets/dotted/dots-action-keyboard.svg'
@@ -35,6 +35,9 @@ type DotsHistoryMessage = {
   role: 'user' | 'dots'
   text: string
   hasTail?: boolean
+  isRecognizing?: boolean
+  isCanceling?: boolean
+  isLoading?: boolean
 }
 
 type DotsHistoryTime = {
@@ -51,6 +54,13 @@ type DotsHistoryAiCard = {
 type DotsHistoryItem = DotsHistoryMessage | DotsHistoryTime | DotsHistoryAiCard
 
 const dotsReplyText = '收到，我会继续按这个护肤场景帮你补充。'
+const voiceFinalText = '我今晚想厚涂黑绷带面霜，前面要不要先用精华？'
+const voiceTranscriptStages = [
+  '我今晚想厚涂黑绷带面霜',
+  '我今晚想厚涂黑绷带面霜，前面要不要',
+  voiceFinalText,
+]
+const voiceWaveformBars = [4, 10, 14, 6, 8, 20, 10, 12, 10, 4, 10, 10, 16, 6, 12, 14, 8, 12, 8, 8, 16, 12, 12, 6, 12, 8, 8]
 
 const dotsHistoryItems: DotsHistoryItem[] = [
   {
@@ -135,6 +145,20 @@ function DottedAiCard() {
   )
 }
 
+function DottedVoiceWaveform({ canceling = false }: { canceling?: boolean }) {
+  return (
+    <span className={`dotted-demo__voice-waveform${canceling ? ' dotted-demo__voice-waveform--canceling' : ''}`} aria-hidden="true">
+      {voiceWaveformBars.map((height, index) => (
+        <span
+          className="dotted-demo__voice-waveform-bar"
+          key={`${height}-${index}`}
+          style={{ '--bar-height': `${height}px`, '--bar-delay': `${index * -38}ms` } as CSSProperties}
+        />
+      ))}
+    </span>
+  )
+}
+
 function DottedChatStream({
   items,
   onClick,
@@ -163,10 +187,21 @@ function DottedChatStream({
           )
         }
 
+        const recognitionClass = item.isRecognizing ? ' dotted-demo__chat-row--recognizing' : ''
+        const cancelClass = item.isCanceling ? ' dotted-demo__chat-row--recognizing-cancel' : ''
+
         return (
-          <div className={`dotted-demo__chat-row dotted-demo__chat-row--${item.role}`} key={item.id}>
+          <div className={`dotted-demo__chat-row dotted-demo__chat-row--${item.role}${recognitionClass}${cancelClass}`} key={item.id}>
             <div className={`dotted-demo__chat-bubble dotted-demo__chat-bubble--${item.role}`}>
-              {item.text}
+              {item.isLoading ? (
+                <span className="dotted-demo__recognition-loading" aria-label="正在识别语音">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+              ) : (
+                item.text
+              )}
               {item.hasTail && (
                 <img
                   className={`dotted-demo__chat-tail dotted-demo__chat-tail--${item.role}`}
@@ -196,20 +231,69 @@ export function DottedDemoScreen() {
   })
   const suppressChipClickRef = useRef(false)
   const releaseTimerRef = useRef<number | null>(null)
+  const voiceTimerRef = useRef<number | null>(null)
+  const voiceIntervalRef = useRef<number | null>(null)
+  const recognizedVoiceTextRef = useRef('')
+  const voiceDragRef = useRef({
+    canceling: false,
+    pointerId: null as number | null,
+    startY: 0,
+  })
   const [isInputActive, setIsInputActive] = useState(false)
   const [messageText, setMessageText] = useState('')
   const [sentMessageText, setSentMessageText] = useState('')
   const [selectedSkill, setSelectedSkill] = useState<SkillPrompt | null>(null)
   const [chipsElasticX, setChipsElasticX] = useState(0)
   const [isChipsReleasing, setIsChipsReleasing] = useState(false)
+  const [isVoiceRecording, setIsVoiceRecording] = useState(false)
+  const [isVoiceCanceling, setIsVoiceCanceling] = useState(false)
+  const [voiceTranscript, setVoiceTranscript] = useState('')
+  const [isVoiceLoading, setIsVoiceLoading] = useState(false)
 
   useEffect(() => {
     return () => {
       if (releaseTimerRef.current) {
         window.clearTimeout(releaseTimerRef.current)
       }
+      if (voiceTimerRef.current) {
+        window.clearTimeout(voiceTimerRef.current)
+      }
+      if (voiceIntervalRef.current) {
+        window.clearInterval(voiceIntervalRef.current)
+      }
     }
   }, [])
+
+  useEffect(() => {
+    if (!isVoiceRecording) return
+
+    let index = 0
+    voiceTimerRef.current = window.setTimeout(() => {
+      setIsVoiceLoading(false)
+      recognizedVoiceTextRef.current = voiceTranscriptStages[0]
+      setVoiceTranscript(voiceTranscriptStages[0])
+      voiceIntervalRef.current = window.setInterval(() => {
+        index = Math.min(index + 1, voiceTranscriptStages.length - 1)
+        recognizedVoiceTextRef.current = voiceTranscriptStages[index]
+        setVoiceTranscript(voiceTranscriptStages[index])
+        if (index === voiceTranscriptStages.length - 1 && voiceIntervalRef.current) {
+          window.clearInterval(voiceIntervalRef.current)
+          voiceIntervalRef.current = null
+        }
+      }, 520)
+    }, 420)
+
+    return () => {
+      if (voiceTimerRef.current) {
+        window.clearTimeout(voiceTimerRef.current)
+        voiceTimerRef.current = null
+      }
+      if (voiceIntervalRef.current) {
+        window.clearInterval(voiceIntervalRef.current)
+        voiceIntervalRef.current = null
+      }
+    }
+  }, [isVoiceRecording])
 
   useEffect(() => {
     if (!isInputActive) return
@@ -224,6 +308,19 @@ export function DottedDemoScreen() {
 
     return () => window.cancelAnimationFrame(frameId)
   }, [isInputActive, selectedSkill, sentMessageText])
+
+  useEffect(() => {
+    if (!sentMessageText && !isVoiceRecording) return
+
+    const frameId = window.requestAnimationFrame(() => {
+      const chatStream = chatStreamRef.current
+      if (chatStream) {
+        chatStream.scrollTop = chatStream.scrollHeight
+      }
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [sentMessageText, isVoiceRecording, voiceTranscript, isVoiceLoading])
 
   const releaseChips = () => {
     if (releaseTimerRef.current) {
@@ -383,6 +480,87 @@ export function DottedDemoScreen() {
     setIsInputActive(false)
   }
 
+  const finishVoice = useCallback((canceling: boolean) => {
+    voiceDragRef.current.canceling = false
+    voiceDragRef.current.pointerId = null
+    setIsVoiceRecording(false)
+    setIsVoiceCanceling(false)
+    setIsVoiceLoading(false)
+    if (!canceling) {
+      setSentMessageText(recognizedVoiceTextRef.current || voiceFinalText)
+    }
+    recognizedVoiceTextRef.current = ''
+    setVoiceTranscript('')
+  }, [])
+
+  const startVoice = (event: PointerEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    voiceDragRef.current = {
+      canceling: false,
+      pointerId: event.pointerId,
+      startY: event.clientY,
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+    setIsInputActive(false)
+    setSelectedSkill(null)
+    recognizedVoiceTextRef.current = ''
+    setVoiceTranscript('')
+    setIsVoiceLoading(true)
+    setIsVoiceRecording(true)
+    setIsVoiceCanceling(false)
+  }
+
+  const moveVoice = (event: PointerEvent<HTMLButtonElement>) => {
+    const voiceDrag = voiceDragRef.current
+    if (!isVoiceRecording || voiceDrag.pointerId !== event.pointerId) return
+    const canceling = voiceDrag.startY - event.clientY > 48
+    voiceDrag.canceling = canceling
+    setIsVoiceCanceling(canceling)
+  }
+
+  const endVoice = (event: PointerEvent<HTMLButtonElement>) => {
+    const voiceDrag = voiceDragRef.current
+    if (voiceDrag.pointerId !== event.pointerId) return
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    finishVoice(isVoiceCanceling || voiceDrag.canceling || voiceDrag.startY - event.clientY > 48)
+  }
+
+  const cancelVoice = (event: PointerEvent<HTMLButtonElement>) => {
+    if (voiceDragRef.current.pointerId !== event.pointerId) return
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    finishVoice(true)
+  }
+
+  useEffect(() => {
+    if (!isVoiceRecording) return
+
+    const finishFromWindow = (event: globalThis.PointerEvent | MouseEvent) => {
+      const voiceDrag = voiceDragRef.current
+      if (voiceDrag.pointerId === null) return
+      if ('pointerId' in event && event.pointerId !== voiceDrag.pointerId) return
+      finishVoice(voiceDrag.canceling || voiceDrag.startY - event.clientY > 48)
+    }
+
+    const cancelFromWindow = (event: globalThis.PointerEvent) => {
+      const voiceDrag = voiceDragRef.current
+      if (voiceDrag.pointerId === null || event.pointerId !== voiceDrag.pointerId) return
+      finishVoice(true)
+    }
+
+    window.addEventListener('pointerup', finishFromWindow)
+    window.addEventListener('pointercancel', cancelFromWindow)
+    window.addEventListener('mouseup', finishFromWindow)
+    return () => {
+      window.removeEventListener('pointerup', finishFromWindow)
+      window.removeEventListener('pointercancel', cancelFromWindow)
+      window.removeEventListener('mouseup', finishFromWindow)
+    }
+  }, [finishVoice, isVoiceRecording])
+
   const hasMessageText = messageText.trim().length > 0
   const chatItems: DotsHistoryItem[] = sentMessageText
     ? [
@@ -403,11 +581,27 @@ export function DottedDemoScreen() {
         },
       ]
     : dotsHistoryItems
-  const pageNodeId = selectedSkill ? '1422:2458' : isInputActive ? '1419:970' : '1421:1089'
+  const displayedChatItems: DotsHistoryItem[] =
+    isVoiceRecording && (voiceTranscript || isVoiceLoading)
+      ? [
+          ...chatItems,
+          {
+            id: 'voice-recognition',
+            type: 'message',
+            role: 'user',
+            text: voiceTranscript,
+            hasTail: true,
+            isRecognizing: true,
+            isCanceling: isVoiceCanceling,
+            isLoading: isVoiceLoading && !voiceTranscript,
+          },
+        ]
+      : chatItems
+  const pageNodeId = isVoiceRecording ? '1487:1299' : selectedSkill ? '1422:2458' : isInputActive ? '1419:970' : '1421:1089'
 
   return (
     <div
-      className={`dotted-demo-page${isInputActive ? ' dotted-demo-page--input' : ''}${selectedSkill ? ' dotted-demo-page--skill' : ''}`}
+      className={`dotted-demo-page${isInputActive ? ' dotted-demo-page--input' : ''}${selectedSkill ? ' dotted-demo-page--skill' : ''}${isVoiceRecording ? ' dotted-demo-page--voice' : ''}`}
       data-node-id={pageNodeId}
     >
       <div className="dotted-demo">
@@ -442,7 +636,7 @@ export function DottedDemoScreen() {
         />
 
         <DottedChatStream
-          items={chatItems}
+          items={displayedChatItems}
           onClick={isInputActive ? dismissInput : undefined}
           streamRef={chatStreamRef}
         />
@@ -515,62 +709,84 @@ export function DottedDemoScreen() {
             </div>
           </>
         ) : (
-          <div className="dotted-demo__dock">
-            <div
-              className="dotted-demo__chips"
-              aria-label="快捷提示"
-              ref={chipsRef}
-              onWheel={handleChipsWheel}
-              onPointerDown={handleChipsPointerDown}
-              onPointerMove={handleChipsPointerMove}
-              onPointerUp={handleChipsPointerUp}
-              onPointerCancel={handleChipsPointerCancel}
-            >
+          <div className={`dotted-demo__dock${isVoiceRecording ? ' dotted-demo__dock--voice' : ''}`}>
+            {!isVoiceRecording && (
               <div
-                className={`dotted-demo__chips-track${isChipsReleasing ? ' dotted-demo__chips-track--release' : ''}`}
-                style={{ transform: `translateX(${chipsElasticX}px)` }}
+                className="dotted-demo__chips"
+                aria-label="快捷提示"
+                ref={chipsRef}
+                onWheel={handleChipsWheel}
+                onPointerDown={handleChipsPointerDown}
+                onPointerMove={handleChipsPointerMove}
+                onPointerUp={handleChipsPointerUp}
+                onPointerCancel={handleChipsPointerCancel}
               >
-                {prompts.map((prompt) => (
-                  <button
-                    className="dotted-demo__chip"
-                    type="button"
-                    key={prompt.label}
-                    data-skill={prompt.label}
-                    onClick={() => handleSkillClick(prompt)}
-                  >
-                    <img src={prompt.icon} alt="" aria-hidden="true" />
-                    <span>{prompt.label}</span>
-                  </button>
-                ))}
+                <div
+                  className={`dotted-demo__chips-track${isChipsReleasing ? ' dotted-demo__chips-track--release' : ''}`}
+                  style={{ transform: `translateX(${chipsElasticX}px)` }}
+                >
+                  {prompts.map((prompt) => (
+                    <button
+                      className="dotted-demo__chip"
+                      type="button"
+                      key={prompt.label}
+                      data-skill={prompt.label}
+                      onClick={() => handleSkillClick(prompt)}
+                    >
+                      <img src={prompt.icon} alt="" aria-hidden="true" />
+                      <span>{prompt.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {isVoiceRecording && (
+              <div className={`dotted-demo__voice-hint${isVoiceCanceling ? ' dotted-demo__voice-hint--cancel' : ''}`}>
+                {isVoiceCanceling ? '松手取消' : '松手发送，上移取消'}
+              </div>
+            )}
 
             <div className="dotted-demo__composer">
-              <div className="dotted-demo__voice-row">
-                <div className="dotted-demo__leading-area">
-                  <button className="dotted-demo__round-btn" type="button" aria-label="添加">
-                    <img src={dotsActionAddCircle} alt="" aria-hidden="true" />
-                  </button>
-                </div>
+              <div className={`dotted-demo__voice-row${isVoiceRecording ? ' dotted-demo__voice-row--recording' : ''}`}>
+                {!isVoiceRecording && (
+                  <div className="dotted-demo__leading-area">
+                    <button className="dotted-demo__round-btn" type="button" aria-label="添加">
+                      <img src={dotsActionAddCircle} alt="" aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
 
-                <button className="dotted-demo__voice" type="button">按住说话</button>
+                <button
+                  className={`dotted-demo__voice${isVoiceRecording ? ' dotted-demo__voice--recording' : ''}${isVoiceCanceling ? ' dotted-demo__voice--canceling' : ''}`}
+                  type="button"
+                  aria-label={isVoiceRecording ? '正在语音输入' : '按住说话'}
+                  onPointerDown={startVoice}
+                  onPointerMove={moveVoice}
+                  onPointerUp={endVoice}
+                  onPointerCancel={cancelVoice}
+                >
+                  {isVoiceRecording ? <DottedVoiceWaveform canceling={isVoiceCanceling} /> : '按住说话'}
+                </button>
 
-                <div className="dotted-demo__trailing-area">
-                  <button
-                    className="dotted-demo__round-btn"
-                    type="button"
-                    aria-label="键盘"
-                    onClick={() => setIsInputActive(true)}
-                  >
-                    <img src={dotsActionKeyboard} alt="" aria-hidden="true" />
-                  </button>
-                  <button className="dotted-demo__round-btn" type="button" aria-label="拍照">
-                    <img src={dotsActionCamera} alt="" aria-hidden="true" />
-                  </button>
-                </div>
+                {!isVoiceRecording && (
+                  <div className="dotted-demo__trailing-area">
+                    <button
+                      className="dotted-demo__round-btn"
+                      type="button"
+                      aria-label="键盘"
+                      onClick={() => setIsInputActive(true)}
+                    >
+                      <img src={dotsActionKeyboard} alt="" aria-hidden="true" />
+                    </button>
+                    <button className="dotted-demo__round-btn" type="button" aria-label="拍照">
+                      <img src={dotsActionCamera} alt="" aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
               </div>
 
-              <div className="dotted-demo__ai-note">内容由 AI 生成</div>
+              {!isVoiceRecording && <div className="dotted-demo__ai-note">内容由 AI 生成</div>}
             </div>
           </div>
         )}

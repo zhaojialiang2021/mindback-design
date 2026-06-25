@@ -28,8 +28,7 @@ export function SheetDemo() {
   const sheetCommon: React.CSSProperties = {
     position: 'absolute',
     background: 'var(--bg-0)',
-    // token-lint-disable-line Sheet 的非对称定向阴影，shadow-modal 是对称值不适用
-    boxShadow: '0 -8px 32px rgba(0,0,0,0.12)',
+    boxShadow: 'var(--shadow-modal)',
     transition: 'all var(--duration-normal) var(--curve-default)',
     padding: 'var(--space-5)',
   }

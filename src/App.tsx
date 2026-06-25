@@ -8,6 +8,7 @@ import {
   AISummaryScreen,
   TimeFragmentScreen,
   DottedDemoScreen,
+  DottedTaskDemoScreen,
   type ScreenId,
 } from './screens'
 
@@ -21,7 +22,6 @@ class AppErrorBoundary extends Component<
     return { error }
   }
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    // eslint-disable-next-line no-console
     console.error('[AppErrorBoundary]', error, info)
   }
   render() {
@@ -64,6 +64,7 @@ const screenBySlug: Record<ScreenId, React.FC> = {
   'ai-summary': AISummaryScreen,
   'time-fragment': TimeFragmentScreen,
   'dotted-demo': DottedDemoScreen,
+  'dotted-task-demo': DottedTaskDemoScreen,
 }
 
 function AppInner() {

@@ -19,8 +19,8 @@ const PROMPTS: { title: string; body: string }[] = [
     body: `参考 https://docs.mindback.com/skill.md 的设计契约，给 MindBack 生成一个登录页：
 - 顶部品牌区（logo + 一句标语）
 - 邮箱输入 + 密码输入（用 Input 组件 schema，状态完整覆盖 empty/focus/error/disabled）
-- 主 CTA（Button intent=primary, size=large, fullWidth=true）
-- 次要操作"忘记密码"（Button intent=ghost）
+- 主 CTA（Button variant=filled, size=large, fullWidth=true）
+- 次要操作"忘记密码"（Button variant=ghost, size=medium）
 - 加载中 / 错误反馈用 Empty State kind=error
 要求所有颜色、间距、字号、圆角必须用令牌名，禁止 hardcoded hex/px。`,
   },
@@ -37,8 +37,8 @@ const PROMPTS: { title: string; body: string }[] = [
     title: '做一个删除确认弹窗',
     body: `按 MindBack 契约做一个删除确认弹窗：
 - 用 Modal（不是 Sheet —— 删除是不可逆操作，必须强制选择）
-- 主 CTA "删除" intent=destructive
-- 次 CTA "取消" intent=secondary
+- 主 CTA "删除" variant=filled, size=large
+- 次 CTA "取消" variant=neutral, size=large
 - 配 light haptic
 所有间距用 var(--space-N)。`,
   },

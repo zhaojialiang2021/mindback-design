@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { tagToneClassName } from './shared-data'
 
 // === 类型 ===
 
@@ -12,25 +13,14 @@ export type AbilityCardItem = {
   tone: TypeTagTone
 }
 
-export type ScreenId = 'splash' | 'home' | 'ai-preferences' | 'ai-summary' | 'time-fragment' | 'dotted-demo'
-
-// === 数据常量 ===
-
-export const tagToneClassName: Record<TypeTagTone, string> = {
-  brand: 'mb-type-tag--brand',
-  brown: 'mb-type-tag--brown',
-  sky: 'mb-type-tag--sky',
-  sage: 'mb-type-tag--sage',
-}
-
-export const abilities: AbilityCardItem[] = [
-  { title: '音视频解析', value: '6', unit: '次', state: '待使用', tone: 'brown' },
-  { title: '时间碎片', value: '12', unit: '枚', state: '待使用', tone: 'sky' },
-  { title: '频道数量', value: '2', unit: '个', state: '待创建', tone: 'sage' },
-  { title: 'AI 溯源', value: '180', unit: '天', state: '有效期', tone: 'brand' },
-  { title: 'Web 端内测', value: '1', unit: '个', state: '邀请好友获取', tone: 'sky' },
-  { title: 'Live 图发送', value: '0', unit: '次', state: '即将上线', tone: 'sage' },
-]
+export type ScreenId =
+  | 'splash'
+  | 'home'
+  | 'ai-preferences'
+  | 'ai-summary'
+  | 'time-fragment'
+  | 'dotted-demo'
+  | 'dotted-task-demo'
 
 // === 共享布局组件 ===
 
@@ -91,12 +81,12 @@ export function TypeTag({ tone, children }: { tone: TypeTagTone; children: React
 
 export function BrandButton({
   children,
-  variant = 'primary',
-  size = 'standard',
+  variant = 'filled',
+  size = 'medium',
 }: {
   children: ReactNode
-  variant?: 'primary' | 'soft' | 'light'
-  size?: 'compact' | 'standard' | 'large'
+  variant?: 'filled' | 'outline' | 'neutral' | 'ghost'
+  size?: 'xLarge' | 'large' | 'medium' | 'small' | 'mini' | 'micro'
 }) {
   return <button className={`mb-button mb-button--${variant} mb-button--${size}`}>{children}</button>
 }

@@ -235,11 +235,11 @@ function PatternCard({
       <div className="docs-pattern-card__kind">{example.kind}</div>
       <div className="docs-pattern-card__copy">{example.copy}</div>
       <div className="docs-pattern-card__actions">
-        <button className="mb-button mb-button--primary mb-button--compact">
+        <button className="mb-button mb-button--filled mb-button--small">
           {example.action}
         </button>
         {example.secondary && (
-          <button className="mb-button mb-button--ghost mb-button--compact">
+          <button className="mb-button mb-button--ghost mb-button--small">
             {example.secondary}
           </button>
         )}
@@ -265,4 +265,3 @@ function Section({
     </section>
   )
 }
-

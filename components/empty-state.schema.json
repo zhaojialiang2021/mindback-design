@@ -57,8 +57,8 @@
     { "part": "illustration", "tokens": ["icon.color", "icon.size.*"] },
     { "part": "title", "tokens": ["title.font", "title.color"] },
     { "part": "description (optional)", "tokens": ["description.font", "description.color"] },
-    { "part": "primary-action", "description": "Button intent=primary, size=standard" },
-    { "part": "secondary-action (optional)", "description": "Button intent=ghost" }
+    { "part": "primary-action", "description": "Button variant=neutral, size=medium；first-time 强引导可用 variant=filled" },
+    { "part": "secondary-action (optional)", "description": "Button variant=ghost, size=medium" }
   ],
   "doDont": {
     "do": [

@@ -85,27 +85,27 @@ W3C Design Tokens 格式（DTCG）。任何符合这个 schema 的 JSON，Style 
 {
   "Button": {
     "props": {
-      "intent": ["primary", "secondary", "soft", "ghost", "destructive"],
-      "size": ["compact", "standard", "large"]
+      "variant": ["filled", "outline", "neutral", "ghost"],
+      "size": ["xLarge", "large", "medium", "small", "mini", "micro"]
     },
     "states": ["idle", "hover", "active", "loading", "disabled"],
     "constraints": [
-      { "rule": "max_primary_per_view", "value": 1 },
-      { "rule": "destructive_requires", "value": "irreversible_action" }
+      { "rule": "max_filled_per_view", "value": 1 },
+      { "rule": "icon_only_requires_aria_label", "value": true }
     ]
   }
 }
 ```
 
-注意 `constraints`。这是经典文档里写在散文里的规则——「不要在同一视图放两个 primary 按钮」——现在它是一个**可被检查的字段**。
+注意 `constraints`。这是经典文档里写在散文里的规则——「不要在同一视图放两个 filled 按钮」——现在它是一个**可被检查的字段**。
 
 ### Layer 3: Generative Rules（可执行逻辑）
 
 ```json
 {
   "rules": [
-    { "if": { "intent": "destructive" },
-      "then": { "tokens": { "color": "semantic.error" } } }
+    { "if": { "variant": "filled" },
+      "then": { "tokens": { "bg": "brand-blue" } } }
   ]
 }
 ```

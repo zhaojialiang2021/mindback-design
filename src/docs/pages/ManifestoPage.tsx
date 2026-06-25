@@ -46,7 +46,7 @@ export function ManifestoPage() {
       </section>
 
       <section className="docs-section-block">
-        <h2 className="docs-section-block__heading">具体对照：destructive 按钮的颜色</h2>
+        <h2 className="docs-section-block__heading">具体对照：filled 按钮的契约</h2>
         <p className="docs-section-block__subheading">
           一个例子讲清楚区别——同一个需求，传统写法 vs AI-native 写法的差距在哪。
         </p>
@@ -56,29 +56,30 @@ export function ManifestoPage() {
             <pre className="docs-codeblock" style={{ marginTop: 12 }}>
               <code>{`# Button
 
-## destructive 变体
-用于删除、退出登录等不可逆动作。
-颜色取自我们的 error 色系，
-具体值见 Figma 主组件。`}</code>
+## filled 变体
+用于主操作。
+颜色取自品牌主色，
+尺寸参考 Figma 主组件。`}</code>
             </pre>
             <ul className="docs-diff-pair__notes">
-              <li>"error 色系"是哪个？AI 不知道</li>
+              <li>"品牌主色"是哪个？AI 不知道</li>
               <li>"具体值见 Figma"——AI 看不到 Figma</li>
-              <li>"不可逆动作"约束没法被自动检查</li>
+              <li>"主操作"数量约束没法被自动检查</li>
             </ul>
           </div>
           <div className="docs-diff-pair__col docs-diff-pair__col--good">
             <div className="docs-diff-pair__label">AI-native 设计系统</div>
             <pre className="docs-codeblock" style={{ marginTop: 12 }}>
               <code>{`{
-  "intent": "destructive",
+  "variant": "filled",
+  "size": "large",
   "tokens": {
-    "bg": "color.accent.pink",
-    "fg": "color.bg.0"
+    "bg": "brand-blue",
+    "fg": "bg-0"
   },
   "constraints": [{
-    "rule": "destructive_requires",
-    "value": "irreversible_action"
+    "rule": "max_filled_per_view",
+    "value": 1
   }]
 }`}</code>
             </pre>

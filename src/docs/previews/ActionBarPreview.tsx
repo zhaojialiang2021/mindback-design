@@ -39,7 +39,6 @@ export function ActionBarPreview() {
               borderRadius: 'var(--radius-x-large)',
               overflow: 'hidden',
               border: '0.5px solid var(--line-non-opaque)',
-              boxShadow: '0 12px 40px rgba(0, 0, 0, 0.06)',
             }}
           >
             <div style={{ padding: '16px 20px', color: 'var(--label-tertiary)', fontSize: 13 }}>
@@ -129,7 +128,6 @@ function Bar({ variant }: { variant: Variant }) {
           display: 'flex',
           gap: 10,
           border: '0.5px solid var(--line-non-opaque)',
-          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.08)',
         }}
       >
         <CircleBtn icon={<Icon.Camera size={20} />} />
@@ -167,7 +165,7 @@ const primaryBtn: React.CSSProperties = {
   border: 0,
   borderRadius: 12,
   background: 'var(--brand-blue)',
-  color: '#fff',
+  color: 'var(--bg-0)',
   fontSize: 17,
   fontWeight: 500,
   cursor: 'pointer',

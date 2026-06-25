@@ -1,4 +1,5 @@
-import { MobileShell, TopNav, InfoIcon, CloseIcon, BrandButton, abilities, AbilityCard } from './shared'
+import { MobileShell, TopNav, InfoIcon, CloseIcon, BrandButton, AbilityCard } from './shared'
+import { abilities } from './shared-data'
 
 export function TimeFragmentScreen() {
   return (
@@ -31,7 +32,7 @@ export function TimeFragmentScreen() {
           </div>
 
           <div className="fragment-screen__cta-wrap">
-            <BrandButton variant="primary" size="standard">邀请好友 获得限时奖励</BrandButton>
+            <BrandButton variant="filled" size="large">邀请好友 获得限时奖励</BrandButton>
           </div>
 
           <section className="mb-card mb-card--container fragment-screen__invite">
@@ -40,7 +41,7 @@ export function TimeFragmentScreen() {
             </button>
             <div className="fragment-screen__invite-title">填写邀请码，获得新人礼包</div>
             <div className="fragment-screen__invite-copy">可领取时间碎片、音视频解析等能力</div>
-            <BrandButton variant="soft" size="compact">填写领取</BrandButton>
+            <BrandButton variant="neutral" size="small">填写领取</BrandButton>
           </section>
         </div>
       </div>

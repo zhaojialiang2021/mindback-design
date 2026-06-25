@@ -3,62 +3,62 @@ import { AnatomyFrame, Annotation, Guide } from './_AnatomyFrame'
 export function ButtonAnatomy() {
   return (
     <AnatomyFrame width={720} height={260}>
-      {/* 中心放置一个 standard primary 按钮（不可缩放，固定 SVG 几何） */}
-      <g transform="translate(260, 100)">
+      {/* 中心放置一个 medium filled 按钮（不可缩放，固定 SVG 几何） */}
+      <g transform="translate(282, 106)">
         {/* 容器 */}
         <rect
           x="0"
           y="0"
-          width="200"
-          height="48"
-          rx="24"
-          fill="var(--label-primary)"
+          width="156"
+          height="36"
+          rx="18"
+          fill="var(--brand-blue)"
         />
         {/* 图标 */}
-        <g transform="translate(20, 14) scale(0.83)">
+        <g transform="translate(18, 8) scale(0.83)">
           <path
             d="M12 4v16M4 12h16"
-            stroke="var(--bg-0)"
+            stroke="var(--always-white)"
             strokeWidth="2"
             strokeLinecap="round"
           />
         </g>
         {/* 文字 */}
         <text
-          x="56"
-          y="30"
-          fontSize="16"
+          x="50"
+          y="24"
+          fontSize="14"
           fontFamily="-apple-system, 'PingFang SC', system-ui, sans-serif"
           fontWeight="500"
-          fill="var(--bg-0)"
+          fill="var(--always-white)"
         >
           点击操作
         </text>
       </g>
 
       {/* 引线和标号 */}
-      <Annotation x={260} y={124} label="container" index={1} align="left" />
-      <Annotation x={280} y={124} label="icon" index={2} align="left" />
-      <Annotation x={460} y={124} label="label" index={3} align="right" />
+      <Annotation x={282} y={124} label="container" index={1} align="left" />
+      <Annotation x={300} y={124} label="icon" index={2} align="left" />
+      <Annotation x={438} y={124} label="label" index={3} align="right" />
 
       {/* 高度尺寸标注（左下） */}
-      <Guide x1={250} y1={100} x2={250} y2={148} />
+      <Guide x1={272} y1={106} x2={272} y2={142} />
       <text
-        x="240"
-        y="128"
+        x="262"
+        y="126"
         fontSize="11"
         fontFamily="'SF Mono', ui-monospace, Menlo, monospace"
         fill="currentColor"
         opacity="0.5"
         textAnchor="end"
       >
-        48px
+        36px
       </text>
       {/* padding 标注（顶部） */}
-      <Guide x1={260} y1={88} x2={280} y2={88} />
+      <Guide x1={282} y1={94} x2={298} y2={94} />
       <text
-        x="270"
-        y="80"
+        x="290"
+        y="86"
         fontSize="11"
         fontFamily="'SF Mono', ui-monospace, Menlo, monospace"
         fill="currentColor"
@@ -78,7 +78,7 @@ export function ButtonAnatomy() {
         opacity="0.4"
         textAnchor="middle"
       >
-        Button · intent=primary · size=standard · icon=leading
+        Button · variant=filled · size=medium · icon=leading
       </text>
     </AnatomyFrame>
   )
